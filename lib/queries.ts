@@ -1,3 +1,4 @@
+import React from 'react';
 import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
 import { atprotoClient } from './atproto';
 import { ATProfile, ATFeedItem, ATPost } from '@/types/atproto';

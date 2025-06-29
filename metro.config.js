@@ -11,4 +11,7 @@ config.resolver.alias = {
 // Add support for additional file extensions
 config.resolver.sourceExts.push('mjs');
 
+// Enable experimental features for better performance
+config.transformer.unstable_allowRequireContext = true;
+
 module.exports = config;

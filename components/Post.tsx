@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Alert } from 'react-native';
 import { Heart, MessageCircle, Repeat2, Share, MoveHorizontal as MoreHorizontal } from 'lucide-react-native';
 import { Avatar } from './ui/Avatar';
 import { LightBox } from './ui/LightBox';
@@ -68,9 +68,61 @@ export function Post({
 
   const handleLinkPress = async (url: string) => {
     try {
-      await Linking.openURL(url);
+      // Validate URL format
+      if (!isValidUrl(url)) {
+        Alert.alert('Invalid URL', 'This link appears to be invalid or malformed.');
+        return;
+      }
+
+      // Check if the URL can be opened
+      const canOpen = await Linking.canOpenURL(url);
+      
+      if (canOpen) {
+        await Linking.openURL(url);
+      } else {
+        Alert.alert(
+          'Cannot Open Link',
+          'This link cannot be opened on your device. Would you like to copy the URL?',
+          [
+            { text: 'Copy URL', onPress: () => copyToClipboard(url) },
+            { text: 'Cancel', style: 'cancel' }
+          ]
+        );
+      }
     } catch (error) {
       console.error('Failed to open URL:', error);
+      Alert.alert(
+        'Link Error',
+        'Unable to open this link. Would you like to copy the URL instead?',
+        [
+          { text: 'Copy URL', onPress: () => copyToClipboard(url) },
+          { text: 'Cancel', style: 'cancel' }
+        ]
+      );
+    }
+  };
+
+  const copyToClipboard = async (text: string) => {
+    try {
+      if (Platform.OS === 'web' && typeof navigator !== 'undefined' && navigator.clipboard) {
+        await navigator.clipboard.writeText(text);
+        Alert.alert('Copied', 'URL copied to clipboard');
+      } else {
+        // Fallback for environments without clipboard API
+        Alert.alert('URL', text);
+      }
+    } catch (error) {
+      console.error('Failed to copy to clipboard:', error);
+      Alert.alert('URL', text);
+    }
+  };
+
+  const isValidUrl = (url: string): boolean => {
+    try {
+      const urlObj = new URL(url);
+      return ['http:', 'https:'].includes(urlObj.protocol);
+    } catch {
+      return false;
     }
   };
 
@@ -91,12 +143,12 @@ export function Post({
             url: shareUrl,
           });
         } else {
-          await navigator.clipboard.writeText(shareUrl);
-          // Could show a toast notification here
+          await copyToClipboard(shareUrl);
         }
       }
     } catch (error) {
       console.error('Failed to share post:', error);
+      Alert.alert('Share Error', 'Unable to share this post.');
     }
   };
 
@@ -110,7 +162,7 @@ export function Post({
             url: imageUri,
           });
         } else {
-          await navigator.clipboard.writeText(imageUri);
+          await copyToClipboard(imageUri);
         }
       }
     } catch (error) {

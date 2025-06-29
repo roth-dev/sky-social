@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Linking } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { EmbedExternal } from '@/types/embed';
 import { ExternalLink } from 'lucide-react-native';
 
@@ -15,23 +15,94 @@ export function ExternalEmbed({ external, isDetailView = false, onLinkPress }: E
   }
 
   const handlePress = async () => {
-    if (onLinkPress) {
-      onLinkPress(external.uri);
-    } else {
-      try {
-        await Linking.openURL(external.uri);
-      } catch (error) {
-        console.error('Failed to open URL:', error);
+    try {
+      // Validate URL format first
+      const url = external.uri;
+      if (!isValidUrl(url)) {
+        Alert.alert('Invalid URL', 'This link appears to be invalid or malformed.');
+        return;
       }
+
+      if (onLinkPress) {
+        onLinkPress(url);
+      } else {
+        // Try to open the URL with better error handling
+        const { Linking } = require('react-native');
+        const canOpen = await Linking.canOpenURL(url);
+        
+        if (canOpen) {
+          await Linking.openURL(url);
+        } else {
+          Alert.alert(
+            'Cannot Open Link', 
+            'This link cannot be opened on your device. It may be an invalid or unsupported URL format.',
+            [
+              { text: 'Copy URL', onPress: () => copyToClipboard(url) },
+              { text: 'OK', style: 'cancel' }
+            ]
+          );
+        }
+      }
+    } catch (error) {
+      console.error('Failed to open URL:', error);
+      Alert.alert(
+        'Link Error',
+        'Unable to open this link. Would you like to copy the URL instead?',
+        [
+          { text: 'Copy URL', onPress: () => copyToClipboard(external.uri) },
+          { text: 'Cancel', style: 'cancel' }
+        ]
+      );
+    }
+  };
+
+  const copyToClipboard = async (url: string) => {
+    try {
+      if (typeof navigator !== 'undefined' && navigator.clipboard) {
+        await navigator.clipboard.writeText(url);
+        Alert.alert('Copied', 'URL copied to clipboard');
+      } else {
+        // Fallback for environments without clipboard API
+        Alert.alert('URL', url);
+      }
+    } catch (error) {
+      console.error('Failed to copy URL:', error);
+      Alert.alert('URL', url);
+    }
+  };
+
+  const isValidUrl = (url: string): boolean => {
+    try {
+      const urlObj = new URL(url);
+      return ['http:', 'https:'].includes(urlObj.protocol);
+    } catch {
+      return false;
     }
   };
 
   const getDomain = (url: string) => {
     try {
-      const domain = new URL(url).hostname;
-      return domain.replace('www.', '');
+      const urlObj = new URL(url);
+      let domain = urlObj.hostname;
+      
+      // Remove www. prefix
+      if (domain.startsWith('www.')) {
+        domain = domain.substring(4);
+      }
+      
+      return domain;
     } catch {
-      return url;
+      // Fallback for invalid URLs
+      return url.replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0];
+    }
+  };
+
+  const isValidImageUrl = (url: string): boolean => {
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
     }
   };
 
@@ -41,12 +112,15 @@ export function ExternalEmbed({ external, isDetailView = false, onLinkPress }: E
       onPress={handlePress}
       activeOpacity={0.8}
     >
-      {external.thumb && (
+      {external.thumb && isValidImageUrl(external.thumb) && (
         <View style={styles.imageContainer}>
           <Image
             source={{ uri: external.thumb }}
             style={[styles.image, isDetailView && styles.detailImage]}
             resizeMode="cover"
+            onError={(error) => {
+              console.warn('Failed to load thumbnail:', error.nativeEvent.error);
+            }}
           />
         </View>
       )}

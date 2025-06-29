@@ -84,3 +84,45 @@ export function isValidVideoUrl(url: string): boolean {
     return false;
   }
 }
+
+export function isValidUrl(url: string): boolean {
+  try {
+    const urlObj = new URL(url);
+    return ['http:', 'https:'].includes(urlObj.protocol);
+  } catch {
+    return false;
+  }
+}
+
+export function sanitizeUrl(url: string): string {
+  try {
+    // Remove any potential malicious characters
+    const cleanUrl = url.trim();
+    
+    // Ensure the URL has a protocol
+    if (!cleanUrl.startsWith('http://') && !cleanUrl.startsWith('https://')) {
+      return `https://${cleanUrl}`;
+    }
+    
+    return cleanUrl;
+  } catch {
+    return url;
+  }
+}
+
+export function getDomainFromUrl(url: string): string {
+  try {
+    const urlObj = new URL(url);
+    let domain = urlObj.hostname;
+    
+    // Remove www. prefix
+    if (domain.startsWith('www.')) {
+      domain = domain.substring(4);
+    }
+    
+    return domain;
+  } catch {
+    // Fallback for invalid URLs
+    return url.replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0];
+  }
+}

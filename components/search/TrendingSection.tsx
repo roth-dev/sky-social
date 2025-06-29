@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-nati
 import { Avatar } from '@/components/ui/Avatar';
 import { SearchActor, FeedGenerator } from '@/types/search';
 import { TrendingUp, Users, Rss } from 'lucide-react-native';
+import { router } from 'expo-router';
 
 interface TrendingSectionProps {
   suggestedUsers?: SearchActor[];
@@ -21,6 +22,31 @@ export function TrendingSection({
   onSeeAllUsers,
   onSeeAllFeeds,
 }: TrendingSectionProps) {
+  const handleSeeAllUsers = () => {
+    if (onSeeAllUsers) {
+      onSeeAllUsers();
+    } else {
+      router.push('/search/people');
+    }
+  };
+
+  const handleSeeAllFeeds = () => {
+    if (onSeeAllFeeds) {
+      onSeeAllFeeds();
+    } else {
+      router.push('/search/feeds');
+    }
+  };
+
+  const handleFeedPress = (feed: FeedGenerator) => {
+    if (onFeedPress) {
+      onFeedPress(feed);
+    } else {
+      const safeFeedUri = encodeURIComponent(feed.uri);
+      router.push(`/feed/${safeFeedUri}`);
+    }
+  };
+
   const renderSuggestedUser = (user: SearchActor) => (
     <TouchableOpacity
       key={user.did}
@@ -45,7 +71,7 @@ export function TrendingSection({
     <TouchableOpacity
       key={feed.uri}
       style={styles.feedCard}
-      onPress={() => onFeedPress?.(feed)}
+      onPress={() => handleFeedPress(feed)}
     >
       <Avatar
         uri={feed.avatar}
@@ -82,11 +108,9 @@ export function TrendingSection({
               <Users size={20} color="#111827" />
               <Text style={styles.sectionTitle}>Suggested People</Text>
             </View>
-            {onSeeAllUsers && (
-              <TouchableOpacity onPress={onSeeAllUsers}>
-                <Text style={styles.seeAllText}>See all</Text>
-              </TouchableOpacity>
-            )}
+            <TouchableOpacity onPress={handleSeeAllUsers}>
+              <Text style={styles.seeAllText}>See all</Text>
+            </TouchableOpacity>
           </View>
           
           <ScrollView
@@ -107,11 +131,9 @@ export function TrendingSection({
               <Rss size={20} color="#111827" />
               <Text style={styles.sectionTitle}>Popular Feeds</Text>
             </View>
-            {onSeeAllFeeds && (
-              <TouchableOpacity onPress={onSeeAllFeeds}>
-                <Text style={styles.seeAllText}>See all</Text>
-              </TouchableOpacity>
-            )}
+            <TouchableOpacity onPress={handleSeeAllFeeds}>
+              <Text style={styles.seeAllText}>See all</Text>
+            </TouchableOpacity>
           </View>
           
           <ScrollView

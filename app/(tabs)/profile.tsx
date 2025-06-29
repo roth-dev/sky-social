@@ -51,17 +51,23 @@ export default function ProfileScreen() {
   const handleLoadMore = () => {
     switch (activeTab) {
       case 'posts':
-        if (postsQuery.hasNextPage && !postsQuery.isFetchingNextPage) {
+        if (postsQuery.hasNextPage && 
+            !postsQuery.isFetchingNextPage && 
+            !postsQuery.isLoading) {
           postsQuery.fetchNextPage();
         }
         break;
       case 'liked':
-        if (likedQuery.hasNextPage && !likedQuery.isFetchingNextPage) {
+        if (likedQuery.hasNextPage && 
+            !likedQuery.isFetchingNextPage && 
+            !likedQuery.isLoading) {
           likedQuery.fetchNextPage();
         }
         break;
       case 'media':
-        if (mediaQuery.hasNextPage && !mediaQuery.isFetchingNextPage) {
+        if (mediaQuery.hasNextPage && 
+            !mediaQuery.isFetchingNextPage && 
+            !mediaQuery.isLoading) {
           mediaQuery.fetchNextPage();
         }
         break;
@@ -102,6 +108,19 @@ export default function ProfileScreen() {
         return likedQuery.isLoading;
       case 'media':
         return mediaQuery.isLoading;
+      default:
+        return false;
+    }
+  };
+
+  const getTabLoadingMore = (tabKey: string) => {
+    switch (tabKey) {
+      case 'posts':
+        return postsQuery.isFetchingNextPage;
+      case 'liked':
+        return likedQuery.isFetchingNextPage;
+      case 'media':
+        return mediaQuery.isFetchingNextPage;
       default:
         return false;
     }
@@ -245,6 +264,7 @@ export default function ProfileScreen() {
               tabKey={activeTab}
               data={getTabData(activeTab)}
               loading={getTabLoading(activeTab)}
+              loadingMore={getTabLoadingMore(activeTab)}
               onRefresh={() => {}}
               onLoadMore={handleLoadMore}
             />

@@ -8,6 +8,7 @@ interface ProfileTabContentProps {
   tabKey: string;
   data: ATFeedItem[];
   loading?: boolean;
+  loadingMore?: boolean;
   onRefresh?: () => void;
   onLoadMore?: () => void;
 }
@@ -19,6 +20,7 @@ export function ProfileTabContent({
   tabKey, 
   data = [], 
   loading = false,
+  loadingMore = false,
   onRefresh,
   onLoadMore 
 }: ProfileTabContentProps) {
@@ -76,6 +78,17 @@ export function ProfileTabContent({
     </View>
   );
 
+  const renderLoadingFooter = () => {
+    if (!loadingMore) return null;
+    
+    return (
+      <View style={styles.loadingFooter}>
+        <View style={styles.loadingSpinner} />
+        <Text style={styles.loadingText}>Loading more...</Text>
+      </View>
+    );
+  };
+
   const getEmptyStateTitle = (key: string) => {
     switch (key) {
       case 'posts': return 'No posts yet';
@@ -91,6 +104,12 @@ export function ProfileTabContent({
       case 'media': return 'When this user shares photos and videos, they will appear here.';
       case 'liked': return 'When this user likes posts, they will appear here.';
       default: return 'Content will appear here when available.';
+    }
+  };
+
+  const handleLoadMore = () => {
+    if (onLoadMore && !loadingMore && !loading) {
+      onLoadMore();
     }
   };
 
@@ -132,10 +151,21 @@ export function ProfileTabContent({
       showsVerticalScrollIndicator={false}
       onRefresh={onRefresh}
       refreshing={loading}
-      onEndReached={onLoadMore}
-      onEndReachedThreshold={0.5}
+      onEndReached={handleLoadMore}
+      onEndReachedThreshold={0.3}
       ListEmptyComponent={renderEmptyState}
+      ListFooterComponent={renderLoadingFooter}
       columnWrapperStyle={tabKey === 'media' ? styles.mediaRow : undefined}
+      removeClippedSubviews={true}
+      maxToRenderPerBatch={10}
+      windowSize={10}
+      initialNumToRender={5}
+      maintainVisibleContentPosition={
+        tabKey !== 'media' ? {
+          minIndexForVisible: 0,
+          autoscrollToTopThreshold: 10,
+        } : undefined
+      }
     />
   );
 }
@@ -213,5 +243,24 @@ const styles = StyleSheet.create({
     color: '#6b7280',
     textAlign: 'center',
     lineHeight: 22,
+  },
+  loadingFooter: {
+    paddingVertical: 20,
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
+    gap: 8,
+  },
+  loadingSpinner: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#e5e7eb',
+    borderTopColor: '#3b82f6',
+  },
+  loadingText: {
+    fontSize: 14,
+    color: '#6b7280',
+    fontWeight: '500',
   },
 });

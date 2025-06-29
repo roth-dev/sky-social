@@ -39,6 +39,14 @@ export default function HomeScreen() {
     router.push(`/post/${safeUri}`);
   };
 
+  const handleLoadMore = () => {
+    if (timelineQuery.hasNextPage && 
+        !timelineQuery.isFetchingNextPage && 
+        !timelineQuery.isLoading) {
+      timelineQuery.fetchNextPage();
+    }
+  };
+
   const renderItem = ({ item }: { item: ATFeedItem }) => (
     <Post
       post={item.post}
@@ -73,6 +81,7 @@ export default function HomeScreen() {
     
     return (
       <View style={styles.loadingFooter}>
+        <View style={styles.loadingSpinner} />
         <Text style={styles.loadingText}>Loading more posts...</Text>
       </View>
     );
@@ -142,25 +151,20 @@ export default function HomeScreen() {
             colors={['#3b82f6']}
           />
         }
-        onEndReached={() => {
-          if (timelineQuery.hasNextPage && !timelineQuery.isFetchingNextPage) {
-            timelineQuery.fetchNextPage();
-          }
-        }}
-        onEndReachedThreshold={0.5}
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.3}
         ListEmptyComponent={renderEmptyState}
         ListFooterComponent={renderLoadingFooter}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={allPosts.length === 0 ? styles.emptyContainer : undefined}
         removeClippedSubviews={true}
-        maxToRenderPerBatch={5}
+        maxToRenderPerBatch={10}
         windowSize={10}
-        initialNumToRender={3}
-        getItemLayout={(data, index) => ({
-          length: 400, // Approximate item height
-          offset: 400 * index,
-          index,
-        })}
+        initialNumToRender={5}
+        maintainVisibleContentPosition={{
+          minIndexForVisible: 0,
+          autoscrollToTopThreshold: 10,
+        }}
       />
     </View>
   );
@@ -181,6 +185,15 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     alignItems: 'center',
     backgroundColor: '#ffffff',
+    gap: 8,
+  },
+  loadingSpinner: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#e5e7eb',
+    borderTopColor: '#3b82f6',
   },
   loadingText: {
     fontSize: 14,

@@ -1,10 +1,12 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Placeholder, SkeletonText, SkeletonAvatar } from '@/components/ui/Placeholder';
+import { VideoPlaceholder } from './VideoPlaceholder';
 
 interface PostPlaceholderProps {
   showImage?: boolean;
   showEmbed?: boolean;
+  showVideo?: boolean;
   isDetailView?: boolean;
   style?: any;
 }
@@ -12,6 +14,7 @@ interface PostPlaceholderProps {
 export function PostPlaceholder({ 
   showImage = false, 
   showEmbed = false,
+  showVideo = false,
   isDetailView = false,
   style 
 }: PostPlaceholderProps) {
@@ -47,8 +50,16 @@ export function PostPlaceholder({
           lastLineWidth="75%"
         />
         
+        {/* Video placeholder */}
+        {showVideo && (
+          <VideoPlaceholder
+            isDetailView={isDetailView}
+            style={{ marginTop: 12 }}
+          />
+        )}
+        
         {/* Image placeholder */}
-        {showImage && (
+        {showImage && !showVideo && (
           <Placeholder
             height={isDetailView ? 300 : 200}
             borderRadius={12}
@@ -57,7 +68,7 @@ export function PostPlaceholder({
         )}
         
         {/* Embed placeholder */}
-        {showEmbed && (
+        {showEmbed && !showVideo && !showImage && (
           <View style={styles.embedContainer}>
             <Placeholder height={120} borderRadius={8} />
             <View style={styles.embedContent}>

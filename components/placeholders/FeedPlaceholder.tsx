@@ -5,32 +5,43 @@ import { PostPlaceholder } from './PostPlaceholder';
 interface FeedPlaceholderProps {
   count?: number;
   showVariety?: boolean;
+  includeVideos?: boolean;
   style?: any;
 }
 
 export function FeedPlaceholder({ 
   count = 5, 
   showVariety = true,
+  includeVideos = true,
   style 
 }: FeedPlaceholderProps) {
   return (
     <ScrollView style={[styles.container, style]} showsVerticalScrollIndicator={false}>
-      {Array.from({ length: count }).map((_, index) => (
-        <PostPlaceholder
-          key={index}
-          showImage={showVariety && Math.random() > 0.5}
-          showEmbed={showVariety && Math.random() > 0.7}
-        />
-      ))}
+      {Array.from({ length: count }).map((_, index) => {
+        const random = Math.random();
+        const showVideo = includeVideos && showVariety && random > 0.7;
+        const showImage = !showVideo && showVariety && random > 0.5;
+        const showEmbed = !showVideo && !showImage && showVariety && random > 0.8;
+        
+        return (
+          <PostPlaceholder
+            key={index}
+            showVideo={showVideo}
+            showImage={showImage}
+            showEmbed={showEmbed}
+          />
+        );
+      })}
     </ScrollView>
   );
 }
 
 interface TimelinePlaceholderProps {
+  includeVideos?: boolean;
   style?: any;
 }
 
-export function TimelinePlaceholder({ style }: TimelinePlaceholderProps) {
+export function TimelinePlaceholder({ includeVideos = true, style }: TimelinePlaceholderProps) {
   return (
     <View style={[styles.timelineContainer, style]}>
       {/* Header placeholder */}
@@ -49,7 +60,7 @@ export function TimelinePlaceholder({ style }: TimelinePlaceholderProps) {
       </View>
       
       {/* Feed placeholder */}
-      <FeedPlaceholder count={6} showVariety={true} />
+      <FeedPlaceholder count={6} showVariety={true} includeVideos={includeVideos} />
     </View>
   );
 }

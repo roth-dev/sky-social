@@ -100,7 +100,7 @@ export default function HomeScreen() {
           leftIcon={<Camera size={24} color="#111827" />}
           rightIcon={<Sparkles size={24} color="#111827" />}
         />
-        <FeedPlaceholder count={6} showVariety={true} />
+        <FeedPlaceholder count={6} showVariety={true} includeVideos={true} />
       </View>
     );
   }
@@ -152,6 +152,15 @@ export default function HomeScreen() {
         ListFooterComponent={renderLoadingFooter}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={allPosts.length === 0 ? styles.emptyContainer : undefined}
+        removeClippedSubviews={true}
+        maxToRenderPerBatch={5}
+        windowSize={10}
+        initialNumToRender={3}
+        getItemLayout={(data, index) => ({
+          length: 400, // Approximate item height
+          offset: 400 * index,
+          index,
+        })}
       />
     </View>
   );

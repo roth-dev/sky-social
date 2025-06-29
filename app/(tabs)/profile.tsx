@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, RefreshControl, Platform } from 'react-native';
 import { Header } from '@/components/Header';
 import { ProfileHeader } from '@/components/profile/ProfileHeader';
 import { ProfileTabContent } from '@/components/profile/ProfileTabContent';
 import { ProfilePlaceholder, ProfileTabPlaceholder } from '@/components/placeholders/ProfilePlaceholder';
 import { EmptyState, ErrorState } from '@/components/placeholders/EmptyState';
+import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useProfile, useAuthorFeed, useActorLikes, useAuthorMediaFeed } from '@/lib/queries';
 import { Settings } from 'lucide-react-native';
+import { router } from 'expo-router';
 
 const TABS = [
   { key: 'posts', title: 'Posts' },
@@ -134,12 +136,22 @@ export default function ProfileScreen() {
   if (!isAuthenticated || !user) {
     return (
       <View style={styles.container}>
-        <Header title="Profile" />
-        <EmptyState
-          type="timeline"
-          title="Please log in"
-          description="Please log in to view your profile and manage your account."
-        />
+        {Platform.OS !== 'web' && <Header title="Profile" />}
+        <View style={styles.notAuthenticatedContainer}>
+          <Text style={styles.notAuthenticatedTitle}>
+            Your profile awaits
+          </Text>
+          <Text style={styles.notAuthenticatedText}>
+            Sign in to view and manage your profile, see your posts, and connect with others.
+          </Text>
+          <Button
+            title="Sign In"
+            onPress={() => router.push('/auth/')}
+            variant="primary"
+            size="large"
+            style={styles.signInButton}
+          />
+        </View>
       </View>
     );
   }
@@ -148,11 +160,13 @@ export default function ProfileScreen() {
   if (profileQuery.isLoading) {
     return (
       <View style={styles.container}>
-        <Header
-          title="Profile"
-          rightIcon={<Settings size={24} color="#111827" />}
-          onRightPress={() => logout()}
-        />
+        {Platform.OS !== 'web' && (
+          <Header
+            title="Profile"
+            rightIcon={<Settings size={24} color="#111827" />}
+            onRightPress={() => logout()}
+          />
+        )}
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
           <ProfilePlaceholder />
           
@@ -178,11 +192,13 @@ export default function ProfileScreen() {
   if (profileQuery.error) {
     return (
       <View style={styles.container}>
-        <Header
-          title="Profile"
-          rightIcon={<Settings size={24} color="#111827" />}
-          onRightPress={() => logout()}
-        />
+        {Platform.OS !== 'web' && (
+          <Header
+            title="Profile"
+            rightIcon={<Settings size={24} color="#111827" />}
+            onRightPress={() => logout()}
+          />
+        )}
         <ErrorState
           title="Unable to load profile"
           description={profileQuery.error?.message || 'Something went wrong while loading your profile.'}
@@ -196,11 +212,13 @@ export default function ProfileScreen() {
 
   return (
     <View style={styles.container}>
-      <Header
-        title={currentProfile.displayName || currentProfile.handle}
-        rightIcon={<Settings size={24} color="#111827" />}
-        onRightPress={() => logout()}
-      />
+      {Platform.OS !== 'web' && (
+        <Header
+          title={currentProfile.displayName || currentProfile.handle}
+          rightIcon={<Settings size={24} color="#111827" />}
+          onRightPress={() => logout()}
+        />
+      )}
       
       <ScrollView 
         style={styles.content} 
@@ -282,6 +300,29 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+  },
+  notAuthenticatedContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 32,
+  },
+  notAuthenticatedTitle: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#111827',
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  notAuthenticatedText: {
+    fontSize: 16,
+    color: '#6b7280',
+    textAlign: 'center',
+    lineHeight: 24,
+    marginBottom: 32,
+  },
+  signInButton: {
+    paddingHorizontal: 32,
   },
   tabBarContainer: {
     backgroundColor: '#ffffff',

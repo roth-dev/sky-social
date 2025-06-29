@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, FlatList, Text, RefreshControl } from 'react-native';
+import { View, StyleSheet, FlatList, Text, RefreshControl, Platform } from 'react-native';
 import { Header } from '@/components/Header';
 import { Post } from '@/components/Post';
 import { FeedPlaceholder } from '@/components/placeholders/FeedPlaceholder';
@@ -19,6 +19,11 @@ export default function HomeScreen() {
   const deleteRepostMutation = useDeleteRepost();
 
   const handleLike = async (uri: string, cid: string, isLiked: boolean, likeUri?: string) => {
+    if (!isAuthenticated) {
+      router.push('/auth/');
+      return;
+    }
+    
     if (isLiked && likeUri) {
       unlikePostMutation.mutate({ likeUri });
     } else {
@@ -27,6 +32,11 @@ export default function HomeScreen() {
   };
 
   const handleRepost = async (uri: string, cid: string, isReposted: boolean, repostUri?: string) => {
+    if (!isAuthenticated) {
+      router.push('/auth/');
+      return;
+    }
+    
     if (isReposted && repostUri) {
       deleteRepostMutation.mutate({ repostUri });
     } else {
@@ -60,18 +70,14 @@ export default function HomeScreen() {
     <EmptyState
       type="timeline"
       title="Welcome to SocialSky!"
-      description={
-        isAuthenticated 
-          ? "Your timeline will appear here once you follow some people and they start posting."
-          : "Please log in to see your personalized timeline and connect with the decentralized social web."
-      }
+      description="Discover posts from the decentralized social web. Sign in to see your personalized timeline and interact with posts."
     />
   );
 
   const renderError = () => (
     <ErrorState
       title="Unable to load timeline"
-      description={timelineQuery.error?.message || 'Something went wrong while loading your timeline. Please try again.'}
+      description={timelineQuery.error?.message || 'Something went wrong while loading the timeline. Please try again.'}
       onRetry={() => timelineQuery.refetch()}
     />
   );
@@ -87,28 +93,17 @@ export default function HomeScreen() {
     );
   };
 
-  if (!isAuthenticated) {
-    return (
-      <View style={styles.container}>
-        <Header title="SocialSky" />
-        <EmptyState
-          type="timeline"
-          title="Welcome to SocialSky!"
-          description="Please log in to view your timeline and connect with the decentralized social web."
-        />
-      </View>
-    );
-  }
-
   // Show loading placeholder on initial load
   if (timelineQuery.isLoading) {
     return (
       <View style={styles.container}>
-        <Header
-          title="SocialSky"
-          leftIcon={<Camera size={24} color="#111827" />}
-          rightIcon={<Sparkles size={24} color="#111827" />}
-        />
+        {Platform.OS !== 'web' && (
+          <Header
+            title="SocialSky"
+            leftIcon={<Camera size={24} color="#111827" />}
+            rightIcon={<Sparkles size={24} color="#111827" />}
+          />
+        )}
         <FeedPlaceholder count={6} showVariety={true} includeVideos={true} />
       </View>
     );
@@ -118,11 +113,13 @@ export default function HomeScreen() {
   if (timelineQuery.error) {
     return (
       <View style={styles.container}>
-        <Header
-          title="SocialSky"
-          leftIcon={<Camera size={24} color="#111827" />}
-          rightIcon={<Sparkles size={24} color="#111827" />}
-        />
+        {Platform.OS !== 'web' && (
+          <Header
+            title="SocialSky"
+            leftIcon={<Camera size={24} color="#111827" />}
+            rightIcon={<Sparkles size={24} color="#111827" />}
+          />
+        )}
         {renderError()}
       </View>
     );
@@ -132,11 +129,13 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <Header
-        title="SocialSky"
-        leftIcon={<Camera size={24} color="#111827" />}
-        rightIcon={<Sparkles size={24} color="#111827" />}
-      />
+      {Platform.OS !== 'web' && (
+        <Header
+          title="SocialSky"
+          leftIcon={<Camera size={24} color="#111827" />}
+          rightIcon={<Sparkles size={24} color="#111827" />}
+        />
+      )}
       
       <FlatList
         data={allPosts}

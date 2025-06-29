@@ -1,7 +1,34 @@
 import { Tabs } from 'expo-router';
-import { Chrome as Home, Search, SquarePlus as PlusSquare, Heart, User } from 'lucide-react-native';
+import { Platform, View, StyleSheet } from 'react-native';
+import { Chrome as Home, Search, SquarePlus as PlusSquare, Heart, User, Rss } from 'lucide-react-native';
+import { WebSidebar } from '@/components/layout/WebSidebar';
 
 export default function TabLayout() {
+  const isWeb = Platform.OS === 'web';
+
+  if (isWeb) {
+    return (
+      <View style={styles.webContainer}>
+        <WebSidebar />
+        <View style={styles.webContent}>
+          <Tabs
+            screenOptions={{
+              headerShown: false,
+              tabBarStyle: { display: 'none' }, // Hide tab bar on web
+            }}
+          >
+            <Tabs.Screen name="index" />
+            <Tabs.Screen name="search" />
+            <Tabs.Screen name="create" />
+            <Tabs.Screen name="notifications" />
+            <Tabs.Screen name="profile" />
+          </Tabs>
+        </View>
+      </View>
+    );
+  }
+
+  // Mobile layout (unchanged)
   return (
     <Tabs
       screenOptions={{
@@ -65,3 +92,15 @@ export default function TabLayout() {
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  webContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    backgroundColor: '#ffffff',
+  },
+  webContent: {
+    flex: 1,
+    marginLeft: 280, // Width of sidebar
+  },
+});

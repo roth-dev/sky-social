@@ -72,7 +72,7 @@ const isValidSearchQuery = (query: string): boolean => {
   return query.trim().length >= 1; // Minimum 1 character for search
 };
 
-// Timeline Queries
+// Timeline Queries - Now works for both authenticated and unauthenticated users
 export function useTimeline() {
   return useInfiniteQuery({
     queryKey: queryKeys.timeline,
@@ -87,7 +87,7 @@ export function useTimeline() {
     initialPageParam: undefined as string | undefined,
     staleTime: 1000 * 60 * 2, // 2 minutes
     gcTime: 1000 * 60 * 10, // 10 minutes
-    enabled: atprotoClient.getIsAuthenticated(),
+    enabled: true, // Always enabled now, not just for authenticated users
     retry: (failureCount, error) => {
       // Don't retry more than 3 times
       if (failureCount >= 3) return false;
@@ -321,7 +321,7 @@ export function usePostThread(uri: string) {
   });
 }
 
-// Mutations with enhanced error handling
+// Mutations with enhanced error handling - require authentication
 export function useCreatePost() {
   const queryClient = useQueryClient();
   

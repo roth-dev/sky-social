@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, Platform } from 'react-native';
 import { Header } from '@/components/Header';
 import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/contexts/AuthContext';
@@ -13,6 +13,11 @@ export default function CreateScreen() {
   const createPostMutation = useCreatePost();
 
   const handlePost = async () => {
+    if (!isAuthenticated) {
+      router.push('/auth/');
+      return;
+    }
+
     if (!text.trim()) return;
 
     try {
@@ -28,11 +33,21 @@ export default function CreateScreen() {
   if (!isAuthenticated) {
     return (
       <View style={styles.container}>
-        <Header title="Create Post" />
+        {Platform.OS !== 'web' && <Header title="Create Post" />}
         <View style={styles.notAuthenticatedContainer}>
-          <Text style={styles.notAuthenticatedText}>
-            Please log in to create posts
+          <Text style={styles.notAuthenticatedTitle}>
+            Join the conversation
           </Text>
+          <Text style={styles.notAuthenticatedText}>
+            Sign in to create posts and share your thoughts with the community.
+          </Text>
+          <Button
+            title="Sign In"
+            onPress={() => router.push('/auth/')}
+            variant="primary"
+            size="large"
+            style={styles.signInButton}
+          />
         </View>
       </View>
     );
@@ -40,11 +55,13 @@ export default function CreateScreen() {
 
   return (
     <View style={styles.container}>
-      <Header
-        title="New Post"
-        leftIcon={<X size={24} color="#111827" />}
-        onLeftPress={() => router.back()}
-      />
+      {Platform.OS !== 'web' && (
+        <Header
+          title="New Post"
+          leftIcon={<X size={24} color="#111827" />}
+          onLeftPress={() => router.back()}
+        />
+      )}
       
       <View style={styles.content}>
         <TextInput
@@ -120,9 +137,23 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal: 32,
+  },
+  notAuthenticatedTitle: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#111827',
+    marginBottom: 12,
+    textAlign: 'center',
   },
   notAuthenticatedText: {
     fontSize: 16,
     color: '#6b7280',
+    textAlign: 'center',
+    lineHeight: 24,
+    marginBottom: 32,
+  },
+  signInButton: {
+    paddingHorizontal: 32,
   },
 });

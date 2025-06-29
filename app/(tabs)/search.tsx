@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
+import { View, StyleSheet, Alert, Platform } from 'react-native';
 import { Header } from '@/components/Header';
 import { SearchHeader } from '@/components/search/SearchHeader';
 import { SearchFilters } from '@/components/search/SearchFilters';
@@ -7,9 +7,11 @@ import { SearchResults } from '@/components/search/SearchResults';
 import { TrendingSection } from '@/components/search/TrendingSection';
 import { useSearchActors, useSearchPosts, useSuggestedFollows, usePopularFeeds, useLikePost, useUnlikePost, useRepost, useDeleteRepost } from '@/lib/queries';
 import { SearchFilters as SearchFiltersType, SearchState } from '@/types/search';
+import { useAuth } from '@/contexts/AuthContext';
 import { router } from 'expo-router';
 
 export default function SearchScreen() {
+  const { isAuthenticated } = useAuth();
   const [searchState, setSearchState] = useState<SearchState>({
     query: '',
     filters: {
@@ -106,6 +108,11 @@ export default function SearchScreen() {
   };
 
   const handleLike = async (uri: string, cid: string, isLiked: boolean, likeUri?: string) => {
+    if (!isAuthenticated) {
+      router.push('/auth/');
+      return;
+    }
+    
     try {
       if (isLiked && likeUri) {
         await unlikePostMutation.mutateAsync({ likeUri });
@@ -118,6 +125,11 @@ export default function SearchScreen() {
   };
 
   const handleRepost = async (uri: string, cid: string, isReposted: boolean, repostUri?: string) => {
+    if (!isAuthenticated) {
+      router.push('/auth/');
+      return;
+    }
+    
     try {
       if (isReposted && repostUri) {
         await deleteRepostMutation.mutateAsync({ repostUri });
@@ -139,8 +151,8 @@ export default function SearchScreen() {
   };
 
   const handleFeedPress = (feed: any) => {
-    // TODO: Navigate to feed view
-    Alert.alert('Feed', `Opening feed: ${feed.displayName}`);
+    const safeFeedUri = encodeURIComponent(feed.uri);
+    router.push(`/feed/${safeFeedUri}`);
   };
 
   // Get current search data based on active filter
@@ -195,7 +207,7 @@ export default function SearchScreen() {
 
   return (
     <View style={styles.container}>
-      <Header title="Search" />
+      {Platform.OS !== 'web' && <Header title="Search" />}
       
       <SearchHeader
         query={searchState.query}

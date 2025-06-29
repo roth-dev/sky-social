@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { MessageCircle, Users, Heart, Image as ImageIcon, Search, Wifi, RefreshCw, AlertTriangle } from 'lucide-react-native';
+import { MessageCircle, Users, Heart, Image as ImageIcon, Search, Wifi, RefreshCw, TriangleAlert as AlertTriangle } from 'lucide-react-native';
 
 interface EmptyStateProps {
   type: 'timeline' | 'posts' | 'followers' | 'following' | 'likes' | 'media' | 'search' | 'offline';

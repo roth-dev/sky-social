@@ -12,6 +12,10 @@ export const queryKeys = {
   actorLikes: (handle: string) => ['actorLikes', handle] as const,
   postThread: (uri: string) => ['postThread', uri] as const,
   search: (query: string) => ['search', query] as const,
+  searchActors: (query: string) => ['searchActors', query] as const,
+  searchPosts: (query: string) => ['searchPosts', query] as const,
+  suggestedFollows: ['suggestedFollows'] as const,
+  popularFeeds: ['popularFeeds'] as const,
   videoFeed: ['videoFeed'] as const,
 } as const;
 
@@ -46,11 +50,6 @@ const handleQueryError = (error: any) => {
     return true;
   }
   
-  // Don't retry on client errors (4xx except auth)
-  if (error?.status >= 400 && error?.status < 500) {
-    return false;
-  }
-  
   // Default to retry for unknown errors
   return true;
 };
@@ -65,6 +64,12 @@ const isValidHandle = (handle: string): boolean => {
   // Handle should not contain invalid characters for AT Protocol
   const validHandleRegex = /^[a-zA-Z0-9.-]+$/;
   return validHandleRegex.test(handle);
+};
+
+// Helper function to validate search query
+const isValidSearchQuery = (query: string): boolean => {
+  if (!query || typeof query !== 'string') return false;
+  return query.trim().length >= 1; // Minimum 1 character for search
 };
 
 // Timeline Queries
@@ -109,6 +114,93 @@ export function useVideoFeed() {
     ...timelineQuery,
     data: videoFeed,
   };
+}
+
+// Search Queries
+export function useSearchActors(query: string) {
+  return useInfiniteQuery({
+    queryKey: queryKeys.searchActors(query),
+    queryFn: async ({ pageParam }) => {
+      const result = await atprotoClient.searchActors(query, 25, pageParam);
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to search users');
+      }
+      return result.data;
+    },
+    getNextPageParam: (lastPage) => lastPage.cursor,
+    initialPageParam: undefined as string | undefined,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    gcTime: 1000 * 60 * 15, // 15 minutes
+    enabled: isValidSearchQuery(query),
+    retry: (failureCount, error) => {
+      if (failureCount >= 2) return false;
+      return handleQueryError(error);
+    },
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
+  });
+}
+
+export function useSearchPosts(query: string) {
+  return useInfiniteQuery({
+    queryKey: queryKeys.searchPosts(query),
+    queryFn: async ({ pageParam }) => {
+      const result = await atprotoClient.searchPosts(query, 25, pageParam);
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to search posts');
+      }
+      return result.data;
+    },
+    getNextPageParam: (lastPage) => lastPage.cursor,
+    initialPageParam: undefined as string | undefined,
+    staleTime: 1000 * 60 * 3, // 3 minutes
+    gcTime: 1000 * 60 * 10, // 10 minutes
+    enabled: isValidSearchQuery(query),
+    retry: (failureCount, error) => {
+      if (failureCount >= 2) return false;
+      return handleQueryError(error);
+    },
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
+  });
+}
+
+export function useSuggestedFollows() {
+  return useQuery({
+    queryKey: queryKeys.suggestedFollows,
+    queryFn: async () => {
+      const result = await atprotoClient.getSuggestedFollows();
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to get suggested follows');
+      }
+      return result.data;
+    },
+    staleTime: 1000 * 60 * 10, // 10 minutes
+    gcTime: 1000 * 60 * 30, // 30 minutes
+    retry: (failureCount, error) => {
+      if (failureCount >= 2) return false;
+      return handleQueryError(error);
+    },
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
+  });
+}
+
+export function usePopularFeeds() {
+  return useQuery({
+    queryKey: queryKeys.popularFeeds,
+    queryFn: async () => {
+      const result = await atprotoClient.getPopularFeedGenerators();
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to get popular feeds');
+      }
+      return result.data;
+    },
+    staleTime: 1000 * 60 * 15, // 15 minutes
+    gcTime: 1000 * 60 * 60, // 1 hour
+    retry: (failureCount, error) => {
+      if (failureCount >= 2) return false;
+      return handleQueryError(error);
+    },
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
+  });
 }
 
 // Profile Queries
@@ -483,6 +575,7 @@ export function useFollowProfile() {
     onSuccess: (_, { did }) => {
       // Invalidate profile queries to update follow status
       queryClient.invalidateQueries({ queryKey: ['profile'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.suggestedFollows });
     },
     retry: (failureCount, error) => {
       if (failureCount >= 2) return false;
@@ -510,6 +603,7 @@ export function useUnfollowProfile() {
     onSuccess: () => {
       // Invalidate profile queries to update follow status
       queryClient.invalidateQueries({ queryKey: ['profile'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.suggestedFollows });
     },
     retry: (failureCount, error) => {
       if (failureCount >= 2) return false;

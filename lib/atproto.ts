@@ -317,6 +317,99 @@ export class ATProtoClient {
     }
   }
 
+  async searchActors(query: string, limit = 25, cursor?: string) {
+    try {
+      // Validate query parameter
+      if (!query || typeof query !== 'string' || query.trim().length === 0) {
+        throw new Error('Search query cannot be empty');
+      }
+
+      const cleanQuery = query.trim();
+      
+      const response = await this.retryWithBackoff(
+        () => this.agent.searchActors({ 
+          term: cleanQuery, 
+          limit, 
+          cursor 
+        }),
+        'Search Actors'
+      );
+      
+      return { success: true, data: response.data };
+    } catch (error: any) {
+      console.error('Failed to search actors:', error);
+      return { 
+        success: false, 
+        error: this.getErrorMessage(error)
+      };
+    }
+  }
+
+  async searchPosts(query: string, limit = 25, cursor?: string) {
+    try {
+      // Validate query parameter
+      if (!query || typeof query !== 'string' || query.trim().length === 0) {
+        throw new Error('Search query cannot be empty');
+      }
+
+      const cleanQuery = query.trim();
+      
+      const response = await this.retryWithBackoff(
+        () => this.agent.app.bsky.feed.searchPosts({ 
+          q: cleanQuery, 
+          limit, 
+          cursor 
+        }),
+        'Search Posts'
+      );
+      
+      return { success: true, data: response.data };
+    } catch (error: any) {
+      console.error('Failed to search posts:', error);
+      return { 
+        success: false, 
+        error: this.getErrorMessage(error)
+      };
+    }
+  }
+
+  async getPopularFeedGenerators(limit = 50, cursor?: string) {
+    try {
+      const response = await this.retryWithBackoff(
+        () => this.agent.app.bsky.unspecced.getPopularFeedGenerators({ 
+          limit, 
+          cursor 
+        }),
+        'Get Popular Feed Generators'
+      );
+      
+      return { success: true, data: response.data };
+    } catch (error: any) {
+      console.error('Failed to get popular feed generators:', error);
+      return { 
+        success: false, 
+        error: this.getErrorMessage(error)
+      };
+    }
+  }
+
+  async getSuggestedFollows(actor?: string) {
+    try {
+      const response = await this.retryWithBackoff(
+        () => this.agent.getSuggestions({ limit: 50 }),
+        'Get Suggested Follows'
+      );
+      
+      return { success: true, data: response.data };
+    } catch (error: any) {
+      console.error('Failed to get suggested follows:', error);
+      return { 
+        success: false, 
+        error: this.getErrorMessage(error)
+      };
+    }
+  }
+
   async followProfile(did: string) {
     if (!this.isAuthenticated) {
       throw new Error('Not authenticated');

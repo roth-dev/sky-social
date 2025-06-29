@@ -89,6 +89,37 @@ export interface ATPost {
       $type: string;
       record: ATPost;
     };
+    video?: {
+      cid: string;
+      playlist: string;
+      thumbnail?: string;
+      alt?: string;
+      aspectRatio?: {
+        width: number;
+        height: number;
+      };
+    };
+    media?: {
+      images?: Array<{
+        thumb: string;
+        fullsize: string;
+        alt: string;
+        aspectRatio?: {
+          width: number;
+          height: number;
+        };
+      }>;
+      video?: {
+        cid: string;
+        playlist: string;
+        thumbnail?: string;
+        alt?: string;
+        aspectRatio?: {
+          width: number;
+          height: number;
+        };
+      };
+    };
   };
   replyCount: number;
   repostCount: number;

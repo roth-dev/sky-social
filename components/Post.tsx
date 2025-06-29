@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { Heart, MessageCircle, Repeat2, Share, MoveHorizontal as MoreHorizontal } from 'lucide-react-native';
 import { Avatar } from './ui/Avatar';
 import { LightBox } from './ui/LightBox';
+import { EmbedContainer } from './embeds/EmbedContainer';
 import { ATPost } from '@/types/atproto';
 import { router } from 'expo-router';
-import { Platform } from 'react-native';
+import { Platform, Linking } from 'react-native';
 
 interface PostProps {
   post: ATPost;
@@ -60,12 +61,46 @@ export function Post({
     router.push(`/profile/${post.author.handle}`);
   };
 
-  const handleImagePress = (index: number) => {
+  const handleImagePress = (images: any[], index: number) => {
     setLightBoxIndex(index);
     setLightBoxVisible(true);
   };
 
-  const handleShare = async (imageUri: string, index: number) => {
+  const handleLinkPress = async (url: string) => {
+    try {
+      await Linking.openURL(url);
+    } catch (error) {
+      console.error('Failed to open URL:', error);
+    }
+  };
+
+  const handleRecordPress = (uri: string) => {
+    const safeUri = encodeURIComponent(uri);
+    router.push(`/post/${safeUri}`);
+  };
+
+  const handleShare = async () => {
+    try {
+      const shareUrl = `https://bsky.app/profile/${post.author.handle}/post/${post.uri.split('/').pop()}`;
+      
+      if (Platform.OS === 'web') {
+        if (navigator.share) {
+          await navigator.share({
+            title: `Post by @${post.author.handle}`,
+            text: post.record.text,
+            url: shareUrl,
+          });
+        } else {
+          await navigator.clipboard.writeText(shareUrl);
+          // Could show a toast notification here
+        }
+      }
+    } catch (error) {
+      console.error('Failed to share post:', error);
+    }
+  };
+
+  const handleImageShare = async (imageUri: string, index: number) => {
     try {
       if (Platform.OS === 'web') {
         if (navigator.share) {
@@ -76,7 +111,6 @@ export function Post({
           });
         } else {
           await navigator.clipboard.writeText(imageUri);
-          // You could show a toast here
         }
       }
     } catch (error) {
@@ -84,7 +118,7 @@ export function Post({
     }
   };
 
-  const handleDownload = async (imageUri: string, index: number) => {
+  const handleImageDownload = async (imageUri: string, index: number) => {
     try {
       if (Platform.OS === 'web') {
         const link = document.createElement('a');
@@ -122,12 +156,13 @@ export function Post({
   const textStyle = isDetailView ? styles.detailText : styles.text;
   const containerStyle = isReply ? [styles.container, styles.replyContainer] : styles.container;
 
-  // Prepare images for LightBox
-  const lightBoxImages = post.embed?.images?.map(img => ({
+  // Prepare images for LightBox from embed
+  const embedImages = post.embed?.images || [];
+  const lightBoxImages = embedImages.map(img => ({
     uri: img.fullsize,
     alt: img.alt || `Image from @${post.author.handle}`,
     aspectRatio: img.aspectRatio,
-  })) || [];
+  }));
 
   return (
     <>
@@ -177,29 +212,15 @@ export function Post({
             <Text style={textStyle}>{post.record.text}</Text>
           )}
           
-          {post.embed?.images && post.embed.images.length > 0 && (
-            <View style={styles.imageContainer}>
-              {post.embed.images.map((img, index) => (
-                <TouchableOpacity 
-                  key={index} 
-                  style={styles.imageWrapper}
-                  onPress={() => handleImagePress(index)}
-                  activeOpacity={0.9}
-                >
-                  <Image
-                    source={{ uri: img.fullsize }}
-                    style={[
-                      styles.image,
-                      post.embed.images.length === 1 ? styles.singleImage : styles.multiImage,
-                      isDetailView && styles.detailImage
-                    ]}
-                    resizeMode="cover"
-                  />
-                  {/* Subtle overlay to indicate it's tappable */}
-                  <View style={styles.imageOverlay} />
-                </TouchableOpacity>
-              ))}
-            </View>
+          {/* Embed Content */}
+          {post.embed && (
+            <EmbedContainer
+              embed={post.embed}
+              isDetailView={isDetailView}
+              onImagePress={handleImagePress}
+              onLinkPress={handleLinkPress}
+              onRecordPress={handleRecordPress}
+            />
           )}
         </View>
 
@@ -262,7 +283,7 @@ export function Post({
             )}
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.actionButton}>
+          <TouchableOpacity style={styles.actionButton} onPress={handleShare}>
             <Share size={isDetailView ? 22 : 20} color="#6b7280" />
           </TouchableOpacity>
         </View>
@@ -274,8 +295,8 @@ export function Post({
         images={lightBoxImages}
         initialIndex={lightBoxIndex}
         onClose={() => setLightBoxVisible(false)}
-        onShare={handleShare}
-        onDownload={handleDownload}
+        onShare={handleImageShare}
+        onDownload={handleImageDownload}
       />
     </>
   );
@@ -350,36 +371,6 @@ const styles = StyleSheet.create({
     lineHeight: 26,
     color: '#111827',
     marginBottom: 16,
-  },
-  imageContainer: {
-    marginTop: 8,
-    borderRadius: 16,
-    overflow: 'hidden',
-  },
-  imageWrapper: {
-    marginBottom: 2,
-    position: 'relative',
-  },
-  image: {
-    width: '100%',
-    backgroundColor: '#f3f4f6',
-  },
-  singleImage: {
-    height: 300,
-  },
-  multiImage: {
-    height: 200,
-  },
-  detailImage: {
-    height: 400,
-  },
-  imageOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'transparent',
   },
   detailStats: {
     flexDirection: 'row',

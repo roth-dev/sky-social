@@ -7,6 +7,7 @@ import { EmbedContainer } from './embeds/EmbedContainer';
 import { ATPost } from '@/types/atproto';
 import { router } from 'expo-router';
 import { Platform, Linking } from 'react-native';
+import { isVideoPost } from '@/utils/embedUtils';
 
 interface PostProps {
   post: ATPost;
@@ -32,6 +33,7 @@ export function Post({
   
   const isLiked = !!post.viewer?.like;
   const isReposted = !!post.viewer?.repost;
+  const hasVideo = isVideoPost(post);
 
   const handleLike = () => {
     onLike?.(post.uri, post.cid);
@@ -264,7 +266,7 @@ export function Post({
             <Text style={textStyle}>{post.record.text}</Text>
           )}
           
-          {/* Embed Content */}
+          {/* Embed Content - This will now properly handle videos */}
           {post.embed && (
             <EmbedContainer
               embed={post.embed}
@@ -273,6 +275,13 @@ export function Post({
               onLinkPress={handleLinkPress}
               onRecordPress={handleRecordPress}
             />
+          )}
+          
+          {/* Video indicator for debugging */}
+          {hasVideo && __DEV__ && (
+            <View style={styles.debugIndicator}>
+              <Text style={styles.debugText}>📹 Video Post</Text>
+            </View>
           )}
         </View>
 
@@ -423,6 +432,19 @@ const styles = StyleSheet.create({
     lineHeight: 26,
     color: '#111827',
     marginBottom: 16,
+  },
+  debugIndicator: {
+    marginTop: 8,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    backgroundColor: '#fef3c7',
+    borderRadius: 6,
+    alignSelf: 'flex-start',
+  },
+  debugText: {
+    fontSize: 12,
+    color: '#92400e',
+    fontWeight: '500',
   },
   detailStats: {
     flexDirection: 'row',

@@ -27,7 +27,21 @@ export function hasImages(embed: PostEmbed): boolean {
 }
 
 export function hasVideo(embed: PostEmbed): boolean {
-  return !!embed.video || !!embed.media?.video;
+  if (!embed) return false;
+  
+  // Check for direct video embed
+  if (embed.video) return true;
+  
+  // Check for video in media
+  if (embed.media?.video) return true;
+  
+  // Check for video embed type
+  if (embed.$type === 'app.bsky.embed.video#view') return true;
+  
+  // Check for recordWithMedia that contains video
+  if (embed.$type === 'app.bsky.embed.recordWithMedia#view' && embed.media?.video) return true;
+  
+  return false;
 }
 
 export function hasExternalLink(embed: PostEmbed): boolean {
@@ -44,6 +58,19 @@ export function getEmbedImages(embed: PostEmbed) {
 
 export function getEmbedVideo(embed: PostEmbed) {
   return embed.video || embed.media?.video;
+}
+
+export function isVideoPost(post: any): boolean {
+  if (!post || !post.embed) return false;
+  
+  // Check various video embed patterns
+  return hasVideo(post.embed);
+}
+
+export function getVideoFromPost(post: any) {
+  if (!post || !post.embed) return null;
+  
+  return getEmbedVideo(post.embed);
 }
 
 export function calculateImageAspectRatio(

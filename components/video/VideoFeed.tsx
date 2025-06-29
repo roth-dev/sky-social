@@ -1,7 +1,9 @@
 import React, { useState, useCallback } from 'react';
-import { FlatList, View, StyleSheet, RefreshControl } from 'react-native';
+import { FlatList, View, StyleSheet, RefreshControl, Text } from 'react-native';
 import { Post } from '@/components/Post';
+import { EmptyState } from '@/components/placeholders/EmptyState';
 import { ATFeedItem } from '@/types/atproto';
+import { isVideoPost } from '@/utils/embedUtils';
 
 interface VideoFeedProps {
   data: ATFeedItem[];
@@ -25,11 +27,7 @@ export function VideoFeed({
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
 
   // Filter posts that have video content
-  const videoFeedData = data.filter(item => 
-    item.post.embed?.video || 
-    item.post.embed?.media?.video ||
-    item.post.embed?.$type === 'app.bsky.embed.video#view'
-  );
+  const videoFeedData = data.filter(item => isVideoPost(item.post));
 
   const renderItem = useCallback(({ item, index }: { item: ATFeedItem; index: number }) => (
     <View style={styles.videoItem}>
@@ -43,6 +41,26 @@ export function VideoFeed({
     </View>
   ), [onLike, onRepost, onComment]);
 
+  const renderLoadingFooter = () => {
+    if (!loading) return null;
+    
+    return (
+      <View style={styles.loadingFooter}>
+        <View style={styles.loadingSpinner} />
+        <Text style={styles.loadingText}>Loading more videos...</Text>
+      </View>
+    );
+  };
+
+  const renderEmptyState = () => (
+    <EmptyState
+      type="media"
+      title="No videos found"
+      description="Videos will appear here when users share video content."
+      style={styles.emptyState}
+    />
+  );
+
   const handleViewableItemsChanged = useCallback(({ viewableItems }: any) => {
     if (viewableItems.length > 0) {
       const visibleIndex = viewableItems[0].index;
@@ -53,6 +71,12 @@ export function VideoFeed({
   const viewabilityConfig = {
     itemVisiblePercentThreshold: 50,
     minimumViewTime: 300,
+  };
+
+  const handleLoadMore = () => {
+    if (onLoadMore && !loading && videoFeedData.length > 0) {
+      onLoadMore();
+    }
   };
 
   return (
@@ -70,10 +94,12 @@ export function VideoFeed({
           colors={['#3b82f6']}
         />
       }
-      onEndReached={onLoadMore}
-      onEndReachedThreshold={0.5}
+      onEndReached={handleLoadMore}
+      onEndReachedThreshold={0.3}
       onViewableItemsChanged={handleViewableItemsChanged}
       viewabilityConfig={viewabilityConfig}
+      ListEmptyComponent={renderEmptyState}
+      ListFooterComponent={renderLoadingFooter}
       removeClippedSubviews={true}
       maxToRenderPerBatch={3}
       windowSize={5}
@@ -83,6 +109,7 @@ export function VideoFeed({
         offset: 600 * index,
         index,
       })}
+      contentContainerStyle={videoFeedData.length === 0 ? styles.emptyContainer : undefined}
     />
   );
 }
@@ -95,5 +122,30 @@ const styles = StyleSheet.create({
   videoItem: {
     marginBottom: 1,
     backgroundColor: '#ffffff',
+  },
+  emptyState: {
+    flex: 1,
+  },
+  emptyContainer: {
+    flex: 1,
+  },
+  loadingFooter: {
+    paddingVertical: 20,
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
+    gap: 8,
+  },
+  loadingSpinner: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#e5e7eb',
+    borderTopColor: '#3b82f6',
+  },
+  loadingText: {
+    fontSize: 14,
+    color: '#6b7280',
+    fontWeight: '500',
   },
 });

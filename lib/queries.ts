@@ -2,6 +2,7 @@ import React from 'react';
 import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
 import { atprotoClient } from './atproto';
 import { ATProfile, ATFeedItem, ATPost } from '@/types/atproto';
+import { isVideoPost } from '@/utils/embedUtils';
 
 // Query Keys
 export const queryKeys = {
@@ -11,6 +12,7 @@ export const queryKeys = {
   actorLikes: (handle: string) => ['actorLikes', handle] as const,
   postThread: (uri: string) => ['postThread', uri] as const,
   search: (query: string) => ['search', query] as const,
+  videoFeed: ['videoFeed'] as const,
 } as const;
 
 // Enhanced error handling for queries
@@ -89,6 +91,24 @@ export function useTimeline() {
     },
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
   });
+}
+
+// Video Feed Query - filters timeline for video posts
+export function useVideoFeed() {
+  const timelineQuery = useTimeline();
+  
+  const videoFeed = React.useMemo(() => {
+    if (!timelineQuery.data) return [];
+    
+    return timelineQuery.data.pages.flatMap(page => 
+      page.feed.filter(item => isVideoPost(item.post))
+    );
+  }, [timelineQuery.data]);
+  
+  return {
+    ...timelineQuery,
+    data: videoFeed,
+  };
 }
 
 // Profile Queries
@@ -228,6 +248,7 @@ export function useCreatePost() {
     onSuccess: () => {
       // Invalidate and refetch timeline and author feed
       queryClient.invalidateQueries({ queryKey: queryKeys.timeline });
+      queryClient.invalidateQueries({ queryKey: queryKeys.videoFeed });
     },
     retry: (failureCount, error) => {
       if (failureCount >= 2) return false;
@@ -507,7 +528,8 @@ export function useAuthorMediaFeed(handle: string) {
     
     return authorFeedQuery.data.pages.flatMap(page => 
       page.feed.filter(item => 
-        item.post.embed?.images && item.post.embed.images.length > 0
+        (item.post.embed?.images && item.post.embed.images.length > 0) ||
+        isVideoPost(item.post)
       )
     );
   }, [authorFeedQuery.data]);

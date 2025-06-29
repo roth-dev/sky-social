@@ -43,6 +43,15 @@ export interface ATPost {
           size: number;
         };
       }>;
+      video?: {
+        $type: string;
+        video: {
+          $type: string;
+          ref: any;
+          mimeType: string;
+          size: number;
+        };
+      };
     };
     reply?: {
       root: {

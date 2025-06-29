@@ -2,6 +2,8 @@ import React from 'react';
 import { View, StyleSheet, FlatList, Text, RefreshControl } from 'react-native';
 import { Header } from '@/components/Header';
 import { Post } from '@/components/Post';
+import { FeedPlaceholder } from '@/components/placeholders/FeedPlaceholder';
+import { EmptyState, ErrorState } from '@/components/placeholders/EmptyState';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTimeline, useLikePost, useUnlikePost, useRepost, useDeleteRepost } from '@/lib/queries';
 import { ATFeedItem } from '@/types/atproto';
@@ -47,35 +49,72 @@ export default function HomeScreen() {
   );
 
   const renderEmptyState = () => (
-    <View style={styles.emptyState}>
-      <Text style={styles.emptyStateTitle}>Welcome to SocialSky!</Text>
-      <Text style={styles.emptyStateDescription}>
-        {isAuthenticated 
-          ? "Your timeline will appear here once you follow some people."
-          : "Please log in to see your personalized timeline."
-        }
-      </Text>
-    </View>
+    <EmptyState
+      type="timeline"
+      title="Welcome to SocialSky!"
+      description={
+        isAuthenticated 
+          ? "Your timeline will appear here once you follow some people and they start posting."
+          : "Please log in to see your personalized timeline and connect with the decentralized social web."
+      }
+    />
   );
 
   const renderError = () => (
-    <View style={styles.errorState}>
-      <Text style={styles.errorTitle}>Unable to load timeline</Text>
-      <Text style={styles.errorDescription}>
-        {timelineQuery.error?.message || 'Something went wrong. Please try again.'}
-      </Text>
-    </View>
+    <ErrorState
+      title="Unable to load timeline"
+      description={timelineQuery.error?.message || 'Something went wrong while loading your timeline. Please try again.'}
+      onRetry={() => timelineQuery.refetch()}
+    />
   );
+
+  const renderLoadingFooter = () => {
+    if (!timelineQuery.isFetchingNextPage) return null;
+    
+    return (
+      <View style={styles.loadingFooter}>
+        <Text style={styles.loadingText}>Loading more posts...</Text>
+      </View>
+    );
+  };
 
   if (!isAuthenticated) {
     return (
       <View style={styles.container}>
         <Header title="SocialSky" />
-        <View style={styles.notAuthenticatedContainer}>
-          <Text style={styles.notAuthenticatedText}>
-            Please log in to view your timeline
-          </Text>
-        </View>
+        <EmptyState
+          type="timeline"
+          title="Welcome to SocialSky!"
+          description="Please log in to view your timeline and connect with the decentralized social web."
+        />
+      </View>
+    );
+  }
+
+  // Show loading placeholder on initial load
+  if (timelineQuery.isLoading) {
+    return (
+      <View style={styles.container}>
+        <Header
+          title="SocialSky"
+          leftIcon={<Camera size={24} color="#111827" />}
+          rightIcon={<Sparkles size={24} color="#111827" />}
+        />
+        <FeedPlaceholder count={6} showVariety={true} />
+      </View>
+    );
+  }
+
+  // Show error state
+  if (timelineQuery.error) {
+    return (
+      <View style={styles.container}>
+        <Header
+          title="SocialSky"
+          leftIcon={<Camera size={24} color="#111827" />}
+          rightIcon={<Sparkles size={24} color="#111827" />}
+        />
+        {renderError()}
       </View>
     );
   }
@@ -90,37 +129,30 @@ export default function HomeScreen() {
         rightIcon={<Sparkles size={24} color="#111827" />}
       />
       
-      {timelineQuery.error ? (
-        renderError()
-      ) : (
-        <FlatList
-          data={allPosts}
-          renderItem={renderItem}
-          keyExtractor={(item, index) => `${item.post.uri}-${index}`}
-          style={styles.feed}
-          refreshControl={
-            <RefreshControl
-              refreshing={timelineQuery.isFetching && !timelineQuery.isLoading}
-              onRefresh={() => timelineQuery.refetch()}
-            />
+      <FlatList
+        data={allPosts}
+        renderItem={renderItem}
+        keyExtractor={(item, index) => `${item.post.uri}-${index}`}
+        style={styles.feed}
+        refreshControl={
+          <RefreshControl
+            refreshing={timelineQuery.isFetching && !timelineQuery.isLoading}
+            onRefresh={() => timelineQuery.refetch()}
+            tintColor="#3b82f6"
+            colors={['#3b82f6']}
+          />
+        }
+        onEndReached={() => {
+          if (timelineQuery.hasNextPage && !timelineQuery.isFetchingNextPage) {
+            timelineQuery.fetchNextPage();
           }
-          onEndReached={() => {
-            if (timelineQuery.hasNextPage && !timelineQuery.isFetchingNextPage) {
-              timelineQuery.fetchNextPage();
-            }
-          }}
-          onEndReachedThreshold={0.5}
-          ListEmptyComponent={timelineQuery.isLoading ? null : renderEmptyState}
-          showsVerticalScrollIndicator={false}
-          ListFooterComponent={
-            timelineQuery.isFetchingNextPage ? (
-              <View style={styles.loadingFooter}>
-                <Text style={styles.loadingText}>Loading more posts...</Text>
-              </View>
-            ) : null
-          }
-        />
-      )}
+        }}
+        onEndReachedThreshold={0.5}
+        ListEmptyComponent={renderEmptyState}
+        ListFooterComponent={renderLoadingFooter}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={allPosts.length === 0 ? styles.emptyContainer : undefined}
+      />
     </View>
   );
 }
@@ -133,63 +165,17 @@ const styles = StyleSheet.create({
   feed: {
     flex: 1,
   },
-  notAuthenticatedContainer: {
+  emptyContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 32,
-  },
-  notAuthenticatedText: {
-    fontSize: 16,
-    color: '#6b7280',
-    textAlign: 'center',
-  },
-  emptyState: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 32,
-    paddingVertical: 64,
-  },
-  emptyStateTitle: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#111827',
-    marginBottom: 12,
-    textAlign: 'center',
-  },
-  emptyStateDescription: {
-    fontSize: 16,
-    color: '#6b7280',
-    textAlign: 'center',
-    lineHeight: 24,
-  },
-  errorState: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 32,
-    paddingVertical: 64,
-  },
-  errorTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#ef4444',
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  errorDescription: {
-    fontSize: 14,
-    color: '#6b7280',
-    textAlign: 'center',
-    lineHeight: 20,
   },
   loadingFooter: {
     paddingVertical: 20,
     alignItems: 'center',
+    backgroundColor: '#ffffff',
   },
   loadingText: {
     fontSize: 14,
     color: '#6b7280',
+    fontWeight: '500',
   },
 });

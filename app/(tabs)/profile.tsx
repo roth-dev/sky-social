@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, RefreshCon
 import { Header } from '@/components/Header';
 import { ProfileHeader } from '@/components/profile/ProfileHeader';
 import { ProfileTabContent } from '@/components/profile/ProfileTabContent';
+import { ProfilePlaceholder, ProfileTabPlaceholder } from '@/components/placeholders/ProfilePlaceholder';
+import { EmptyState, ErrorState } from '@/components/placeholders/EmptyState';
 import { useAuth } from '@/contexts/AuthContext';
 import { useProfile, useAuthorFeed, useActorLikes, useAuthorMediaFeed } from '@/lib/queries';
 import { Settings } from 'lucide-react-native';
@@ -114,11 +116,59 @@ export default function ProfileScreen() {
     return (
       <View style={styles.container}>
         <Header title="Profile" />
-        <View style={styles.notAuthenticatedContainer}>
-          <Text style={styles.notAuthenticatedText}>
-            Please log in to view your profile
-          </Text>
-        </View>
+        <EmptyState
+          type="timeline"
+          title="Please log in"
+          description="Please log in to view your profile and manage your account."
+        />
+      </View>
+    );
+  }
+
+  // Show loading placeholder
+  if (profileQuery.isLoading) {
+    return (
+      <View style={styles.container}>
+        <Header
+          title="Profile"
+          rightIcon={<Settings size={24} color="#111827" />}
+          onRightPress={() => logout()}
+        />
+        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+          <ProfilePlaceholder />
+          
+          {/* Tab Bar Placeholder */}
+          <View style={styles.tabBarContainer}>
+            <View style={styles.tabBar}>
+              {TABS.map((tab) => (
+                <View key={tab.key} style={styles.tabItemPlaceholder}>
+                  <View style={styles.tabTextPlaceholder} />
+                  <View style={styles.tabCountPlaceholder} />
+                </View>
+              ))}
+            </View>
+          </View>
+          
+          <ProfileTabPlaceholder type={activeTab as any} />
+        </ScrollView>
+      </View>
+    );
+  }
+
+  // Show error state
+  if (profileQuery.error) {
+    return (
+      <View style={styles.container}>
+        <Header
+          title="Profile"
+          rightIcon={<Settings size={24} color="#111827" />}
+          onRightPress={() => logout()}
+        />
+        <ErrorState
+          title="Unable to load profile"
+          description={profileQuery.error?.message || 'Something went wrong while loading your profile.'}
+          onRetry={() => profileQuery.refetch()}
+        />
       </View>
     );
   }
@@ -137,7 +187,12 @@ export default function ProfileScreen() {
         style={styles.content} 
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+          <RefreshControl 
+            refreshing={isRefreshing} 
+            onRefresh={onRefresh}
+            tintColor="#3b82f6"
+            colors={['#3b82f6']}
+          />
         }
       >
         {/* Profile Header */}
@@ -183,13 +238,17 @@ export default function ProfileScreen() {
         
         {/* Tab Content */}
         <View style={styles.tabContentContainer}>
-          <ProfileTabContent
-            tabKey={activeTab}
-            data={getTabData(activeTab)}
-            loading={getTabLoading(activeTab)}
-            onRefresh={() => {}}
-            onLoadMore={handleLoadMore}
-          />
+          {getTabLoading(activeTab) ? (
+            <ProfileTabPlaceholder type={activeTab as any} />
+          ) : (
+            <ProfileTabContent
+              tabKey={activeTab}
+              data={getTabData(activeTab)}
+              loading={getTabLoading(activeTab)}
+              onRefresh={() => {}}
+              onLoadMore={handleLoadMore}
+            />
+          )}
         </View>
       </ScrollView>
     </View>
@@ -203,15 +262,6 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-  },
-  notAuthenticatedContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  notAuthenticatedText: {
-    fontSize: 16,
-    color: '#6b7280',
   },
   tabBarContainer: {
     backgroundColor: '#ffffff',
@@ -253,5 +303,24 @@ const styles = StyleSheet.create({
   tabContentContainer: {
     flex: 1,
     minHeight: 400,
+  },
+  tabItemPlaceholder: {
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+    marginRight: 8,
+  },
+  tabTextPlaceholder: {
+    width: 60,
+    height: 16,
+    backgroundColor: '#f3f4f6',
+    borderRadius: 8,
+    marginBottom: 4,
+  },
+  tabCountPlaceholder: {
+    width: 20,
+    height: 12,
+    backgroundColor: '#f3f4f6',
+    borderRadius: 6,
   },
 });

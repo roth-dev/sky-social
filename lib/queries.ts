@@ -13,6 +13,33 @@ export const queryKeys = {
   search: (query: string) => ['search', query] as const,
 } as const;
 
+// Enhanced error handling for queries
+const handleQueryError = (error: any) => {
+  console.error('Query error:', error);
+  
+  // Don't retry on authentication errors - redirect to login instead
+  if (error?.message?.includes('authentication') || error?.message?.includes('401')) {
+    // This could trigger a logout/redirect to login
+    return false;
+  }
+  
+  // Retry on network errors and server errors
+  if (error?.message?.includes('UpstreamFailure') || 
+      error?.message?.includes('network') ||
+      error?.message?.includes('timeout') ||
+      error?.status >= 500) {
+    return true;
+  }
+  
+  // Don't retry on client errors (4xx except auth)
+  if (error?.status >= 400 && error?.status < 500) {
+    return false;
+  }
+  
+  // Default to retry for unknown errors
+  return true;
+};
+
 // Timeline Queries
 export function useTimeline() {
   return useInfiniteQuery({
@@ -29,6 +56,13 @@ export function useTimeline() {
     staleTime: 1000 * 60 * 2, // 2 minutes
     gcTime: 1000 * 60 * 10, // 10 minutes
     enabled: atprotoClient.getIsAuthenticated(),
+    retry: (failureCount, error) => {
+      // Don't retry more than 3 times
+      if (failureCount >= 3) return false;
+      
+      return handleQueryError(error);
+    },
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
   });
 }
 
@@ -46,6 +80,11 @@ export function useProfile(handle: string) {
     staleTime: 1000 * 60 * 5, // 5 minutes
     gcTime: 1000 * 60 * 30, // 30 minutes
     enabled: !!handle,
+    retry: (failureCount, error) => {
+      if (failureCount >= 3) return false;
+      return handleQueryError(error);
+    },
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 }
 
@@ -64,6 +103,11 @@ export function useAuthorFeed(handle: string) {
     staleTime: 1000 * 60 * 2, // 2 minutes
     gcTime: 1000 * 60 * 15, // 15 minutes
     enabled: !!handle,
+    retry: (failureCount, error) => {
+      if (failureCount >= 3) return false;
+      return handleQueryError(error);
+    },
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 }
 
@@ -82,6 +126,11 @@ export function useActorLikes(handle: string) {
     staleTime: 1000 * 60 * 3, // 3 minutes
     gcTime: 1000 * 60 * 20, // 20 minutes
     enabled: !!handle,
+    retry: (failureCount, error) => {
+      if (failureCount >= 3) return false;
+      return handleQueryError(error);
+    },
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 }
 
@@ -99,10 +148,15 @@ export function usePostThread(uri: string) {
     staleTime: 1000 * 60 * 1, // 1 minute
     gcTime: 1000 * 60 * 10, // 10 minutes
     enabled: !!uri,
+    retry: (failureCount, error) => {
+      if (failureCount >= 3) return false;
+      return handleQueryError(error);
+    },
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 }
 
-// Mutations
+// Mutations with enhanced error handling
 export function useCreatePost() {
   const queryClient = useQueryClient();
   
@@ -117,8 +171,12 @@ export function useCreatePost() {
     onSuccess: () => {
       // Invalidate and refetch timeline and author feed
       queryClient.invalidateQueries({ queryKey: queryKeys.timeline });
-      // We could also invalidate the current user's author feed if we have their handle
     },
+    retry: (failureCount, error) => {
+      if (failureCount >= 2) return false;
+      return handleQueryError(error);
+    },
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
   });
 }
 
@@ -151,6 +209,11 @@ export function useCreateReply() {
       // Also invalidate timeline
       queryClient.invalidateQueries({ queryKey: queryKeys.timeline });
     },
+    retry: (failureCount, error) => {
+      if (failureCount >= 2) return false;
+      return handleQueryError(error);
+    },
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
   });
 }
 
@@ -198,6 +261,11 @@ export function useLikePost() {
       // Revert optimistic update on error
       queryClient.invalidateQueries({ queryKey: queryKeys.timeline });
     },
+    retry: (failureCount, error) => {
+      if (failureCount >= 2) return false;
+      return handleQueryError(error);
+    },
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
   });
 }
 
@@ -216,6 +284,11 @@ export function useUnlikePost() {
       // Invalidate relevant queries
       queryClient.invalidateQueries({ queryKey: queryKeys.timeline });
     },
+    retry: (failureCount, error) => {
+      if (failureCount >= 2) return false;
+      return handleQueryError(error);
+    },
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
   });
 }
 
@@ -263,6 +336,11 @@ export function useRepost() {
       // Revert optimistic update on error
       queryClient.invalidateQueries({ queryKey: queryKeys.timeline });
     },
+    retry: (failureCount, error) => {
+      if (failureCount >= 2) return false;
+      return handleQueryError(error);
+    },
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
   });
 }
 
@@ -281,6 +359,11 @@ export function useDeleteRepost() {
       // Invalidate relevant queries
       queryClient.invalidateQueries({ queryKey: queryKeys.timeline });
     },
+    retry: (failureCount, error) => {
+      if (failureCount >= 2) return false;
+      return handleQueryError(error);
+    },
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
   });
 }
 
@@ -299,6 +382,11 @@ export function useFollowProfile() {
       // Invalidate profile queries to update follow status
       queryClient.invalidateQueries({ queryKey: ['profile'] });
     },
+    retry: (failureCount, error) => {
+      if (failureCount >= 2) return false;
+      return handleQueryError(error);
+    },
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
   });
 }
 
@@ -317,6 +405,11 @@ export function useUnfollowProfile() {
       // Invalidate profile queries to update follow status
       queryClient.invalidateQueries({ queryKey: ['profile'] });
     },
+    retry: (failureCount, error) => {
+      if (failureCount >= 2) return false;
+      return handleQueryError(error);
+    },
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
   });
 }
 

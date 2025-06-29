@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { MessageCircle, Users, Heart, Image as ImageIcon, Search, Wifi } from 'lucide-react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { MessageCircle, Users, Heart, Image as ImageIcon, Search, Wifi, RefreshCw, AlertTriangle } from 'lucide-react-native';
 
 interface EmptyStateProps {
   type: 'timeline' | 'posts' | 'followers' | 'following' | 'likes' | 'media' | 'search' | 'offline';
@@ -109,15 +109,55 @@ export function ErrorState({
   onRetry,
   style 
 }: ErrorStateProps) {
+  // Determine error type based on description
+  const isNetworkError = description?.includes('network') || 
+                        description?.includes('connection') ||
+                        description?.includes('offline');
+  
+  const isServerError = description?.includes('server') || 
+                       description?.includes('unavailable') ||
+                       description?.includes('UpstreamFailure');
+
+  const getErrorIcon = () => {
+    if (isNetworkError) {
+      return <Wifi size={48} color="#ef4444" />;
+    }
+    if (isServerError) {
+      return <RefreshCw size={48} color="#ef4444" />;
+    }
+    return <AlertTriangle size={48} color="#ef4444" />;
+  };
+
+  const getErrorTitle = () => {
+    if (isNetworkError) {
+      return 'Connection Problem';
+    }
+    if (isServerError) {
+      return 'Service Unavailable';
+    }
+    return title;
+  };
+
+  const getErrorDescription = () => {
+    if (isNetworkError) {
+      return 'Please check your internet connection and try again.';
+    }
+    if (isServerError) {
+      return 'The service is temporarily unavailable. Please try again in a few moments.';
+    }
+    return description;
+  };
+
   return (
     <View style={[styles.container, style]}>
       <View style={styles.errorIconContainer}>
-        <Text style={styles.errorIcon}>⚠️</Text>
+        {getErrorIcon()}
       </View>
-      <Text style={styles.errorTitle}>{title}</Text>
-      <Text style={styles.description}>{description}</Text>
+      <Text style={styles.errorTitle}>{getErrorTitle()}</Text>
+      <Text style={styles.description}>{getErrorDescription()}</Text>
       {onRetry && (
         <TouchableOpacity style={styles.retryButton} onPress={onRetry}>
+          <RefreshCw size={16} color="#ffffff" style={{ marginRight: 8 }} />
           <Text style={styles.retryText}>Try Again</Text>
         </TouchableOpacity>
       )}
@@ -179,9 +219,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 24,
   },
-  errorIcon: {
-    fontSize: 32,
-  },
   errorTitle: {
     fontSize: 20,
     fontWeight: '600',
@@ -190,11 +227,18 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   retryButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginTop: 24,
     paddingHorizontal: 24,
     paddingVertical: 12,
     backgroundColor: '#3b82f6',
     borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   retryText: {
     color: '#ffffff',
@@ -202,5 +246,3 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
-
-import { TouchableOpacity } from 'react-native';

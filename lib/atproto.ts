@@ -5,11 +5,60 @@ export class ATProtoClient {
   private agent: BskyAgent;
   private isAuthenticated = false;
   private currentSession: AuthSession | null = null;
+  private retryCount = 0;
+  private maxRetries = 3;
+  private retryDelay = 1000; // Start with 1 second
 
   constructor() {
     this.agent = new BskyAgent({
       service: 'https://bsky.social',
     });
+  }
+
+  private async delay(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  private async retryWithBackoff<T>(
+    operation: () => Promise<T>,
+    context: string
+  ): Promise<T> {
+    let lastError: any;
+
+    for (let attempt = 0; attempt <= this.maxRetries; attempt++) {
+      try {
+        const result = await operation();
+        // Reset retry count on success
+        this.retryCount = 0;
+        return result;
+      } catch (error: any) {
+        lastError = error;
+        console.warn(`${context} attempt ${attempt + 1} failed:`, error.message);
+
+        // Don't retry on authentication errors
+        if (error.status === 401 || error.message?.includes('authentication')) {
+          throw error;
+        }
+
+        // Don't retry on client errors (4xx except 401, 408, 429)
+        if (error.status >= 400 && error.status < 500 && 
+            error.status !== 408 && error.status !== 429) {
+          throw error;
+        }
+
+        // If this is the last attempt, throw the error
+        if (attempt === this.maxRetries) {
+          throw error;
+        }
+
+        // Calculate exponential backoff delay
+        const delayMs = this.retryDelay * Math.pow(2, attempt) + Math.random() * 1000;
+        console.log(`Retrying ${context} in ${delayMs}ms...`);
+        await this.delay(delayMs);
+      }
+    }
+
+    throw lastError;
   }
 
   async initializeFromStorage(): Promise<boolean> {
@@ -43,10 +92,10 @@ export class ATProtoClient {
 
   async login(identifier: string, password: string) {
     try {
-      const response = await this.agent.login({
-        identifier,
-        password,
-      });
+      const response = await this.retryWithBackoff(
+        () => this.agent.login({ identifier, password }),
+        'Login'
+      );
       
       if (response.success) {
         this.isAuthenticated = true;
@@ -72,7 +121,10 @@ export class ATProtoClient {
       return { success: false, error: 'Login failed' };
     } catch (error: any) {
       console.error('Login failed:', error);
-      return { success: false, error: error.message };
+      return { 
+        success: false, 
+        error: this.getErrorMessage(error)
+      };
     }
   }
 
@@ -115,84 +167,104 @@ export class ATProtoClient {
     }
 
     try {
-      const response = await this.agent.getTimeline({
-        limit,
-        cursor,
-      });
+      const response = await this.retryWithBackoff(
+        () => this.agent.getTimeline({ limit, cursor }),
+        'Get Timeline'
+      );
+      
       return { success: true, data: response.data };
     } catch (error: any) {
       // Check if it's an auth error and try to refresh
       if (error.status === 401 || error.message?.includes('authentication')) {
         const refreshed = await this.refreshSession();
         if (refreshed) {
-          // Retry the request
+          // Retry the request once after refresh
           try {
-            const response = await this.agent.getTimeline({
-              limit,
-              cursor,
-            });
+            const response = await this.agent.getTimeline({ limit, cursor });
             return { success: true, data: response.data };
           } catch (retryError: any) {
             console.error('Failed to get timeline after refresh:', retryError);
-            return { success: false, error: retryError.message };
+            return { 
+              success: false, 
+              error: this.getErrorMessage(retryError)
+            };
           }
         }
       }
       
       console.error('Failed to get timeline:', error);
-      return { success: false, error: error.message };
+      return { 
+        success: false, 
+        error: this.getErrorMessage(error)
+      };
     }
   }
 
   async getProfile(actor: string) {
     try {
-      const response = await this.agent.getProfile({ actor });
+      const response = await this.retryWithBackoff(
+        () => this.agent.getProfile({ actor }),
+        'Get Profile'
+      );
+      
       return { success: true, data: response.data };
     } catch (error: any) {
       console.error('Failed to get profile:', error);
-      return { success: false, error: error.message };
+      return { 
+        success: false, 
+        error: this.getErrorMessage(error)
+      };
     }
   }
 
   async getAuthorFeed(actor: string, limit = 30, cursor?: string) {
     try {
-      const response = await this.agent.getAuthorFeed({
-        actor,
-        limit,
-        cursor,
-      });
+      const response = await this.retryWithBackoff(
+        () => this.agent.getAuthorFeed({ actor, limit, cursor }),
+        'Get Author Feed'
+      );
+      
       return { success: true, data: response.data };
     } catch (error: any) {
       console.error('Failed to get author feed:', error);
-      return { success: false, error: error.message };
+      return { 
+        success: false, 
+        error: this.getErrorMessage(error)
+      };
     }
   }
 
   async getActorLikes(actor: string, limit = 30, cursor?: string) {
     try {
-      const response = await this.agent.getActorLikes({
-        actor,
-        limit,
-        cursor,
-      });
+      const response = await this.retryWithBackoff(
+        () => this.agent.getActorLikes({ actor, limit, cursor }),
+        'Get Actor Likes'
+      );
+      
       return { success: true, data: response.data };
     } catch (error: any) {
       console.error('Failed to get actor likes:', error);
-      return { success: false, error: error.message };
+      return { 
+        success: false, 
+        error: this.getErrorMessage(error)
+      };
     }
   }
 
   async getPostThread(uri: string, depth = 6, parentHeight = 80) {
     try {
-      const response = await this.agent.getPostThread({
-        uri,
-        depth,
-        parentHeight,
-      });
+      const response = await this.retryWithBackoff(
+        () => this.agent.getPostThread({ uri, depth, parentHeight }),
+        'Get Post Thread'
+      );
+      
       return { success: true, data: response.data };
     } catch (error: any) {
       console.error('Failed to get post thread:', error);
-      return { success: false, error: error.message };
+      return { 
+        success: false, 
+        error: this.getErrorMessage(error)
+      };
     }
   }
 
@@ -202,11 +274,18 @@ export class ATProtoClient {
     }
 
     try {
-      const response = await this.agent.follow(did);
+      const response = await this.retryWithBackoff(
+        () => this.agent.follow(did),
+        'Follow Profile'
+      );
+      
       return { success: true, data: response };
     } catch (error: any) {
       console.error('Failed to follow profile:', error);
-      return { success: false, error: error.message };
+      return { 
+        success: false, 
+        error: this.getErrorMessage(error)
+      };
     }
   }
 
@@ -216,11 +295,18 @@ export class ATProtoClient {
     }
 
     try {
-      await this.agent.deleteFollow(followUri);
+      await this.retryWithBackoff(
+        () => this.agent.deleteFollow(followUri),
+        'Unfollow Profile'
+      );
+      
       return { success: true };
     } catch (error: any) {
       console.error('Failed to unfollow profile:', error);
-      return { success: false, error: error.message };
+      return { 
+        success: false, 
+        error: this.getErrorMessage(error)
+      };
     }
   }
 
@@ -240,11 +326,18 @@ export class ATProtoClient {
         // This would require implementing image upload to AT Protocol
       }
 
-      const response = await this.agent.post(record);
+      const response = await this.retryWithBackoff(
+        () => this.agent.post(record),
+        'Create Post'
+      );
+      
       return { success: true, data: response };
     } catch (error: any) {
       console.error('Failed to create post:', error);
-      return { success: false, error: error.message };
+      return { 
+        success: false, 
+        error: this.getErrorMessage(error)
+      };
     }
   }
 
@@ -269,11 +362,18 @@ export class ATProtoClient {
         },
       };
 
-      const response = await this.agent.post(record);
+      const response = await this.retryWithBackoff(
+        () => this.agent.post(record),
+        'Create Reply'
+      );
+      
       return { success: true, data: response };
     } catch (error: any) {
       console.error('Failed to create reply:', error);
-      return { success: false, error: error.message };
+      return { 
+        success: false, 
+        error: this.getErrorMessage(error)
+      };
     }
   }
 
@@ -283,11 +383,18 @@ export class ATProtoClient {
     }
 
     try {
-      const response = await this.agent.like(uri, cid);
+      const response = await this.retryWithBackoff(
+        () => this.agent.like(uri, cid),
+        'Like Post'
+      );
+      
       return { success: true, data: response };
     } catch (error: any) {
       console.error('Failed to like post:', error);
-      return { success: false, error: error.message };
+      return { 
+        success: false, 
+        error: this.getErrorMessage(error)
+      };
     }
   }
 
@@ -297,11 +404,18 @@ export class ATProtoClient {
     }
 
     try {
-      await this.agent.deleteLike(likeUri);
+      await this.retryWithBackoff(
+        () => this.agent.deleteLike(likeUri),
+        'Unlike Post'
+      );
+      
       return { success: true };
     } catch (error: any) {
       console.error('Failed to unlike post:', error);
-      return { success: false, error: error.message };
+      return { 
+        success: false, 
+        error: this.getErrorMessage(error)
+      };
     }
   }
 
@@ -311,11 +425,18 @@ export class ATProtoClient {
     }
 
     try {
-      const response = await this.agent.repost(uri, cid);
+      const response = await this.retryWithBackoff(
+        () => this.agent.repost(uri, cid),
+        'Repost'
+      );
+      
       return { success: true, data: response };
     } catch (error: any) {
       console.error('Failed to repost:', error);
-      return { success: false, error: error.message };
+      return { 
+        success: false, 
+        error: this.getErrorMessage(error)
+      };
     }
   }
 
@@ -325,12 +446,69 @@ export class ATProtoClient {
     }
 
     try {
-      await this.agent.deleteRepost(repostUri);
+      await this.retryWithBackoff(
+        () => this.agent.deleteRepost(repostUri),
+        'Delete Repost'
+      );
+      
       return { success: true };
     } catch (error: any) {
       console.error('Failed to delete repost:', error);
-      return { success: false, error: error.message };
+      return { 
+        success: false, 
+        error: this.getErrorMessage(error)
+      };
     }
+  }
+
+  private getErrorMessage(error: any): string {
+    // Handle specific AT Protocol errors
+    if (error.status) {
+      switch (error.status) {
+        case 400:
+          return 'Invalid request. Please check your input and try again.';
+        case 401:
+          return 'Authentication failed. Please log in again.';
+        case 403:
+          return 'Access denied. You don\'t have permission to perform this action.';
+        case 404:
+          return 'Content not found. It may have been deleted or moved.';
+        case 408:
+          return 'Request timeout. Please check your connection and try again.';
+        case 429:
+          return 'Too many requests. Please wait a moment and try again.';
+        case 500:
+          return 'Server error. The service is temporarily unavailable.';
+        case 502:
+        case 503:
+        case 504:
+          return 'Service temporarily unavailable. Please try again in a few moments.';
+        default:
+          if (error.status >= 500) {
+            return 'Server error. Please try again later.';
+          }
+          break;
+      }
+    }
+
+    // Handle specific error messages
+    if (error.message) {
+      if (error.message.includes('UpstreamFailure')) {
+        return 'Service temporarily unavailable. Please try again in a few moments.';
+      }
+      if (error.message.includes('network')) {
+        return 'Network error. Please check your internet connection.';
+      }
+      if (error.message.includes('timeout')) {
+        return 'Request timed out. Please try again.';
+      }
+      if (error.message.includes('authentication')) {
+        return 'Authentication error. Please log in again.';
+      }
+    }
+
+    // Fallback to original error message or generic message
+    return error.message || 'An unexpected error occurred. Please try again.';
   }
 
   getIsAuthenticated() {
@@ -344,6 +522,7 @@ export class ATProtoClient {
   async logout() {
     this.isAuthenticated = false;
     this.currentSession = null;
+    this.retryCount = 0;
     
     // Clear stored session data
     await storage.clearAll();

@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, Dimensions } from 'react-native';
 import { Post } from '@/components/Post';
+import { EmptyState } from '@/components/placeholders/EmptyState';
 import { ATFeedItem } from '@/types/atproto';
 import { Play, Heart } from 'lucide-react-native';
 
@@ -67,17 +68,6 @@ export function ProfileTabContent({
     </View>
   );
 
-  const renderEmptyState = () => (
-    <View style={styles.emptyState}>
-      <Text style={styles.emptyStateTitle}>
-        {getEmptyStateTitle(tabKey)}
-      </Text>
-      <Text style={styles.emptyStateDescription}>
-        {getEmptyStateDescription(tabKey)}
-      </Text>
-    </View>
-  );
-
   const renderLoadingFooter = () => {
     if (!loadingMore) return null;
     
@@ -89,26 +79,53 @@ export function ProfileTabContent({
     );
   };
 
-  const getEmptyStateTitle = (key: string) => {
-    switch (key) {
-      case 'posts': return 'No posts yet';
-      case 'media': return 'No media yet';
-      case 'liked': return 'No liked posts yet';
-      default: return 'No content yet';
-    }
+  const renderEmptyState = () => {
+    // Show different empty states based on tab and loading state
+    if (loading) return null;
+    
+    const emptyStateConfig = getEmptyStateConfig(tabKey);
+    
+    return (
+      <EmptyState
+        type={emptyStateConfig.type}
+        title={emptyStateConfig.title}
+        description={emptyStateConfig.description}
+        style={styles.emptyState}
+      />
+    );
   };
 
-  const getEmptyStateDescription = (key: string) => {
+  const getEmptyStateConfig = (key: string) => {
     switch (key) {
-      case 'posts': return 'When this user posts something, it will appear here.';
-      case 'media': return 'When this user shares photos and videos, they will appear here.';
-      case 'liked': return 'When this user likes posts, they will appear here.';
-      default: return 'Content will appear here when available.';
+      case 'posts': 
+        return {
+          type: 'posts' as const,
+          title: 'No posts yet',
+          description: 'When this user posts something, it will appear here.'
+        };
+      case 'media': 
+        return {
+          type: 'media' as const,
+          title: 'No media yet',
+          description: 'When this user shares photos and videos, they will appear here.'
+        };
+      case 'liked': 
+        return {
+          type: 'likes' as const,
+          title: 'No liked posts',
+          description: 'Liked posts may not be publicly available for this user.'
+        };
+      default: 
+        return {
+          type: 'posts' as const,
+          title: 'No content yet',
+          description: 'Content will appear here when available.'
+        };
     }
   };
 
   const handleLoadMore = () => {
-    if (onLoadMore && !loadingMore && !loading) {
+    if (onLoadMore && !loadingMore && !loading && data.length > 0) {
       onLoadMore();
     }
   };
@@ -138,15 +155,21 @@ export function ProfileTabContent({
 
   const { numColumns } = getItemLayout(tabKey);
 
+  // Filter out null items for media tab
+  const filteredData = tabKey === 'media' 
+    ? data.filter(item => item.post.embed?.images && item.post.embed.images.length > 0)
+    : data;
+
   return (
     <FlatList
-      data={data}
+      data={filteredData}
       renderItem={renderItem}
       keyExtractor={(item, index) => `${tabKey}-${item.post.uri}-${index}`}
       numColumns={numColumns}
       contentContainerStyle={[
         styles.container,
         tabKey === 'media' && styles.mediaContainer,
+        filteredData.length === 0 && styles.emptyContainer,
       ]}
       showsVerticalScrollIndicator={false}
       onRefresh={onRefresh}
@@ -176,6 +199,9 @@ const styles = StyleSheet.create({
   },
   mediaContainer: {
     paddingHorizontal: 16,
+  },
+  emptyContainer: {
+    flex: 1,
   },
   mediaRow: {
     justifyContent: 'space-between',
@@ -230,19 +256,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 64,
     paddingHorizontal: 32,
-  },
-  emptyStateTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#111827',
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  emptyStateDescription: {
-    fontSize: 16,
-    color: '#6b7280',
-    textAlign: 'center',
-    lineHeight: 22,
   },
   loadingFooter: {
     paddingVertical: 20,

@@ -23,6 +23,19 @@ const handleQueryError = (error: any) => {
     return false;
   }
   
+  // Don't retry on profile not found errors
+  if (error?.message?.includes('Profile not found') || 
+      error?.message?.includes('Actor not found') ||
+      error?.status === 404) {
+    return false;
+  }
+  
+  // Don't retry on invalid request errors
+  if (error?.message?.includes('Invalid request') || 
+      error?.status === 400) {
+    return false;
+  }
+  
   // Retry on network errors and server errors
   if (error?.message?.includes('UpstreamFailure') || 
       error?.message?.includes('network') ||
@@ -38,6 +51,18 @@ const handleQueryError = (error: any) => {
   
   // Default to retry for unknown errors
   return true;
+};
+
+// Helper function to validate handle format
+const isValidHandle = (handle: string): boolean => {
+  if (!handle || typeof handle !== 'string') return false;
+  
+  // Handle should not be empty or just whitespace
+  if (handle.trim().length === 0) return false;
+  
+  // Handle should not contain invalid characters for AT Protocol
+  const validHandleRegex = /^[a-zA-Z0-9.-]+$/;
+  return validHandleRegex.test(handle);
 };
 
 // Timeline Queries
@@ -71,6 +96,10 @@ export function useProfile(handle: string) {
   return useQuery({
     queryKey: queryKeys.profile(handle),
     queryFn: async () => {
+      if (!isValidHandle(handle)) {
+        throw new Error('Invalid handle format');
+      }
+      
       const result = await atprotoClient.getProfile(handle);
       if (!result.success) {
         throw new Error(result.error || 'Failed to fetch profile');
@@ -79,7 +108,7 @@ export function useProfile(handle: string) {
     },
     staleTime: 1000 * 60 * 5, // 5 minutes
     gcTime: 1000 * 60 * 30, // 30 minutes
-    enabled: !!handle,
+    enabled: !!handle && isValidHandle(handle),
     retry: (failureCount, error) => {
       if (failureCount >= 3) return false;
       return handleQueryError(error);
@@ -92,6 +121,10 @@ export function useAuthorFeed(handle: string) {
   return useInfiniteQuery({
     queryKey: queryKeys.authorFeed(handle),
     queryFn: async ({ pageParam }) => {
+      if (!isValidHandle(handle)) {
+        throw new Error('Invalid handle format');
+      }
+      
       const result = await atprotoClient.getAuthorFeed(handle, 30, pageParam);
       if (!result.success) {
         throw new Error(result.error || 'Failed to fetch author feed');
@@ -102,7 +135,7 @@ export function useAuthorFeed(handle: string) {
     initialPageParam: undefined as string | undefined,
     staleTime: 1000 * 60 * 2, // 2 minutes
     gcTime: 1000 * 60 * 15, // 15 minutes
-    enabled: !!handle,
+    enabled: !!handle && isValidHandle(handle),
     retry: (failureCount, error) => {
       if (failureCount >= 3) return false;
       return handleQueryError(error);
@@ -115,8 +148,24 @@ export function useActorLikes(handle: string) {
   return useInfiniteQuery({
     queryKey: queryKeys.actorLikes(handle),
     queryFn: async ({ pageParam }) => {
+      if (!isValidHandle(handle)) {
+        throw new Error('Invalid handle format');
+      }
+      
+      // Check if the profile exists first before trying to get likes
+      const profileResult = await atprotoClient.getProfile(handle);
+      if (!profileResult.success) {
+        throw new Error(profileResult.error || 'Profile not found');
+      }
+      
       const result = await atprotoClient.getActorLikes(handle, 30, pageParam);
       if (!result.success) {
+        // If likes are not available, return empty feed instead of error
+        if (result.error?.includes('not found') || 
+            result.error?.includes('not available') ||
+            result.error?.includes('Invalid request')) {
+          return { feed: [], cursor: undefined };
+        }
         throw new Error(result.error || 'Failed to fetch actor likes');
       }
       return result.data;
@@ -125,9 +174,9 @@ export function useActorLikes(handle: string) {
     initialPageParam: undefined as string | undefined,
     staleTime: 1000 * 60 * 3, // 3 minutes
     gcTime: 1000 * 60 * 20, // 20 minutes
-    enabled: !!handle,
+    enabled: !!handle && isValidHandle(handle),
     retry: (failureCount, error) => {
-      if (failureCount >= 3) return false;
+      if (failureCount >= 2) return false; // Reduce retries for likes
       return handleQueryError(error);
     },
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
@@ -139,6 +188,10 @@ export function usePostThread(uri: string) {
   return useQuery({
     queryKey: queryKeys.postThread(uri),
     queryFn: async () => {
+      if (!uri || typeof uri !== 'string' || uri.trim().length === 0) {
+        throw new Error('Invalid post URI');
+      }
+      
       const result = await atprotoClient.getPostThread(uri);
       if (!result.success) {
         throw new Error(result.error || 'Failed to fetch post thread');
@@ -162,6 +215,10 @@ export function useCreatePost() {
   
   return useMutation({
     mutationFn: async ({ text, images }: { text: string; images?: any[] }) => {
+      if (!text || text.trim().length === 0) {
+        throw new Error('Post text cannot be empty');
+      }
+      
       const result = await atprotoClient.createPost(text, images);
       if (!result.success) {
         throw new Error(result.error || 'Failed to create post');
@@ -197,6 +254,10 @@ export function useCreateReply() {
       rootUri: string; 
       rootCid: string; 
     }) => {
+      if (!text || text.trim().length === 0) {
+        throw new Error('Reply text cannot be empty');
+      }
+      
       const result = await atprotoClient.createReply(text, parentUri, parentCid, rootUri, rootCid);
       if (!result.success) {
         throw new Error(result.error || 'Failed to create reply');
@@ -222,6 +283,10 @@ export function useLikePost() {
   
   return useMutation({
     mutationFn: async ({ uri, cid }: { uri: string; cid: string }) => {
+      if (!uri || !cid) {
+        throw new Error('Invalid post URI or CID');
+      }
+      
       const result = await atprotoClient.likePost(uri, cid);
       if (!result.success) {
         throw new Error(result.error || 'Failed to like post');
@@ -274,6 +339,10 @@ export function useUnlikePost() {
   
   return useMutation({
     mutationFn: async ({ likeUri }: { likeUri: string }) => {
+      if (!likeUri) {
+        throw new Error('Invalid like URI');
+      }
+      
       const result = await atprotoClient.unlikePost(likeUri);
       if (!result.success) {
         throw new Error(result.error || 'Failed to unlike post');
@@ -297,6 +366,10 @@ export function useRepost() {
   
   return useMutation({
     mutationFn: async ({ uri, cid }: { uri: string; cid: string }) => {
+      if (!uri || !cid) {
+        throw new Error('Invalid post URI or CID');
+      }
+      
       const result = await atprotoClient.repost(uri, cid);
       if (!result.success) {
         throw new Error(result.error || 'Failed to repost');
@@ -349,6 +422,10 @@ export function useDeleteRepost() {
   
   return useMutation({
     mutationFn: async ({ repostUri }: { repostUri: string }) => {
+      if (!repostUri) {
+        throw new Error('Invalid repost URI');
+      }
+      
       const result = await atprotoClient.deleteRepost(repostUri);
       if (!result.success) {
         throw new Error(result.error || 'Failed to delete repost');
@@ -372,6 +449,10 @@ export function useFollowProfile() {
   
   return useMutation({
     mutationFn: async ({ did }: { did: string }) => {
+      if (!did) {
+        throw new Error('Invalid DID');
+      }
+      
       const result = await atprotoClient.followProfile(did);
       if (!result.success) {
         throw new Error(result.error || 'Failed to follow profile');
@@ -395,6 +476,10 @@ export function useUnfollowProfile() {
   
   return useMutation({
     mutationFn: async ({ followUri }: { followUri: string }) => {
+      if (!followUri) {
+        throw new Error('Invalid follow URI');
+      }
+      
       const result = await atprotoClient.unfollowProfile(followUri);
       if (!result.success) {
         throw new Error(result.error || 'Failed to unfollow profile');

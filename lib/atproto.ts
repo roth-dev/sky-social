@@ -202,8 +202,15 @@ export class ATProtoClient {
 
   async getProfile(actor: string) {
     try {
+      // Validate actor parameter
+      if (!actor || typeof actor !== 'string' || actor.trim().length === 0) {
+        throw new Error('Invalid actor parameter');
+      }
+
+      const cleanActor = actor.trim();
+      
       const response = await this.retryWithBackoff(
-        () => this.agent.getProfile({ actor }),
+        () => this.agent.getProfile({ actor: cleanActor }),
         'Get Profile'
       );
       
@@ -219,8 +226,15 @@ export class ATProtoClient {
 
   async getAuthorFeed(actor: string, limit = 30, cursor?: string) {
     try {
+      // Validate actor parameter
+      if (!actor || typeof actor !== 'string' || actor.trim().length === 0) {
+        throw new Error('Invalid actor parameter');
+      }
+
+      const cleanActor = actor.trim();
+      
       const response = await this.retryWithBackoff(
-        () => this.agent.getAuthorFeed({ actor, limit, cursor }),
+        () => this.agent.getAuthorFeed({ actor: cleanActor, limit, cursor }),
         'Get Author Feed'
       );
       
@@ -236,14 +250,42 @@ export class ATProtoClient {
 
   async getActorLikes(actor: string, limit = 30, cursor?: string) {
     try {
+      // Validate actor parameter
+      if (!actor || typeof actor !== 'string' || actor.trim().length === 0) {
+        throw new Error('Invalid actor parameter');
+      }
+
+      const cleanActor = actor.trim();
+      
+      // First check if the profile exists
+      const profileCheck = await this.getProfile(cleanActor);
+      if (!profileCheck.success) {
+        return { 
+          success: false, 
+          error: 'Profile not found'
+        };
+      }
+      
       const response = await this.retryWithBackoff(
-        () => this.agent.getActorLikes({ actor, limit, cursor }),
+        () => this.agent.getActorLikes({ actor: cleanActor, limit, cursor }),
         'Get Actor Likes'
       );
       
       return { success: true, data: response.data };
     } catch (error: any) {
       console.error('Failed to get actor likes:', error);
+      
+      // Handle specific cases where likes might not be available
+      if (error.status === 400 || 
+          error.message?.includes('Invalid request') ||
+          error.message?.includes('not found') ||
+          error.message?.includes('not available')) {
+        return { 
+          success: true, 
+          data: { feed: [], cursor: undefined }
+        };
+      }
+      
       return { 
         success: false, 
         error: this.getErrorMessage(error)
@@ -253,8 +295,15 @@ export class ATProtoClient {
 
   async getPostThread(uri: string, depth = 6, parentHeight = 80) {
     try {
+      // Validate URI parameter
+      if (!uri || typeof uri !== 'string' || uri.trim().length === 0) {
+        throw new Error('Invalid post URI');
+      }
+
+      const cleanUri = uri.trim();
+      
       const response = await this.retryWithBackoff(
-        () => this.agent.getPostThread({ uri, depth, parentHeight }),
+        () => this.agent.getPostThread({ uri: cleanUri, depth, parentHeight }),
         'Get Post Thread'
       );
       
@@ -274,8 +323,12 @@ export class ATProtoClient {
     }
 
     try {
+      if (!did || typeof did !== 'string' || did.trim().length === 0) {
+        throw new Error('Invalid DID parameter');
+      }
+
       const response = await this.retryWithBackoff(
-        () => this.agent.follow(did),
+        () => this.agent.follow(did.trim()),
         'Follow Profile'
       );
       
@@ -295,8 +348,12 @@ export class ATProtoClient {
     }
 
     try {
+      if (!followUri || typeof followUri !== 'string' || followUri.trim().length === 0) {
+        throw new Error('Invalid follow URI parameter');
+      }
+
       await this.retryWithBackoff(
-        () => this.agent.deleteFollow(followUri),
+        () => this.agent.deleteFollow(followUri.trim()),
         'Unfollow Profile'
       );
       
@@ -316,8 +373,12 @@ export class ATProtoClient {
     }
 
     try {
+      if (!text || typeof text !== 'string' || text.trim().length === 0) {
+        throw new Error('Post text cannot be empty');
+      }
+
       const record: any = {
-        text,
+        text: text.trim(),
         createdAt: new Date().toISOString(),
       };
 
@@ -347,8 +408,16 @@ export class ATProtoClient {
     }
 
     try {
+      if (!text || typeof text !== 'string' || text.trim().length === 0) {
+        throw new Error('Reply text cannot be empty');
+      }
+
+      if (!parentUri || !parentCid || !rootUri || !rootCid) {
+        throw new Error('Invalid reply parameters');
+      }
+
       const record: any = {
-        text,
+        text: text.trim(),
         createdAt: new Date().toISOString(),
         reply: {
           root: {
@@ -383,6 +452,10 @@ export class ATProtoClient {
     }
 
     try {
+      if (!uri || !cid) {
+        throw new Error('Invalid post URI or CID');
+      }
+
       const response = await this.retryWithBackoff(
         () => this.agent.like(uri, cid),
         'Like Post'
@@ -404,6 +477,10 @@ export class ATProtoClient {
     }
 
     try {
+      if (!likeUri) {
+        throw new Error('Invalid like URI');
+      }
+
       await this.retryWithBackoff(
         () => this.agent.deleteLike(likeUri),
         'Unlike Post'
@@ -425,6 +502,10 @@ export class ATProtoClient {
     }
 
     try {
+      if (!uri || !cid) {
+        throw new Error('Invalid post URI or CID');
+      }
+
       const response = await this.retryWithBackoff(
         () => this.agent.repost(uri, cid),
         'Repost'
@@ -446,6 +527,10 @@ export class ATProtoClient {
     }
 
     try {
+      if (!repostUri) {
+        throw new Error('Invalid repost URI');
+      }
+
       await this.retryWithBackoff(
         () => this.agent.deleteRepost(repostUri),
         'Delete Repost'
@@ -504,6 +589,13 @@ export class ATProtoClient {
       }
       if (error.message.includes('authentication')) {
         return 'Authentication error. Please log in again.';
+      }
+      if (error.message.includes('Profile not found') || 
+          error.message.includes('Actor not found')) {
+        return 'Profile not found. The user may not exist or may have changed their handle.';
+      }
+      if (error.message.includes('Invalid request')) {
+        return 'Invalid request. Please check your input and try again.';
       }
     }
 

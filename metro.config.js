@@ -15,4 +15,7 @@ config.resolver.sourceExts.push('mjs');
 // Enable experimental features for better performance
 config.transformer.unstable_allowRequireContext = true;
 
-module.exports = withNativeWind(config, { input: './global.css' });
+// Exclude node_modules from transformation to prevent babel issues
+config.transformer.babelTransformerPath = require.resolve('metro-react-native-babel-transformer');
+
+module.exports = withNativeWind(config, { input: './src/global.css' });

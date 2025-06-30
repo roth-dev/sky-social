@@ -16,33 +16,23 @@ function RootLayout() {
   return (
     <Fragment>
       <Stack screenOptions={{ headerShown: false }}>
-        {/* <Stack.Protected guard={loading}>
-          <Stack.Screen name="splash" />
-        </Stack.Protected> */}
-
-        <Stack.Protected guard={isAuthenticated || Platform.OS === "web"}>
-          <Stack.Screen
-            name="(tabs)"
-            options={{
-              headerShown: false,
-              animation: "fade_from_bottom",
-              animationTypeForReplace: "push",
-            }}
-          />
-          <Stack.Screen name="post/[uri]" options={{ headerShown: false }} />
-          <Stack.Screen
-            name="profile/[handle]"
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen name="search/people" options={{ headerShown: false }} />
-          <Stack.Screen name="search/feeds" options={{ headerShown: false }} />
-          <Stack.Screen name="feed/[uri]" options={{ headerShown: false }} />
-        </Stack.Protected>
-
-        <Stack.Protected guard={!isAuthenticated}>
-          <Stack.Screen name="login" options={{ headerShown: false }} />
-        </Stack.Protected>
-
+        {/* Always show tabs - authentication is handled within individual screens */}
+        <Stack.Screen
+          name="(tabs)"
+          options={{
+            headerShown: false,
+            animation: "fade_from_bottom",
+            animationTypeForReplace: "push",
+          }}
+        />
+        <Stack.Screen name="post/[uri]" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="profile/[handle]"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen name="search/people" options={{ headerShown: false }} />
+        <Stack.Screen name="search/feeds" options={{ headerShown: false }} />
+        <Stack.Screen name="feed/[uri]" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />

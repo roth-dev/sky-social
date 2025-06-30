@@ -37,7 +37,8 @@ export default function HomeScreen() {
     likeUri?: string
   ) => {
     if (!isAuthenticated) {
-      router.push("/login");
+      // For unauthenticated users, show a prompt to sign in
+      router.push("/profile");
       return;
     }
 
@@ -55,7 +56,8 @@ export default function HomeScreen() {
     repostUri?: string
   ) => {
     if (!isAuthenticated) {
-      router.push("/login");
+      // For unauthenticated users, show a prompt to sign in
+      router.push("/profile");
       return;
     }
 
@@ -103,7 +105,11 @@ export default function HomeScreen() {
     <EmptyState
       type="timeline"
       title="Welcome to Sky Social!"
-      description="Discover posts from the decentralized social web. Sign in to see your personalized timeline and interact with posts."
+      description={
+        isAuthenticated
+          ? "Discover posts from the decentralized social web. Follow people to see their posts in your timeline."
+          : "Discover posts from the decentralized social web. Sign in to interact with posts and see your personalized timeline."
+      }
     />
   );
 

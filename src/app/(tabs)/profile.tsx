@@ -8,6 +8,7 @@ import {
   Alert,
   RefreshControl,
   Platform,
+  KeyboardAvoidingView,
 } from "react-native";
 import { Header } from "@/components/Header";
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
@@ -18,6 +19,7 @@ import {
 } from "@/components/placeholders/ProfilePlaceholder";
 import { EmptyState, ErrorState } from "@/components/placeholders/EmptyState";
 import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   useProfile,
@@ -27,6 +29,7 @@ import {
 } from "@/lib/queries";
 import { Settings } from "lucide-react-native";
 import { router } from "expo-router";
+import { Image } from "expo-image";
 
 const TABS = [
   { key: "posts", title: "Posts" },
@@ -35,8 +38,14 @@ const TABS = [
 ];
 
 export default function ProfileScreen() {
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, user, logout, login } = useAuth();
   const [activeTab, setActiveTab] = useState("posts");
+
+  // Login form state
+  const [identifier, setIdentifier] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   // Queries
   const profileQuery = useProfile(user?.handle || "");
@@ -52,7 +61,34 @@ export default function ProfileScreen() {
     Alert.alert("More Options", "Additional options coming soon!");
   };
 
+  const handleLogin = async () => {
+    if (!identifier.trim() || !password.trim()) {
+      setError("Please fill in all fields");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const result = await login(identifier, password);
+      if (result.success) {
+        // Login successful, user will be redirected automatically
+        setIdentifier("");
+        setPassword("");
+      } else {
+        setError(result.error || "Login failed");
+      }
+    } catch (error) {
+      setError("An unexpected error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const onRefresh = useCallback(() => {
+    if (!isAuthenticated) return;
+    
     profileQuery.refetch();
     switch (activeTab) {
       case "posts":
@@ -65,9 +101,11 @@ export default function ProfileScreen() {
         mediaQuery.refetch();
         break;
     }
-  }, []);
+  }, [activeTab, isAuthenticated]);
 
   const handleLoadMore = () => {
+    if (!isAuthenticated) return;
+    
     switch (activeTab) {
       case "posts":
         if (
@@ -157,25 +195,69 @@ export default function ProfileScreen() {
     (activeTab === "liked" && likedQuery.isFetching) ||
     (activeTab === "media" && mediaQuery.isFetching);
 
+  // Show login form for unauthenticated users
   if (!isAuthenticated || !user) {
     return (
-      <View style={styles.container}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
         {Platform.OS !== "web" && <Header title="Profile" />}
-        <View style={styles.notAuthenticatedContainer}>
-          <Text style={styles.notAuthenticatedTitle}>Your profile awaits</Text>
-          <Text style={styles.notAuthenticatedText}>
-            Sign in to view and manage your profile, see your posts, and connect
-            with others.
-          </Text>
-          <Button
-            title="Sign In"
-            onPress={() => router.push("/login")}
-            variant="primary"
-            size="large"
-            style={styles.signInButton}
-          />
-        </View>
-      </View>
+        
+        <ScrollView 
+          style={styles.loginContainer}
+          contentContainerStyle={styles.loginContent}
+          keyboardShouldPersistTaps="handled"
+        >
+          <View style={styles.loginHeader}>
+            <Image
+              source={require("../../../assets/images/icon.png")}
+              style={styles.logo}
+              contentFit="contain"
+            />
+            <Text style={styles.loginTitle}>Welcome to Sky Social</Text>
+            <Text style={styles.loginSubtitle}>
+              Connect with the decentralized social web
+            </Text>
+          </View>
+
+          <View style={styles.loginForm}>
+            <Input
+              label="Username or Email"
+              placeholder="your.handle or email@example.com"
+              value={identifier}
+              onChangeText={setIdentifier}
+              autoCapitalize="none"
+              autoCorrect={false}
+              style={styles.input}
+            />
+
+            <Input
+              label="Password"
+              placeholder="Enter your password"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+              style={styles.input}
+            />
+
+            {error ? (
+              <Text style={styles.errorText}>{error}</Text>
+            ) : null}
+
+            <Button
+              title={loading ? "Signing in..." : "Sign In"}
+              onPress={handleLogin}
+              disabled={loading}
+              style={styles.loginButton}
+            />
+
+            <Text style={styles.signupText}>
+              Don't have a Bluesky account? Create one at bsky.app
+            </Text>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     );
   }
 
@@ -290,14 +372,6 @@ export default function ProfileScreen() {
                 >
                   {tab.title}
                 </Text>
-                {/* <Text
-                  style={[
-                    styles.tabCount,
-                    activeTab === tab.key && styles.activeTabCount,
-                  ]}
-                >
-                  {getTabCount(tab.key)}
-                </Text> */}
               </TouchableOpacity>
             ))}
           </ScrollView>
@@ -331,28 +405,60 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
-  notAuthenticatedContainer: {
+  loginContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: 32,
+    backgroundColor: "#ffffff",
   },
-  notAuthenticatedTitle: {
-    fontSize: 24,
+  loginContent: {
+    flexGrow: 1,
+    justifyContent: "center",
+    paddingHorizontal: 24,
+    paddingVertical: 32,
+  },
+  loginHeader: {
+    alignItems: "center",
+    marginBottom: 48,
+  },
+  logo: {
+    width: 120,
+    height: 120,
+    marginBottom: 16,
+  },
+  loginTitle: {
+    fontSize: 28,
     fontWeight: "700",
     color: "#111827",
-    marginBottom: 12,
+    marginBottom: 8,
     textAlign: "center",
   },
-  notAuthenticatedText: {
+  loginSubtitle: {
     fontSize: 16,
     color: "#6b7280",
     textAlign: "center",
     lineHeight: 24,
-    marginBottom: 32,
   },
-  signInButton: {
-    paddingHorizontal: 32,
+  loginForm: {
+    gap: 16,
+  },
+  input: {
+    marginBottom: 8,
+  },
+  errorText: {
+    fontSize: 14,
+    color: "#ef4444",
+    textAlign: "center",
+    marginBottom: 8,
+  },
+  loginButton: {
+    marginTop: 8,
+    paddingVertical: 16,
+  },
+  signupText: {
+    fontSize: 14,
+    color: "#6b7280",
+    textAlign: "center",
+    marginTop: 16,
+    lineHeight: 20,
   },
   tabBarContainer: {
     backgroundColor: "#ffffff",
@@ -381,14 +487,6 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   activeTabText: {
-    color: "#3b82f6",
-  },
-  tabCount: {
-    fontSize: 12,
-    color: "#9ca3af",
-    fontWeight: "500",
-  },
-  activeTabCount: {
     color: "#3b82f6",
   },
   tabContentContainer: {

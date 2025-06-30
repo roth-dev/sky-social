@@ -651,7 +651,7 @@ export function useAuthorMediaFeed(handle: string) {
     if (!authorFeedQuery.data) return [];
 
     return authorFeedQuery.data.pages.flatMap((page) =>
-      page.feed.filter(
+      page?.feed.filter(
         (item) =>
           (item.post.embed?.images && item.post.embed.images.length > 0) ||
           isVideoPost(item.post)

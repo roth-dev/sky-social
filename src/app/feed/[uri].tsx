@@ -6,7 +6,6 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
-  Image,
 } from "react-native";
 import { useLocalSearchParams, router } from "expo-router";
 import { Header } from "@/components/Header";
@@ -26,6 +25,7 @@ import {
   Share,
 } from "lucide-react-native";
 import { Platform, Linking } from "react-native";
+import { Image } from "expo-image";
 
 // Mock feed data - In a real app, this would come from the AT Protocol API
 interface FeedDetails {
@@ -216,12 +216,12 @@ export default function FeedDetailScreen() {
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Banner */}
-        {feedData.banner && (
+        {!!feedData.banner && (
           <View style={styles.bannerContainer}>
             <Image
               source={{ uri: feedData.banner }}
               style={styles.banner}
-              resizeMode="cover"
+              contentFit="cover"
             />
             <View style={styles.bannerOverlay} />
           </View>

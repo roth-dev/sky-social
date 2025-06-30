@@ -1,7 +1,8 @@
-import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { EmbedExternal } from '@/types/embed';
-import { ExternalLink } from 'lucide-react-native';
+import React from "react";
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
+import { EmbedExternal } from "@/types/embed";
+import { ExternalLink } from "lucide-react-native";
+import { Image } from "expo-image";
 
 interface ExternalEmbedProps {
   external?: EmbedExternal;
@@ -9,7 +10,11 @@ interface ExternalEmbedProps {
   onLinkPress?: (url: string) => void;
 }
 
-export function ExternalEmbed({ external, isDetailView = false, onLinkPress }: ExternalEmbedProps) {
+export function ExternalEmbed({
+  external,
+  isDetailView = false,
+  onLinkPress,
+}: ExternalEmbedProps) {
   if (!external) {
     return null;
   }
@@ -19,7 +24,10 @@ export function ExternalEmbed({ external, isDetailView = false, onLinkPress }: E
       // Validate URL format first
       const url = external.uri;
       if (!isValidUrl(url)) {
-        Alert.alert('Invalid URL', 'This link appears to be invalid or malformed.');
+        Alert.alert(
+          "Invalid URL",
+          "This link appears to be invalid or malformed."
+        );
         return;
       }
 
@@ -27,30 +35,30 @@ export function ExternalEmbed({ external, isDetailView = false, onLinkPress }: E
         onLinkPress(url);
       } else {
         // Try to open the URL with better error handling
-        const { Linking } = require('react-native');
+        const { Linking } = require("react-native");
         const canOpen = await Linking.canOpenURL(url);
-        
+
         if (canOpen) {
           await Linking.openURL(url);
         } else {
           Alert.alert(
-            'Cannot Open Link', 
-            'This link cannot be opened on your device. It may be an invalid or unsupported URL format.',
+            "Cannot Open Link",
+            "This link cannot be opened on your device. It may be an invalid or unsupported URL format.",
             [
-              { text: 'Copy URL', onPress: () => copyToClipboard(url) },
-              { text: 'OK', style: 'cancel' }
+              { text: "Copy URL", onPress: () => copyToClipboard(url) },
+              { text: "OK", style: "cancel" },
             ]
           );
         }
       }
     } catch (error) {
-      console.error('Failed to open URL:', error);
+      console.error("Failed to open URL:", error);
       Alert.alert(
-        'Link Error',
-        'Unable to open this link. Would you like to copy the URL instead?',
+        "Link Error",
+        "Unable to open this link. Would you like to copy the URL instead?",
         [
-          { text: 'Copy URL', onPress: () => copyToClipboard(external.uri) },
-          { text: 'Cancel', style: 'cancel' }
+          { text: "Copy URL", onPress: () => copyToClipboard(external.uri) },
+          { text: "Cancel", style: "cancel" },
         ]
       );
     }
@@ -58,23 +66,23 @@ export function ExternalEmbed({ external, isDetailView = false, onLinkPress }: E
 
   const copyToClipboard = async (url: string) => {
     try {
-      if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      if (typeof navigator !== "undefined" && navigator.clipboard) {
         await navigator.clipboard.writeText(url);
-        Alert.alert('Copied', 'URL copied to clipboard');
+        Alert.alert("Copied", "URL copied to clipboard");
       } else {
         // Fallback for environments without clipboard API
-        Alert.alert('URL', url);
+        Alert.alert("URL", url);
       }
     } catch (error) {
-      console.error('Failed to copy URL:', error);
-      Alert.alert('URL', url);
+      console.error("Failed to copy URL:", error);
+      Alert.alert("URL", url);
     }
   };
 
   const isValidUrl = (url: string): boolean => {
     try {
       const urlObj = new URL(url);
-      return ['http:', 'https:'].includes(urlObj.protocol);
+      return ["http:", "https:"].includes(urlObj.protocol);
     } catch {
       return false;
     }
@@ -84,16 +92,19 @@ export function ExternalEmbed({ external, isDetailView = false, onLinkPress }: E
     try {
       const urlObj = new URL(url);
       let domain = urlObj.hostname;
-      
+
       // Remove www. prefix
-      if (domain.startsWith('www.')) {
+      if (domain.startsWith("www.")) {
         domain = domain.substring(4);
       }
-      
+
       return domain;
     } catch {
       // Fallback for invalid URLs
-      return url.replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0];
+      return url
+        .replace(/^https?:\/\//, "")
+        .replace(/^www\./, "")
+        .split("/")[0];
     }
   };
 
@@ -112,37 +123,42 @@ export function ExternalEmbed({ external, isDetailView = false, onLinkPress }: E
       onPress={handlePress}
       activeOpacity={0.8}
     >
-      {external.thumb && isValidImageUrl(external.thumb) && (
+      {!!external.thumb && isValidImageUrl(external.thumb) && (
         <View style={styles.imageContainer}>
           <Image
             source={{ uri: external.thumb }}
             style={[styles.image, isDetailView && styles.detailImage]}
-            resizeMode="cover"
+            contentFit="cover"
             onError={(error) => {
-              console.warn('Failed to load thumbnail:', error.nativeEvent.error);
+              console.warn("Failed to load thumbnail:", error.error);
             }}
           />
         </View>
       )}
-      
-      <View style={[styles.content, !external.thumb && styles.contentWithoutImage]}>
+
+      <View
+        style={[styles.content, !external.thumb && styles.contentWithoutImage]}
+      >
         <View style={styles.header}>
           <ExternalLink size={14} color="#6b7280" />
           <Text style={styles.domain} numberOfLines={1}>
             {getDomain(external.uri)}
           </Text>
         </View>
-        
+
         <Text
           style={[styles.title, isDetailView && styles.detailTitle]}
           numberOfLines={isDetailView ? 3 : 2}
         >
           {external.title}
         </Text>
-        
+
         {external.description && (
           <Text
-            style={[styles.description, isDetailView && styles.detailDescription]}
+            style={[
+              styles.description,
+              isDetailView && styles.detailDescription,
+            ]}
             numberOfLines={isDetailView ? 4 : 2}
           >
             {external.description}
@@ -156,21 +172,21 @@ export function ExternalEmbed({ external, isDetailView = false, onLinkPress }: E
 const styles = StyleSheet.create({
   container: {
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: "#e5e7eb",
     borderRadius: 12,
-    overflow: 'hidden',
-    backgroundColor: '#ffffff',
+    overflow: "hidden",
+    backgroundColor: "#ffffff",
   },
   detailContainer: {
     borderRadius: 16,
   },
   imageContainer: {
     aspectRatio: 16 / 9,
-    backgroundColor: '#f3f4f6',
+    backgroundColor: "#f3f4f6",
   },
   image: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
   },
   detailImage: {
     aspectRatio: 16 / 9,
@@ -182,21 +198,21 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 6,
     gap: 6,
   },
   domain: {
     fontSize: 12,
-    color: '#6b7280',
-    fontWeight: '500',
+    color: "#6b7280",
+    fontWeight: "500",
     flex: 1,
   },
   title: {
     fontSize: 15,
-    fontWeight: '600',
-    color: '#111827',
+    fontWeight: "600",
+    color: "#111827",
     lineHeight: 20,
     marginBottom: 4,
   },
@@ -206,7 +222,7 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 13,
-    color: '#6b7280',
+    color: "#6b7280",
     lineHeight: 18,
   },
   detailDescription: {

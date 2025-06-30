@@ -4,7 +4,6 @@ import { useFrameworkReady } from "@/hooks/useFrameworkReady";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { QueryProvider } from "@/contexts/QueryProvider";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import "./global.css";
 import { Platform } from "react-native";
 import { Fragment } from "react";
 

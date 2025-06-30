@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   FlatList,
-  Image,
   TouchableOpacity,
   Dimensions,
 } from "react-native";
@@ -12,6 +11,7 @@ import { Post } from "@/components/Post";
 import { EmptyState } from "@/components/placeholders/EmptyState";
 import { ATFeedItem } from "@/types/atproto";
 import { Heart } from "lucide-react-native";
+import { Image } from "expo-image";
 
 interface ProfileTabContentProps {
   tabKey: string;

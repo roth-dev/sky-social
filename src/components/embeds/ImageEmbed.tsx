@@ -1,6 +1,13 @@
-import React from 'react';
-import { View, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
-import { EmbedImage } from '@/types/embed';
+import React from "react";
+import {
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  Dimensions,
+  Text,
+} from "react-native";
+import { EmbedImage } from "@/types/embed";
+import { Image } from "expo-image";
 
 interface ImageEmbedProps {
   images: EmbedImage[];
@@ -8,18 +15,27 @@ interface ImageEmbedProps {
   onImagePress?: (images: EmbedImage[], index: number) => void;
 }
 
-const { width: screenWidth } = Dimensions.get('window');
+const { width: screenWidth } = Dimensions.get("window");
 const MAX_IMAGE_WIDTH = screenWidth - 32; // Account for padding
 
-export function ImageEmbed({ images, isDetailView = false, onImagePress }: ImageEmbedProps) {
+export function ImageEmbed({
+  images,
+  isDetailView = false,
+  onImagePress,
+}: ImageEmbedProps) {
   if (!images || images.length === 0) {
     return null;
   }
 
-  const calculateImageDimensions = (image: EmbedImage, index: number, total: number) => {
-    const aspectRatio = image.aspectRatio ? 
-      image.aspectRatio.width / image.aspectRatio.height : 1;
-    
+  const calculateImageDimensions = (
+    image: EmbedImage,
+    index: number,
+    total: number
+  ) => {
+    const aspectRatio = image.aspectRatio
+      ? image.aspectRatio.width / image.aspectRatio.height
+      : 1;
+
     let width: number;
     let height: number;
 
@@ -67,7 +83,7 @@ export function ImageEmbed({ images, isDetailView = false, onImagePress }: Image
           <Image
             source={{ uri: images[0].fullsize }}
             style={[styles.singleImage, dimensions]}
-            resizeMode="cover"
+            contentFit="cover"
           />
         </TouchableOpacity>
       );
@@ -83,12 +99,15 @@ export function ImageEmbed({ images, isDetailView = false, onImagePress }: Image
                 key={index}
                 onPress={() => handleImagePress(index)}
                 activeOpacity={0.9}
-                style={[styles.imageWrapper, { marginRight: index === 0 ? 4 : 0 }]}
+                style={[
+                  styles.imageWrapper,
+                  { marginRight: index === 0 ? 4 : 0 },
+                ]}
               >
                 <Image
                   source={{ uri: image.fullsize }}
                   style={[styles.gridImage, dimensions]}
-                  resizeMode="cover"
+                  contentFit="cover"
                 />
               </TouchableOpacity>
             );
@@ -109,7 +128,7 @@ export function ImageEmbed({ images, isDetailView = false, onImagePress }: Image
             <Image
               source={{ uri: images[0].fullsize }}
               style={[styles.gridImage, firstDimensions]}
-              resizeMode="cover"
+              contentFit="cover"
             />
           </TouchableOpacity>
           <View style={styles.bottomImagesContainer}>
@@ -120,12 +139,15 @@ export function ImageEmbed({ images, isDetailView = false, onImagePress }: Image
                   key={index + 1}
                   onPress={() => handleImagePress(index + 1)}
                   activeOpacity={0.9}
-                  style={[styles.imageWrapper, { marginRight: index === 0 ? 4 : 0 }]}
+                  style={[
+                    styles.imageWrapper,
+                    { marginRight: index === 0 ? 4 : 0 },
+                  ]}
                 >
                   <Image
                     source={{ uri: image.fullsize }}
                     style={[styles.gridImage, dimensions]}
-                    resizeMode="cover"
+                    contentFit="cover"
                   />
                 </TouchableOpacity>
               );
@@ -139,9 +161,13 @@ export function ImageEmbed({ images, isDetailView = false, onImagePress }: Image
     return (
       <View style={styles.gridContainer}>
         {displayImages.map((image, index) => {
-          const dimensions = calculateImageDimensions(image, index, Math.min(totalImages, 4));
+          const dimensions = calculateImageDimensions(
+            image,
+            index,
+            Math.min(totalImages, 4)
+          );
           const isLastImage = index === 3 && totalImages > 4;
-          
+
           return (
             <TouchableOpacity
               key={index}
@@ -152,13 +178,13 @@ export function ImageEmbed({ images, isDetailView = false, onImagePress }: Image
                 {
                   marginRight: index % 2 === 0 ? 4 : 0,
                   marginBottom: index < 2 ? 4 : 0,
-                }
+                },
               ]}
             >
               <Image
                 source={{ uri: image.fullsize }}
                 style={[styles.gridImage, dimensions]}
-                resizeMode="cover"
+                contentFit="cover"
               />
               {isLastImage && (
                 <View style={styles.moreImagesOverlay}>
@@ -172,60 +198,56 @@ export function ImageEmbed({ images, isDetailView = false, onImagePress }: Image
     );
   };
 
-  return (
-    <View style={styles.container}>
-      {renderImageGrid()}
-    </View>
-  );
+  return <View style={styles.container}>{renderImageGrid()}</View>;
 }
 
 const styles = StyleSheet.create({
   container: {
     borderRadius: 12,
-    overflow: 'hidden',
-    backgroundColor: '#f3f4f6',
+    overflow: "hidden",
+    backgroundColor: "#f3f4f6",
   },
   singleImage: {
-    backgroundColor: '#e5e7eb',
+    backgroundColor: "#e5e7eb",
   },
   twoImageContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   threeImageContainer: {
-    flexDirection: 'column',
+    flexDirection: "column",
   },
   firstImageWrapper: {
     marginBottom: 4,
   },
   bottomImagesContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   gridContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
   },
   imageWrapper: {
     flex: 1,
   },
   gridImageWrapper: {
-    position: 'relative',
+    position: "relative",
   },
   gridImage: {
-    backgroundColor: '#e5e7eb',
+    backgroundColor: "#e5e7eb",
   },
   moreImagesOverlay: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    alignItems: "center",
+    justifyContent: "center",
   },
   moreImagesText: {
-    color: '#ffffff',
+    color: "#ffffff",
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: "700",
   },
 });

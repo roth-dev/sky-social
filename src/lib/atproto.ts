@@ -187,7 +187,19 @@ export class ATProtoClient {
       }
 
       const response = await this.retryWithBackoff(
-        () => this.agent.getTimeline({ limit, cursor }),
+        () =>
+          this.agent.app.bsky.feed.getFeed(
+            {
+              limit,
+              cursor,
+              feed: "at://did:plc:z72i7hdynmk6r22z27h6tvur/app.bsky.feed.generator/whats-hot",
+            },
+            {
+              headers: {
+                "Accept-Language": "en,km",
+              },
+            }
+          ),
         "Get Timeline"
       );
 

@@ -36,11 +36,10 @@ export default function UserProfileScreen() {
   const { handle } = useLocalSearchParams<{ handle: string }>();
   const { isAuthenticated, user: currentUser } = useAuth();
   const [activeTab, setActiveTab] = useState("posts");
-
   // Queries
   const profileQuery = useProfile(handle || "");
   const postsQuery = useAuthorFeed(handle || "");
-  const likedQuery = useActorLikes(handle || "");
+  // const likedQuery = useActorLikes(handle || "");
   const mediaQuery = useAuthorMediaFeed(handle || "");
 
   // Mutations
@@ -82,13 +81,13 @@ export default function UserProfileScreen() {
     profileQuery.refetch();
     switch (activeTab) {
       case "posts":
-        postsQuery.refetch();
+        // postsQuery.refetch();
         break;
       case "liked":
-        likedQuery.refetch();
+        // likedQuery.refetch();
         break;
       case "media":
-        mediaQuery.refetch();
+        // mediaQuery.refetch();
         break;
     }
   }, []);
@@ -104,15 +103,15 @@ export default function UserProfileScreen() {
           postsQuery.fetchNextPage();
         }
         break;
-      case "liked":
-        if (
-          likedQuery.hasNextPage &&
-          !likedQuery.isFetchingNextPage &&
-          !likedQuery.isLoading
-        ) {
-          likedQuery.fetchNextPage();
-        }
-        break;
+      // case "liked":
+      //   if (
+      //     likedQuery.hasNextPage &&
+      //     !likedQuery.isFetchingNextPage &&
+      //     !likedQuery.isLoading
+      //   ) {
+      //     likedQuery.fetchNextPage();
+      //   }
+      //   break;
       case "media":
         if (
           mediaQuery.hasNextPage &&
@@ -129,8 +128,8 @@ export default function UserProfileScreen() {
     switch (tabKey) {
       case "posts":
         return postsQuery.data?.pages.flatMap((page) => page?.feed) || [];
-      case "liked":
-        return likedQuery.data?.pages.flatMap((page) => page?.feed) || [];
+      // case "liked":
+      //   return likedQuery.data?.pages.flatMap((page) => page?.feed) || [];
       case "media":
         return mediaQuery.data || [];
       default:
@@ -155,8 +154,8 @@ export default function UserProfileScreen() {
     switch (tabKey) {
       case "posts":
         return postsQuery.isLoading;
-      case "liked":
-        return likedQuery.isLoading;
+      // case "liked":
+      //   return likedQuery.isLoading;
       case "media":
         return mediaQuery.isLoading;
       default:
@@ -168,8 +167,8 @@ export default function UserProfileScreen() {
     switch (tabKey) {
       case "posts":
         return postsQuery.isFetchingNextPage;
-      case "liked":
-        return likedQuery.isFetchingNextPage;
+      // case "liked":
+      //   return likedQuery.isFetchingNextPage;
       case "media":
         return mediaQuery.isFetchingNextPage;
       default:
@@ -180,7 +179,7 @@ export default function UserProfileScreen() {
   const isRefreshing =
     profileQuery.isFetching ||
     (activeTab === "posts" && postsQuery.isFetching) ||
-    (activeTab === "liked" && likedQuery.isFetching) ||
+    // (activeTab === "liked" && likedQuery.isFetching) ||
     (activeTab === "media" && mediaQuery.isFetching);
 
   const followLoading = followMutation.isPending || unfollowMutation.isPending;

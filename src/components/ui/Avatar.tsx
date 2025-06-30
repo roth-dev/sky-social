@@ -1,24 +1,34 @@
-import React from 'react';
-import { View, Image, Text, StyleSheet } from 'react-native';
+import { Image } from "expo-image";
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
 
 interface AvatarProps {
   uri?: string;
-  size?: 'small' | 'medium' | 'large' | 'xl';
+  size?: "small" | "medium" | "large" | "xl";
   fallbackText?: string;
   style?: any;
 }
 
-export function Avatar({ uri, size = 'medium', fallbackText, style }: AvatarProps) {
+export function Avatar({
+  uri,
+  size = "medium",
+  fallbackText,
+  style,
+}: AvatarProps) {
   const sizeStyle = styles[size];
-  
+
   return (
     <View style={[styles.container, sizeStyle, style]}>
       {uri ? (
-        <Image source={{ uri }} style={[styles.image, sizeStyle]} />
+        <Image
+          source={{ uri }}
+          style={[styles.image, sizeStyle]}
+          transition={800}
+        />
       ) : (
         <View style={[styles.fallback, sizeStyle]}>
           <Text style={[styles.fallbackText, styles[`${size}Text`]]}>
-            {fallbackText?.charAt(0)?.toUpperCase() || '?'}
+            {fallbackText?.charAt(0)?.toUpperCase() || "?"}
           </Text>
         </View>
       )}
@@ -29,20 +39,20 @@ export function Avatar({ uri, size = 'medium', fallbackText, style }: AvatarProp
 const styles = StyleSheet.create({
   container: {
     borderRadius: 999,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   image: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
   },
   fallback: {
-    backgroundColor: '#e5e7eb',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#e5e7eb",
+    alignItems: "center",
+    justifyContent: "center",
   },
   fallbackText: {
-    color: '#6b7280',
-    fontWeight: '500',
+    color: "#6b7280",
+    fontWeight: "500",
   },
   small: {
     width: 32,

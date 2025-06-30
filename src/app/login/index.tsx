@@ -5,12 +5,12 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
-  Image,
 } from "react-native";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { useAuth } from "@/contexts/AuthContext";
 import { router } from "expo-router";
+import { Image } from "expo-image";
 
 export default function AuthScreen() {
   const { login } = useAuth();
@@ -51,7 +51,7 @@ export default function AuthScreen() {
         <View style={styles.header}>
           <Image
             source={require("../../../assets/images/icon.png")}
-            resizeMode="contain"
+            contentFit="contain"
             style={{ width: 120, height: 120 }}
           />
           <Text style={styles.title}>Welcome to Sky Social</Text>

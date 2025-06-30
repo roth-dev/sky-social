@@ -2,7 +2,6 @@ import React, { useState, useCallback } from "react";
 import {
   View,
   Modal,
-  Image,
   StyleSheet,
   Dimensions,
   TouchableOpacity,
@@ -25,6 +24,7 @@ import {
   Share,
   MoveHorizontal as MoreHorizontal,
 } from "lucide-react-native";
+import { Image } from "expo-image";
 
 interface LightBoxProps {
   visible: boolean;
@@ -297,9 +297,9 @@ export function LightBox({
             </TouchableOpacity>
 
             <View style={styles.headerCenter}>
-              <Text style={styles.headerTitle}>
+              {/* <Text style={styles.headerTitle}>
                 {currentImage.alt || `Image ${currentIndex + 1}`}
-              </Text>
+              </Text> */}
               <Text style={styles.headerSubtitle}>
                 {currentIndex + 1} of {images.length}
               </Text>
@@ -325,7 +325,7 @@ export function LightBox({
                       height: imageDimensions.height,
                     },
                   ]}
-                  resizeMode="contain"
+                  contentFit="contain"
                 />
               </Animated.View>
             </Animated.View>

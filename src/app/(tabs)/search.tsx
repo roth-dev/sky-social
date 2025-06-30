@@ -42,8 +42,8 @@ export default function SearchScreen() {
   const searchActorsQuery = useSearchActors(debouncedQuery);
   const searchPostsQuery = useSearchPosts(debouncedQuery);
 
-  // Discovery queries
-  const suggestedFollowsQuery = useSuggestedFollows();
+  // Discovery queries - pass authentication status
+  const suggestedFollowsQuery = useSuggestedFollows(isAuthenticated);
   const popularFeedsQuery = usePopularFeeds();
 
   // Post interaction mutations

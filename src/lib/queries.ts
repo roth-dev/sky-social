@@ -174,7 +174,7 @@ export function useSearchPosts(query: string) {
   });
 }
 
-export function useSuggestedFollows() {
+export function useSuggestedFollows(isAuthenticated: boolean = false) {
   return useQuery({
     queryKey: queryKeys.suggestedFollows,
     queryFn: async () => {
@@ -186,6 +186,7 @@ export function useSuggestedFollows() {
     },
     staleTime: 1000 * 60 * 10, // 10 minutes
     gcTime: 1000 * 60 * 30, // 30 minutes
+    enabled: isAuthenticated, // Only run when authenticated
     retry: (failureCount, error) => {
       if (failureCount >= 2) return false;
       return handleQueryError(error);

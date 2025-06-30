@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Alert,
   Platform,
+  Modal,
 } from "react-native";
 import { Header } from "@/components/Header";
 import { useAuth } from "@/contexts/AuthContext";
@@ -47,7 +48,7 @@ interface SettingSection {
 
 export default function SettingsScreen() {
   const { isAuthenticated, user, logout } = useAuth();
-  const { language, themeMode, setLanguage, setThemeMode } = useSettings();
+  const { language, themeMode, isDarkMode, setLanguage, setThemeMode } = useSettings();
   const { t } = useTranslation();
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [showThemeModal, setShowThemeModal] = useState(false);
@@ -188,45 +189,54 @@ export default function SettingsScreen() {
   }
 
   const renderLanguageModal = () => {
-    if (!showLanguageModal) return null;
-
     const languages: { code: Language; nameKey: string }[] = [
       { code: "en", nameKey: "settings.language.english" },
       { code: "km", nameKey: "settings.language.khmer" },
     ];
 
     return (
-      <View style={styles.modalOverlay}>
-        <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>{t("settings.language")}</Text>
-          
-          {languages.map((lang) => (
+      <Modal
+        visible={showLanguageModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowLanguageModal(false)}
+      >
+        <View style={[styles.modalOverlay, isDarkMode && styles.darkModalOverlay]}>
+          <View style={[styles.modalContent, isDarkMode && styles.darkModalContent]}>
+            <Text style={[styles.modalTitle, isDarkMode && styles.darkText]}>
+              {t("settings.language")}
+            </Text>
+            
+            {languages.map((lang) => (
+              <TouchableOpacity
+                key={lang.code}
+                style={[styles.modalOption, isDarkMode && styles.darkModalOption]}
+                onPress={() => handleLanguageSelect(lang.code)}
+              >
+                <Text style={[styles.modalOptionText, isDarkMode && styles.darkText]}>
+                  {t(lang.nameKey)}
+                </Text>
+                {language === lang.code && (
+                  <Check size={20} color="#3b82f6" />
+                )}
+              </TouchableOpacity>
+            ))}
+            
             <TouchableOpacity
-              key={lang.code}
-              style={styles.modalOption}
-              onPress={() => handleLanguageSelect(lang.code)}
+              style={styles.modalCancelButton}
+              onPress={() => setShowLanguageModal(false)}
             >
-              <Text style={styles.modalOptionText}>{t(lang.nameKey)}</Text>
-              {language === lang.code && (
-                <Check size={20} color="#3b82f6" />
-              )}
+              <Text style={[styles.modalCancelText, isDarkMode && styles.darkSecondaryText]}>
+                {t("common.cancel")}
+              </Text>
             </TouchableOpacity>
-          ))}
-          
-          <TouchableOpacity
-            style={styles.modalCancelButton}
-            onPress={() => setShowLanguageModal(false)}
-          >
-            <Text style={styles.modalCancelText}>{t("common.cancel")}</Text>
-          </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      </Modal>
     );
   };
 
   const renderThemeModal = () => {
-    if (!showThemeModal) return null;
-
     const themes: { mode: ThemeMode; nameKey: string; icon: React.ReactNode }[] = [
       { mode: "light", nameKey: "settings.theme.light", icon: <Sun size={20} color="#f59e0b" /> },
       { mode: "dark", nameKey: "settings.theme.dark", icon: <Moon size={20} color="#6366f1" /> },
@@ -234,52 +244,65 @@ export default function SettingsScreen() {
     ];
 
     return (
-      <View style={styles.modalOverlay}>
-        <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>{t("settings.theme")}</Text>
-          
-          {themes.map((theme) => (
+      <Modal
+        visible={showThemeModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowThemeModal(false)}
+      >
+        <View style={[styles.modalOverlay, isDarkMode && styles.darkModalOverlay]}>
+          <View style={[styles.modalContent, isDarkMode && styles.darkModalContent]}>
+            <Text style={[styles.modalTitle, isDarkMode && styles.darkText]}>
+              {t("settings.theme")}
+            </Text>
+            
+            {themes.map((theme) => (
+              <TouchableOpacity
+                key={theme.mode}
+                style={[styles.modalOption, isDarkMode && styles.darkModalOption]}
+                onPress={() => handleThemeSelect(theme.mode)}
+              >
+                <View style={styles.modalOptionLeft}>
+                  {theme.icon}
+                  <Text style={[styles.modalOptionText, isDarkMode && styles.darkText]}>
+                    {t(theme.nameKey)}
+                  </Text>
+                </View>
+                {themeMode === theme.mode && (
+                  <Check size={20} color="#3b82f6" />
+                )}
+              </TouchableOpacity>
+            ))}
+            
             <TouchableOpacity
-              key={theme.mode}
-              style={styles.modalOption}
-              onPress={() => handleThemeSelect(theme.mode)}
+              style={styles.modalCancelButton}
+              onPress={() => setShowThemeModal(false)}
             >
-              <View style={styles.modalOptionLeft}>
-                {theme.icon}
-                <Text style={styles.modalOptionText}>{t(theme.nameKey)}</Text>
-              </View>
-              {themeMode === theme.mode && (
-                <Check size={20} color="#3b82f6" />
-              )}
+              <Text style={[styles.modalCancelText, isDarkMode && styles.darkSecondaryText]}>
+                {t("common.cancel")}
+              </Text>
             </TouchableOpacity>
-          ))}
-          
-          <TouchableOpacity
-            style={styles.modalCancelButton}
-            onPress={() => setShowThemeModal(false)}
-          >
-            <Text style={styles.modalCancelText}>{t("common.cancel")}</Text>
-          </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      </Modal>
     );
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isDarkMode && styles.darkContainer]}>
       {Platform.OS !== "web" && (
         <Header
           title={t("settings.title")}
-          leftIcon={<SettingsIcon size={24} color="#111827" />}
+          leftIcon={<SettingsIcon size={24} color={isDarkMode ? "#f9fafb" : "#111827"} />}
         />
       )}
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* User Profile Section */}
         {isAuthenticated && user && (
-          <View style={styles.profileSection}>
+          <View style={[styles.profileSection, isDarkMode && styles.darkBorder]}>
             <TouchableOpacity
-              style={styles.profileCard}
+              style={[styles.profileCard, isDarkMode && styles.darkProfileCard]}
               onPress={() => router.push("/profile")}
             >
               <Avatar
@@ -288,10 +311,12 @@ export default function SettingsScreen() {
                 fallbackText={user.displayName || user.handle}
               />
               <View style={styles.profileInfo}>
-                <Text style={styles.profileName}>
+                <Text style={[styles.profileName, isDarkMode && styles.darkText]}>
                   {user.displayName || user.handle}
                 </Text>
-                <Text style={styles.profileHandle}>@{user.handle}</Text>
+                <Text style={[styles.profileHandle, isDarkMode && styles.darkSecondaryText]}>
+                  @{user.handle}
+                </Text>
               </View>
               <ChevronRight size={20} color="#6b7280" />
             </TouchableOpacity>
@@ -301,14 +326,17 @@ export default function SettingsScreen() {
         {/* Settings Sections */}
         {sections.map((section, sectionIndex) => (
           <View key={sectionIndex} style={styles.section}>
-            <Text style={styles.sectionTitle}>{t(section.titleKey)}</Text>
-            <View style={styles.sectionContent}>
+            <Text style={[styles.sectionTitle, isDarkMode && styles.darkSecondaryText]}>
+              {t(section.titleKey)}
+            </Text>
+            <View style={[styles.sectionContent, isDarkMode && styles.darkSectionContent]}>
               {section.items.map((item, itemIndex) => (
                 <TouchableOpacity
                   key={item.id}
                   style={[
                     styles.settingItem,
                     itemIndex === section.items.length - 1 && styles.lastItem,
+                    isDarkMode && styles.darkBorder,
                   ]}
                   onPress={item.onPress}
                 >
@@ -318,6 +346,7 @@ export default function SettingsScreen() {
                       style={[
                         styles.settingTitle,
                         item.destructive && styles.destructiveText,
+                        isDarkMode && !item.destructive && styles.darkText,
                       ]}
                     >
                       {t(item.titleKey)}
@@ -325,7 +354,9 @@ export default function SettingsScreen() {
                   </View>
                   <View style={styles.settingRight}>
                     {item.value && (
-                      <Text style={styles.settingValue}>{item.value}</Text>
+                      <Text style={[styles.settingValue, isDarkMode && styles.darkSecondaryText]}>
+                        {item.value}
+                      </Text>
                     )}
                     {item.showChevron && (
                       <ChevronRight size={16} color="#6b7280" />
@@ -339,9 +370,11 @@ export default function SettingsScreen() {
 
         {/* Sign In Prompt for Unauthenticated Users */}
         {!isAuthenticated && (
-          <View style={styles.signInSection}>
-            <Text style={styles.signInTitle}>Get the most out of Sky Social</Text>
-            <Text style={styles.signInDescription}>
+          <View style={[styles.signInSection, isDarkMode && styles.darkSignInSection]}>
+            <Text style={[styles.signInTitle, isDarkMode && styles.darkText]}>
+              Get the most out of Sky Social
+            </Text>
+            <Text style={[styles.signInDescription, isDarkMode && styles.darkSecondaryText]}>
               Sign in to access your profile, create posts, and connect with others.
             </Text>
             <Button
@@ -367,6 +400,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#ffffff",
   },
+  darkContainer: {
+    backgroundColor: "#111827",
+  },
   content: {
     flex: 1,
   },
@@ -375,6 +411,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: "#e5e7eb",
   },
+  darkBorder: {
+    borderBottomColor: "#374151",
+  },
   profileCard: {
     flexDirection: "row",
     alignItems: "center",
@@ -382,6 +421,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#f9fafb",
     borderRadius: 12,
     gap: 12,
+  },
+  darkProfileCard: {
+    backgroundColor: "#1f2937",
   },
   profileInfo: {
     flex: 1,
@@ -414,6 +456,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     borderColor: "#e5e7eb",
+  },
+  darkSectionContent: {
+    backgroundColor: "#1f2937",
+    borderColor: "#374151",
   },
   settingItem: {
     flexDirection: "row",
@@ -456,6 +502,9 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: "center",
   },
+  darkSignInSection: {
+    backgroundColor: "#1f2937",
+  },
   signInTitle: {
     fontSize: 18,
     fontWeight: "600",
@@ -474,15 +523,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
   },
   modalOverlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     justifyContent: "center",
     alignItems: "center",
-    zIndex: 1000,
+  },
+  darkModalOverlay: {
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
   },
   modalContent: {
     backgroundColor: "#ffffff",
@@ -491,6 +538,9 @@ const styles = StyleSheet.create({
     margin: 20,
     minWidth: 280,
     maxWidth: 400,
+  },
+  darkModalContent: {
+    backgroundColor: "#1f2937",
   },
   modalTitle: {
     fontSize: 18,
@@ -506,6 +556,9 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 8,
     marginBottom: 8,
+  },
+  darkModalOption: {
+    backgroundColor: "rgba(55, 65, 81, 0.3)",
   },
   modalOptionLeft: {
     flexDirection: "row",
@@ -525,5 +578,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#6b7280",
     fontWeight: "500",
+  },
+  darkText: {
+    color: "#f9fafb",
+  },
+  darkSecondaryText: {
+    color: "#9ca3af",
   },
 });

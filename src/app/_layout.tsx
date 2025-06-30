@@ -6,7 +6,7 @@ import { QueryProvider } from "@/contexts/QueryProvider";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Platform } from "react-native";
 import { Fragment } from "react";
-import "../global.css";
+import "./global.css";
 
 function RootLayout() {
   const { isAuthenticated } = useAuth();

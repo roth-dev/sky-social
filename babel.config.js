@@ -10,8 +10,8 @@ module.exports = function (api) {
       ]
     ],
     plugins: [
-      'react-native-reanimated/plugin',
-      'nativewind/babel'
+      'nativewind/babel',
+      'react-native-reanimated/plugin'
     ],
   };
 };

@@ -39,6 +39,8 @@
   
   .main-content-desktop {
     @apply lg:ml-64 lg:pb-0;
+    /* Set max width similar to mobile viewing */
+    @apply lg:max-w-2xl lg:mx-auto;
   }
 }
 
@@ -79,5 +81,13 @@
   
   .tab-bar-desktop {
     @apply flex;
+  }
+  
+  /* Override the main content positioning for desktop */
+  .main-content-desktop {
+    margin-left: 256px; /* 64 * 4 = 256px for lg:w-64 */
+    max-width: 672px; /* 2xl = 42rem = 672px */
+    margin-right: auto;
+    padding-bottom: 0;
   }
 }

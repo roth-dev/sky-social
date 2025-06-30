@@ -13,6 +13,12 @@
     padding: 0;
     background-color: #ffffff;
   }
+
+  /* Dark mode styles */
+  .dark body {
+    background-color: #111827;
+    color: #f9fafb;
+  }
 }
 
 /* Custom component styles */
@@ -41,6 +47,15 @@
     @apply lg:ml-64 lg:pb-0;
     /* Set max width similar to mobile viewing */
     @apply lg:max-w-2xl lg:mx-auto;
+  }
+
+  /* Dark mode component styles */
+  .dark .tab-bar-mobile {
+    @apply bg-gray-900 border-gray-700;
+  }
+
+  .dark .sidebar-desktop {
+    @apply lg:bg-gray-900 lg:border-gray-700;
   }
 }
 

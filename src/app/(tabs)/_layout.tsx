@@ -1,5 +1,5 @@
 import { Tabs } from "expo-router";
-import { Chrome as Home, Search, SquarePlus as PlusSquare, Heart, User, Video } from "lucide-react-native";
+import { Chrome as Home, Search, SquarePlus as PlusSquare, Heart, User, Settings } from "lucide-react-native";
 
 export default function TabLayout() {
   return (
@@ -45,7 +45,7 @@ export default function TabLayout() {
         name="video"
         options={{
           title: "Video",
-          tabBarIcon: ({ size, color }) => <Video size={size} color={color} />,
+          tabBarIcon: ({ size, color }) => <Heart size={size} color={color} />,
         }}
       />
       <Tabs.Screen
@@ -53,6 +53,13 @@ export default function TabLayout() {
         options={{
           title: "Profile",
           tabBarIcon: ({ size, color }) => <User size={size} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: "Settings",
+          tabBarIcon: ({ size, color }) => <Settings size={size} color={color} />,
         }}
       />
     </Tabs>

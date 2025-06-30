@@ -26,6 +26,7 @@ export default function TabLayout() {
           <Tabs.Screen name="create" />
           <Tabs.Screen name="video" />
           <Tabs.Screen name="profile" />
+          <Tabs.Screen name="settings" />
         </Tabs>
       </View>
       

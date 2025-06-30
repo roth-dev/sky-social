@@ -2,6 +2,8 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useFrameworkReady } from "@/hooks/useFrameworkReady";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { SettingsProvider } from "@/contexts/SettingsContext";
+import { I18nProvider } from "@/contexts/I18nContext";
 import { QueryProvider } from "@/contexts/QueryProvider";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Platform } from "react-native";
@@ -44,9 +46,13 @@ export default function App() {
   return (
     <QueryProvider>
       <AuthProvider>
-        <GestureHandlerRootView className="flex-1">
-          <RootLayout />
-        </GestureHandlerRootView>
+        <SettingsProvider>
+          <I18nProvider>
+            <GestureHandlerRootView className="flex-1">
+              <RootLayout />
+            </GestureHandlerRootView>
+          </I18nProvider>
+        </SettingsProvider>
       </AuthProvider>
     </QueryProvider>
   );

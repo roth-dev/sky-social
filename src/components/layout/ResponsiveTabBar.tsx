@@ -3,19 +3,21 @@ import { View, TouchableOpacity, Text } from "react-native";
 import { router, usePathname } from "expo-router";
 import { useAuth } from "@/contexts/AuthContext";
 import {
-  Home,
+  Chrome as Home,
   Search,
   SquarePlus as PlusSquare,
   User,
-  Video,
+  Heart,
+  Settings,
 } from "lucide-react-native";
 
 const NAVIGATION_ITEMS = [
   { key: "/", label: "Home", icon: Home },
   { key: "/search", label: "Search", icon: Search },
   { key: "/create", label: "New Post", icon: PlusSquare, requiresAuth: true },
-  { key: "/video", label: "Video", icon: Video, requiresAuth: true },
-  { key: "/profile", label: "Profile", icon: User, requiresAuth: true },
+  { key: "/video", label: "Video", icon: Heart, requiresAuth: true },
+  { key: "/profile", label: "Profile", icon: User },
+  { key: "/settings", label: "Settings", icon: Settings },
 ];
 
 export function ResponsiveTabBar() {
@@ -24,7 +26,7 @@ export function ResponsiveTabBar() {
 
   const handleNavigation = (path: string, requiresAuth?: boolean) => {
     if (requiresAuth && !isAuthenticated) {
-      router.push("/login");
+      router.push("/profile");
       return;
     }
     router.push(path);

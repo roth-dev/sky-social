@@ -10,7 +10,8 @@ import {
   SquarePlus as PlusSquare,
   User,
   LogOut,
-  Video,
+  Heart,
+  Settings,
 } from "lucide-react-native";
 
 const NAVIGATION_ITEMS = [
@@ -20,13 +21,14 @@ const NAVIGATION_ITEMS = [
   {
     key: "/video",
     label: "Video",
-    icon: Video,
+    icon: Heart,
     requiresAuth: true,
   },
   { key: "/profile", label: "Profile", icon: User },
+  { key: "/settings", label: "Settings", icon: Settings },
 ];
 
-export function WebSidebar() {
+export default function WebSidebar() {
   const { isAuthenticated, user, logout } = useAuth();
   const pathname = usePathname();
 

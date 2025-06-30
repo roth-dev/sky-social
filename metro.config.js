@@ -15,4 +15,4 @@ config.resolver.sourceExts.push('mjs');
 // Enable experimental features for better performance
 config.transformer.unstable_allowRequireContext = true;
 
-module.exports = withNativeWind(config, { input: './src/global.css' });
+module.exports = withNativeWind(config, { input: './src/global.css' }); 

@@ -1,5 +1,12 @@
 import { Tabs } from "expo-router";
-import { Chrome as Home, Search, SquarePlus as PlusSquare, Heart, User, Video } from "lucide-react-native";
+import {
+  Home,
+  Search,
+  SquarePlus as PlusSquare,
+  Heart,
+  User,
+  Video,
+} from "lucide-react-native";
 
 export default function TabLayout() {
   return (
@@ -10,8 +17,7 @@ export default function TabLayout() {
           backgroundColor: "#ffffff",
           borderTopWidth: 1,
           borderTopColor: "#e5e7eb",
-          paddingTop: 4,
-          height: 64,
+          paddingTop: 10,
         },
         tabBarActiveTintColor: "#111827",
         tabBarInactiveTintColor: "#6b7280",

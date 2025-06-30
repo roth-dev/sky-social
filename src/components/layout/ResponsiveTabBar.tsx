@@ -2,7 +2,13 @@ import React from "react";
 import { View, TouchableOpacity, Text } from "react-native";
 import { router, usePathname } from "expo-router";
 import { useAuth } from "@/contexts/AuthContext";
-import { Chrome as Home, Search, SquarePlus as PlusSquare, User, Video } from "lucide-react-native";
+import {
+  Home,
+  Search,
+  SquarePlus as PlusSquare,
+  User,
+  Video,
+} from "lucide-react-native";
 
 const NAVIGATION_ITEMS = [
   { key: "/", label: "Home", icon: Home },
@@ -46,11 +52,8 @@ export function ResponsiveTabBar() {
             className="flex-1 items-center justify-center py-2"
             onPress={() => handleNavigation(item.key, item.requiresAuth)}
           >
-            <IconComponent
-              size={24}
-              color={isActive ? "#111827" : "#6b7280"}
-            />
-            <Text 
+            <IconComponent size={24} color={isActive ? "#111827" : "#6b7280"} />
+            <Text
               className={`text-xs mt-1 ${
                 isActive ? "text-gray-900" : "text-gray-500"
               }`}

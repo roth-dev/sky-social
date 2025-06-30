@@ -1,15 +1,17 @@
 import React from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Platform,
-} from "react-native";
+import { View, Text, TouchableOpacity, Platform } from "react-native";
 import { router, usePathname } from "expo-router";
 import { useAuth } from "@/contexts/AuthContext";
 import { Avatar } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
-import { Chrome as Home, Search, SquarePlus as PlusSquare, User, LogOut, Video } from "lucide-react-native";
+import {
+  Home,
+  Search,
+  SquarePlus as PlusSquare,
+  User,
+  LogOut,
+  Video,
+} from "lucide-react-native";
 
 const NAVIGATION_ITEMS = [
   { key: "/", label: "Home", icon: Home },
@@ -79,9 +81,11 @@ export function WebSidebar() {
                 size={24}
                 color={isActive ? "#1d4ed8" : "#6b7280"}
               />
-              <Text className={`text-lg font-medium ${
-                isActive ? "text-blue-700 font-semibold" : "text-gray-600"
-              }`}>
+              <Text
+                className={`text-lg font-medium ${
+                  isActive ? "text-blue-700 font-semibold" : "text-gray-600"
+                }`}
+              >
                 {item.label}
               </Text>
             </TouchableOpacity>
@@ -103,7 +107,10 @@ export function WebSidebar() {
                 fallbackText={user.displayName || user.handle}
               />
               <View className="flex-1">
-                <Text className="text-base font-semibold text-gray-900" numberOfLines={1}>
+                <Text
+                  className="text-base font-semibold text-gray-900"
+                  numberOfLines={1}
+                >
                   {user.displayName || user.handle}
                 </Text>
                 <Text className="text-sm text-gray-500" numberOfLines={1}>
@@ -112,16 +119,15 @@ export function WebSidebar() {
               </View>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              className="p-2 rounded-lg"
-              onPress={handleLogout}
-            >
+            <TouchableOpacity className="p-2 rounded-lg" onPress={handleLogout}>
               <LogOut size={20} color="#6b7280" />
             </TouchableOpacity>
           </View>
         ) : (
           <View className="space-y-3">
-            <Text className="text-base text-gray-700 text-center">Join the conversation</Text>
+            <Text className="text-base text-gray-700 text-center">
+              Join the conversation
+            </Text>
             <Button
               title="Sign In"
               onPress={handleLogin}

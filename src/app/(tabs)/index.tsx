@@ -19,7 +19,7 @@ import {
   useDeleteRepost,
 } from "@/lib/queries";
 import { ATFeedItem } from "@/types/atproto";
-import { Camera, Sparkles } from "lucide-react-native";
+import { Chrome as Home, Sparkles } from "lucide-react-native";
 import { router } from "expo-router";
 
 export default function HomeScreen() {
@@ -101,29 +101,6 @@ export default function HomeScreen() {
     />
   );
 
-  const renderEmptyState = () => (
-    <EmptyState
-      type="timeline"
-      title="Welcome to Sky Social!"
-      description={
-        isAuthenticated
-          ? "Discover posts from the decentralized social web. Follow people to see their posts in your timeline."
-          : "Discover posts from the decentralized social web. Sign in to interact with posts and see your personalized timeline."
-      }
-    />
-  );
-
-  const renderError = () => (
-    <ErrorState
-      title="Unable to load timeline"
-      description={
-        timelineQuery.error?.message ||
-        "Something went wrong while loading the timeline. Please try again."
-      }
-      onRetry={() => timelineQuery.refetch()}
-    />
-  );
-
   const renderLoadingFooter = () => {
     if (!timelineQuery.isFetchingNextPage) return null;
 
@@ -142,7 +119,7 @@ export default function HomeScreen() {
         {Platform.OS !== "web" && (
           <Header
             title="Sky Social"
-            leftIcon={<Camera size={24} color="#111827" />}
+            leftIcon={<Home size={24} color="#111827" />}
             rightIcon={<Sparkles size={24} color="#111827" />}
           />
         )}
@@ -158,11 +135,18 @@ export default function HomeScreen() {
         {Platform.OS !== "web" && (
           <Header
             title="Sky Social"
-            leftIcon={<Camera size={24} color="#111827" />}
+            leftIcon={<Home size={24} color="#111827" />}
             rightIcon={<Sparkles size={24} color="#111827" />}
           />
         )}
-        {renderError()}
+        <ErrorState
+          title="Unable to load timeline"
+          description={
+            timelineQuery.error?.message ||
+            "Something went wrong while loading the timeline. Please try again."
+          }
+          onRetry={() => timelineQuery.refetch()}
+        />
       </View>
     );
   }
@@ -170,12 +154,27 @@ export default function HomeScreen() {
   const allPosts =
     timelineQuery.data?.pages.flatMap((page) => page?.feed) || [];
 
+  // Only show empty state if we have no posts AND we're not loading
+  const showEmptyState = allPosts.length === 0 && !timelineQuery.isLoading;
+
+  const renderEmptyState = () => (
+    <EmptyState
+      type="timeline"
+      title="Welcome to Sky Social!"
+      description={
+        isAuthenticated
+          ? "Follow people to see their posts in your timeline. Discover new accounts in the search tab!"
+          : "Discover posts from the decentralized social web. Sign in to interact with posts and see your personalized timeline."
+      }
+    />
+  );
+
   return (
     <View className="flex-1 bg-white">
       {Platform.OS !== "web" && (
         <Header
           title="Sky Social"
-          leftIcon={<Camera size={24} color="#111827" />}
+          leftIcon={<Home size={24} color="#111827" />}
           rightIcon={<Sparkles size={24} color="#111827" />}
         />
       )}
@@ -195,11 +194,11 @@ export default function HomeScreen() {
         }
         onEndReached={handleLoadMore}
         onEndReachedThreshold={0.3}
-        ListEmptyComponent={renderEmptyState}
+        ListEmptyComponent={showEmptyState ? renderEmptyState : null}
         ListFooterComponent={renderLoadingFooter}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={
-          allPosts.length === 0 ? { flex: 1 } : undefined
+          showEmptyState ? { flex: 1 } : undefined
         }
         removeClippedSubviews={true}
         maxToRenderPerBatch={10}

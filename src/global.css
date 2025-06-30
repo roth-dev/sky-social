@@ -39,12 +39,21 @@
   
   .main-content-desktop {
     @apply lg:ml-64 lg:pb-0;
-    /* Constrain content width for mobile-like experience */
-    @apply lg:flex lg:justify-center;
+    /* Center the content horizontally on the remaining screen space */
+    @apply lg:flex lg:justify-center lg:items-start;
+    /* Full height with light background */
+    @apply lg:min-h-screen;
+    background-color: #f8fafc;
   }
   
   .main-content-desktop > * {
+    /* Mobile-like width with centered positioning */
     @apply lg:w-full lg:max-w-md;
+    /* White background with subtle shadows */
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    /* Full height to fill the container */
+    min-height: 100vh;
   }
 }
 
@@ -85,17 +94,5 @@
   
   .tab-bar-desktop {
     @apply flex;
-  }
-  
-  /* Additional desktop content constraints */
-  .main-content-desktop {
-    background-color: #f8fafc;
-  }
-  
-  .main-content-desktop > * {
-    background-color: #ffffff;
-    border-left: 1px solid #e5e7eb;
-    border-right: 1px solid #e5e7eb;
-    min-height: 100vh;
   }
 }

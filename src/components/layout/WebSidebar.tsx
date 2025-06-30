@@ -9,14 +9,7 @@ import { router, usePathname } from "expo-router";
 import { useAuth } from "@/contexts/AuthContext";
 import { Avatar } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
-import {
-  Home,
-  Search,
-  SquarePlus as PlusSquare,
-  User,
-  LogOut,
-  Video,
-} from "lucide-react-native";
+import { Chrome as Home, Search, SquarePlus as PlusSquare, User, LogOut, Video } from "lucide-react-native";
 
 const NAVIGATION_ITEMS = [
   { key: "/", label: "Home", icon: Home },

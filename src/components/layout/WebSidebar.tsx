@@ -5,7 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Avatar } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
 import {
-  Home,
+  Chrome as Home,
   Search,
   SquarePlus as PlusSquare,
   User,
@@ -23,7 +23,7 @@ const NAVIGATION_ITEMS = [
     icon: Video,
     requiresAuth: true,
   },
-  { key: "/profile", label: "Profile", icon: User, requiresAuth: true },
+  { key: "/profile", label: "Profile", icon: User },
 ];
 
 export function WebSidebar() {
@@ -32,14 +32,14 @@ export function WebSidebar() {
 
   const handleNavigation = (path: string, requiresAuth?: boolean) => {
     if (requiresAuth && !isAuthenticated) {
-      router.push("/login");
+      router.push("/profile");
       return;
     }
     router.push(path);
   };
 
   const handleLogin = () => {
-    router.push("/login");
+    router.push("/profile");
   };
 
   const handleLogout = () => {
@@ -67,7 +67,7 @@ export function WebSidebar() {
           const isActive = isActivePath(item.key);
           const shouldShow = !item.requiresAuth || isAuthenticated;
 
-          if (!shouldShow) return null;
+          if (!shouldShow && item.requiresAuth) return null;
 
           return (
             <TouchableOpacity

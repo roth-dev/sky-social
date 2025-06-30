@@ -39,6 +39,12 @@
   
   .main-content-desktop {
     @apply lg:ml-64 lg:pb-0;
+    /* Constrain content width for mobile-like experience */
+    @apply lg:flex lg:justify-center;
+  }
+  
+  .main-content-desktop > * {
+    @apply lg:w-full lg:max-w-md;
   }
 }
 
@@ -79,5 +85,17 @@
   
   .tab-bar-desktop {
     @apply flex;
+  }
+  
+  /* Additional desktop content constraints */
+  .main-content-desktop {
+    background-color: #f8fafc;
+  }
+  
+  .main-content-desktop > * {
+    background-color: #ffffff;
+    border-left: 1px solid #e5e7eb;
+    border-right: 1px solid #e5e7eb;
+    min-height: 100vh;
   }
 }

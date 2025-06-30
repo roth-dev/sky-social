@@ -39,11 +39,13 @@
   
   .main-content-desktop {
     @apply lg:ml-64 lg:pb-0;
-    /* Center the content horizontally on the remaining screen space */
+    /* Create a flex container that centers content horizontally */
     @apply lg:flex lg:justify-center lg:items-start;
     /* Full height with light background */
     @apply lg:min-h-screen;
     background-color: #f8fafc;
+    /* Ensure proper padding for the centered content */
+    @apply lg:px-8 lg:py-0;
   }
   
   .main-content-desktop > * {
@@ -54,6 +56,8 @@
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
     /* Full height to fill the container */
     min-height: 100vh;
+    /* Remove any margin that might offset the centering */
+    margin: 0;
   }
 }
 

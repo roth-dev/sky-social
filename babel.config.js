@@ -10,7 +10,7 @@ module.exports = function (api) {
       ]
     ],
     plugins: [
-      'nativewind/babel',
+      'nativewind/babel'
     ],
   };
 };

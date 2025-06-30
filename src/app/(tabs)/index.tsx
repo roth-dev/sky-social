@@ -1,7 +1,6 @@
 import React from "react";
 import {
   View,
-  StyleSheet,
   FlatList,
   Text,
   RefreshControl,
@@ -123,9 +122,9 @@ export default function HomeScreen() {
     if (!timelineQuery.isFetchingNextPage) return null;
 
     return (
-      <View style={styles.loadingFooter}>
-        <View style={styles.loadingSpinner} />
-        <Text style={styles.loadingText}>Loading more posts...</Text>
+      <View className="py-5 items-center bg-white gap-2">
+        <View className="w-6 h-6 rounded-full border-2 border-gray-200 border-t-blue-500" />
+        <Text className="text-sm text-gray-500 font-medium">Loading more posts...</Text>
       </View>
     );
   };
@@ -133,7 +132,7 @@ export default function HomeScreen() {
   // Show loading placeholder on initial load
   if (timelineQuery.isLoading) {
     return (
-      <View style={styles.container}>
+      <View className="flex-1 bg-white">
         {Platform.OS !== "web" && (
           <Header
             title="Sky Social"
@@ -149,7 +148,7 @@ export default function HomeScreen() {
   // Show error state
   if (timelineQuery.error) {
     return (
-      <View style={styles.container}>
+      <View className="flex-1 bg-white">
         {Platform.OS !== "web" && (
           <Header
             title="Sky Social"
@@ -166,7 +165,7 @@ export default function HomeScreen() {
     timelineQuery.data?.pages.flatMap((page) => page?.feed) || [];
 
   return (
-    <View style={styles.container}>
+    <View className="flex-1 bg-white">
       {Platform.OS !== "web" && (
         <Header
           title="Sky Social"
@@ -179,7 +178,7 @@ export default function HomeScreen() {
         data={allPosts}
         renderItem={renderItem}
         keyExtractor={(item, index) => `${item.post.uri}-${index}`}
-        style={styles.feed}
+        className="flex-1"
         refreshControl={
           <RefreshControl
             refreshing={timelineQuery.isFetching && !timelineQuery.isLoading}
@@ -194,7 +193,7 @@ export default function HomeScreen() {
         ListFooterComponent={renderLoadingFooter}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={
-          allPosts.length === 0 ? styles.emptyContainer : undefined
+          allPosts.length === 0 ? { flex: 1 } : undefined
         }
         removeClippedSubviews={true}
         maxToRenderPerBatch={10}
@@ -208,35 +207,3 @@ export default function HomeScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#ffffff",
-  },
-  feed: {
-    flex: 1,
-  },
-  emptyContainer: {
-    flex: 1,
-  },
-  loadingFooter: {
-    paddingVertical: 20,
-    alignItems: "center",
-    backgroundColor: "#ffffff",
-    gap: 8,
-  },
-  loadingSpinner: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: "#e5e7eb",
-    borderTopColor: "#3b82f6",
-  },
-  loadingText: {
-    fontSize: 14,
-    color: "#6b7280",
-    fontWeight: "500",
-  },
-});

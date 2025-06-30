@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { View, StyleSheet, Alert, Platform, SafeAreaView } from "react-native";
+import { View, Alert, Platform, SafeAreaView } from "react-native";
 import { Header } from "@/components/Header";
 import { SearchHeader } from "@/components/search/SearchHeader";
 import { SearchFilters } from "@/components/search/SearchFilters";
@@ -246,8 +246,8 @@ export default function SearchScreen() {
   const showTrending = !showSearchResults;
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-      <View style={styles.container}>
+    <SafeAreaView className="flex-1 bg-white">
+      <View className="flex-1 bg-white">
         <SearchHeader
           query={searchState.query}
           onQueryChange={handleQueryChange}
@@ -322,10 +322,3 @@ export default function SearchScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#ffffff",
-  },
-});

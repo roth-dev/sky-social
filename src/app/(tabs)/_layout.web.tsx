@@ -1,19 +1,24 @@
 import { Tabs } from "expo-router";
-import { View, StyleSheet } from "react-native";
+import { View } from "react-native";
 import { WebSidebar } from "@/components/layout/WebSidebar";
+import { ResponsiveTabBar } from "@/components/layout/ResponsiveTabBar";
 import SearchScreen from "./search";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function TabLayout() {
   const { isAuthenticated } = useAuth();
+  
   return (
-    <View style={styles.webContainer}>
+    <View className="flex-1 flex-row bg-white">
+      {/* Desktop Sidebar */}
       <WebSidebar />
-      <View style={styles.webContent}>
+      
+      {/* Main Content Area */}
+      <View className="flex-1 main-content-desktop">
         <Tabs
           screenOptions={{
             headerShown: false,
-            tabBarStyle: { display: "none" }, // Hide tab bar on web
+            tabBarStyle: { display: "none" }, // Hide default tab bar on web
           }}
         >
           <Tabs.Screen name="index" />
@@ -23,20 +28,14 @@ export default function TabLayout() {
           <Tabs.Screen name="profile" />
         </Tabs>
       </View>
-      <View style={{ flex: 1 }}>{!isAuthenticated && <SearchScreen />}</View>
+      
+      {/* Right Panel for Search (when not authenticated) */}
+      <View className="hidden lg:flex lg:w-80 lg:border-l lg:border-gray-200">
+        {!isAuthenticated && <SearchScreen />}
+      </View>
+      
+      {/* Mobile Tab Bar */}
+      <ResponsiveTabBar />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  webContainer: {
-    flex: 1,
-    flexDirection: "row",
-    backgroundColor: "#ffffff",
-  },
-  webContent: {
-    flex: 1,
-    marginLeft: 280, // Width of sidebar
-    borderRightWidth: 0.5,
-  },
-});

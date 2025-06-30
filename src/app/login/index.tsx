@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  StyleSheet,
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
@@ -44,23 +43,25 @@ export default function AuthScreen() {
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
+      className="flex-1 bg-white justify-center items-center"
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <View style={styles.content}>
-        <View style={styles.header}>
+      <View className={`flex-1 justify-center px-6 ${
+        Platform.OS === "web" ? "max-w-md w-full border-l border-r border-gray-200" : ""
+      }`}>
+        <View className="items-center mb-12">
           <Image
             source={require("../../../assets/images/icon.png")}
             contentFit="contain"
-            style={{ width: 120, height: 120 }}
+            className="w-30 h-30"
           />
-          <Text style={styles.title}>Welcome to Sky Social</Text>
-          <Text style={styles.subtitle}>
+          <Text className="text-3xl font-bold text-gray-900 mt-4 mb-2">Welcome to Sky Social</Text>
+          <Text className="text-base text-gray-600 text-center">
             Connect with the decentralized social web
           </Text>
         </View>
 
-        <View style={styles.form}>
+        <View className="space-y-4">
           <Input
             label="Username or Email"
             placeholder="your.handle or email@example.com"
@@ -78,16 +79,16 @@ export default function AuthScreen() {
             secureTextEntry
           />
 
-          {error ? <Text style={styles.error}>{error}</Text> : null}
+          {error ? <Text className="text-sm text-red-500 text-center">{error}</Text> : null}
 
           <Button
             title={loading ? "Signing in..." : "Sign In"}
             onPress={handleLogin}
             disabled={loading}
-            style={styles.signInButton}
+            className="mt-2"
           />
 
-          <Text style={styles.helpText}>
+          <Text className="text-sm text-gray-600 text-center mt-4">
             Don't have a Bluesky account? Create one at bsky.app
           </Text>
         </View>
@@ -95,62 +96,3 @@ export default function AuthScreen() {
     </KeyboardAvoidingView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#ffffff",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  content: {
-    flex: 1,
-    justifyContent: "center",
-    paddingHorizontal: 24,
-    borderRightWidth: 0.5,
-    borderLeftWidth: 0.5,
-    ...Platform.select({
-      ios: {
-        maxWidth: undefined,
-      },
-      android: {
-        maxWidth: undefined,
-      },
-      default: {
-        maxWidth: 400,
-      },
-    }),
-  },
-  header: {
-    alignItems: "center",
-    marginBottom: 48,
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: "700",
-    color: "#111827",
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: "#6b7280",
-    textAlign: "center",
-  },
-  form: {
-    gap: 16,
-  },
-  signInButton: {
-    marginTop: 8,
-  },
-  error: {
-    fontSize: 14,
-    color: "#ef4444",
-    textAlign: "center",
-  },
-  helpText: {
-    fontSize: 14,
-    color: "#6b7280",
-    textAlign: "center",
-    marginTop: 16,
-  },
-});

@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, ViewStyle, TextStyle } from 'react-native';
+import { TouchableOpacity, Text, ViewStyle, TextStyle } from 'react-native';
 
 interface ButtonProps {
   title: string;
@@ -9,6 +9,7 @@ interface ButtonProps {
   disabled?: boolean;
   style?: ViewStyle;
   textStyle?: TextStyle;
+  className?: string;
 }
 
 export function Button({
@@ -19,96 +20,87 @@ export function Button({
   disabled = false,
   style,
   textStyle,
+  className,
 }: ButtonProps) {
+  const getVariantClasses = () => {
+    switch (variant) {
+      case 'primary':
+        return 'bg-blue-500 active:bg-blue-600';
+      case 'secondary':
+        return 'bg-gray-500 active:bg-gray-600';
+      case 'outline':
+        return 'bg-transparent border border-gray-300 active:bg-gray-50';
+      case 'ghost':
+        return 'bg-transparent active:bg-gray-100';
+      default:
+        return 'bg-blue-500 active:bg-blue-600';
+    }
+  };
+
+  const getSizeClasses = () => {
+    switch (size) {
+      case 'small':
+        return 'px-3 py-1.5';
+      case 'medium':
+        return 'px-4 py-2';
+      case 'large':
+        return 'px-6 py-3';
+      default:
+        return 'px-4 py-2';
+    }
+  };
+
+  const getTextVariantClasses = () => {
+    switch (variant) {
+      case 'primary':
+      case 'secondary':
+        return 'text-white';
+      case 'outline':
+      case 'ghost':
+        return 'text-gray-700';
+      default:
+        return 'text-white';
+    }
+  };
+
+  const getTextSizeClasses = () => {
+    switch (size) {
+      case 'small':
+        return 'text-sm';
+      case 'medium':
+        return 'text-base';
+      case 'large':
+        return 'text-lg';
+      default:
+        return 'text-base';
+    }
+  };
+
   return (
     <TouchableOpacity
-      style={[
-        styles.base,
-        styles[variant],
-        styles[size],
-        disabled && styles.disabled,
-        style,
-      ]}
+      className={`
+        rounded-lg items-center justify-center flex-row
+        ${getVariantClasses()}
+        ${getSizeClasses()}
+        ${disabled ? 'opacity-50' : ''}
+        ${className || ''}
+      `}
       onPress={onPress}
       disabled={disabled}
       activeOpacity={0.7}
+      style={style}
     >
       <Text
-        style={[
-          styles.baseText,
-          styles[`${variant}Text`],
-          styles[`${size}Text`],
-          disabled && styles.disabledText,
-          textStyle,
-        ]}
+        className={`
+          font-semibold
+          ${getTextVariantClasses()}
+          ${getTextSizeClasses()}
+          ${disabled ? 'opacity-70' : ''}
+        `}
+        style={textStyle}
       >
         {title}
       </Text>
     </TouchableOpacity>
   );
 }
-
-const styles = StyleSheet.create({
-  base: {
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-  },
-  primary: {
-    backgroundColor: '#3b82f6',
-  },
-  secondary: {
-    backgroundColor: '#6b7280',
-  },
-  outline: {
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: '#d1d5db',
-  },
-  ghost: {
-    backgroundColor: 'transparent',
-  },
-  small: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-  },
-  medium: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-  },
-  large: {
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-  },
-  disabled: {
-    opacity: 0.5,
-  },
-  baseText: {
-    fontWeight: '600',
-  },
-  primaryText: {
-    color: '#ffffff',
-  },
-  secondaryText: {
-    color: '#ffffff',
-  },
-  outlineText: {
-    color: '#374151',
-  },
-  ghostText: {
-    color: '#374151',
-  },
-  smallText: {
-    fontSize: 14,
-  },
-  mediumText: {
-    fontSize: 16,
-  },
-  largeText: {
-    fontSize: 18,
-  },
-  disabledText: {
-    opacity: 0.7,
-  },
-});

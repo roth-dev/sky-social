@@ -3,7 +3,6 @@ import {
   View,
   Text,
   TouchableOpacity,
-  StyleSheet,
   Platform,
 } from "react-native";
 import { router, usePathname } from "expo-router";
@@ -60,14 +59,14 @@ export function WebSidebar() {
   };
 
   return (
-    <View style={styles.sidebar}>
+    <View className="sidebar-desktop p-5 justify-between">
       {/* Logo/Brand */}
-      <View style={styles.brand}>
-        <Text style={styles.brandText}>Sky Social</Text>
+      <View className="py-4 px-2 mb-5">
+        <Text className="text-2xl font-bold text-blue-600">Sky Social</Text>
       </View>
 
       {/* Navigation */}
-      <View style={styles.navigation}>
+      <View className="flex-1 space-y-1">
         {NAVIGATION_ITEMS.map((item) => {
           const IconComponent = item.icon;
           const isActive = isActivePath(item.key);
@@ -78,14 +77,18 @@ export function WebSidebar() {
           return (
             <TouchableOpacity
               key={item.key}
-              style={[styles.navItem, isActive && styles.activeNavItem]}
+              className={`flex-row items-center py-3 px-4 rounded-full gap-4 ${
+                isActive ? "bg-blue-50" : ""
+              }`}
               onPress={() => handleNavigation(item.key, item.requiresAuth)}
             >
               <IconComponent
                 size={24}
                 color={isActive ? "#1d4ed8" : "#6b7280"}
               />
-              <Text style={[styles.navText, isActive && styles.activeNavText]}>
+              <Text className={`text-lg font-medium ${
+                isActive ? "text-blue-700 font-semibold" : "text-gray-600"
+              }`}>
                 {item.label}
               </Text>
             </TouchableOpacity>
@@ -94,11 +97,11 @@ export function WebSidebar() {
       </View>
 
       {/* User Section */}
-      <View style={styles.userSection}>
+      <View className="pt-5 border-t border-gray-200">
         {isAuthenticated && user ? (
-          <View style={styles.userInfo}>
+          <View className="flex-row items-center gap-3">
             <TouchableOpacity
-              style={styles.userProfile}
+              className="flex-1 flex-row items-center gap-3 p-2 rounded-xl"
               onPress={() => router.push("/profile")}
             >
               <Avatar
@@ -106,147 +109,41 @@ export function WebSidebar() {
                 size="medium"
                 fallbackText={user.displayName || user.handle}
               />
-              <View style={styles.userDetails}>
-                <Text style={styles.userName} numberOfLines={1}>
+              <View className="flex-1">
+                <Text className="text-base font-semibold text-gray-900" numberOfLines={1}>
                   {user.displayName || user.handle}
                 </Text>
-                <Text style={styles.userHandle} numberOfLines={1}>
+                <Text className="text-sm text-gray-500" numberOfLines={1}>
                   @{user.handle}
                 </Text>
               </View>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={styles.logoutButton}
+              className="p-2 rounded-lg"
               onPress={handleLogout}
             >
               <LogOut size={20} color="#6b7280" />
             </TouchableOpacity>
           </View>
         ) : (
-          <View style={styles.authSection}>
-            <Text style={styles.authPrompt}>Join the conversation</Text>
+          <View className="space-y-3">
+            <Text className="text-base text-gray-700 text-center">Join the conversation</Text>
             <Button
               title="Sign In"
               onPress={handleLogin}
               variant="primary"
               size="medium"
-              style={styles.signInButton}
+              className="w-full"
             />
           </View>
         )}
       </View>
 
       {/* Footer */}
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>Powered by AT Protocol</Text>
+      <View className="pt-4 items-center">
+        <Text className="text-xs text-gray-400">Powered by AT Protocol</Text>
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  sidebar: {
-    position: Platform.OS === "web" ? "fixed" : "absolute",
-    left: 0,
-    top: 0,
-    bottom: 0,
-    width: 280,
-    backgroundColor: "#ffffff",
-    borderRightWidth: 1,
-    borderRightColor: "#e5e7eb",
-    paddingVertical: 20,
-    paddingHorizontal: 16,
-    justifyContent: "space-between",
-    zIndex: 1000,
-  },
-  brand: {
-    paddingVertical: 16,
-    paddingHorizontal: 8,
-    marginBottom: 20,
-  },
-  brandText: {
-    fontSize: 24,
-    fontWeight: "700",
-    color: "#1d4ed8",
-  },
-  navigation: {
-    flex: 1,
-    gap: 4,
-  },
-  navItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 100,
-    gap: 16,
-  },
-  activeNavItem: {
-    backgroundColor: "#eff6ff",
-  },
-  navText: {
-    fontSize: 18,
-    fontWeight: "500",
-    color: "#6b7280",
-  },
-  activeNavText: {
-    color: "#1d4ed8",
-    fontWeight: "600",
-  },
-  userSection: {
-    paddingTop: 20,
-    borderTopWidth: 1,
-    borderTopColor: "#e5e7eb",
-  },
-  userInfo: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  userProfile: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    padding: 8,
-    borderRadius: 12,
-  },
-  userDetails: {
-    flex: 1,
-  },
-  userName: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#111827",
-  },
-  userHandle: {
-    fontSize: 14,
-    color: "#6b7280",
-    marginTop: 2,
-  },
-  logoutButton: {
-    padding: 8,
-    borderRadius: 8,
-  },
-  authSection: {
-    gap: 12,
-  },
-  authPrompt: {
-    fontSize: 16,
-    color: "#374151",
-    textAlign: "center",
-    marginBottom: 8,
-  },
-  signInButton: {
-    width: "100%",
-  },
-  footer: {
-    paddingTop: 16,
-    alignItems: "center",
-  },
-  footerText: {
-    fontSize: 12,
-    color: "#9ca3af",
-  },
-});

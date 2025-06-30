@@ -6,6 +6,7 @@ import { QueryProvider } from "@/contexts/QueryProvider";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Platform } from "react-native";
 import { Fragment } from "react";
+import "../global.css";
 
 function RootLayout() {
   const { isAuthenticated } = useAuth();
@@ -53,7 +54,7 @@ export default function App() {
   return (
     <QueryProvider>
       <AuthProvider>
-        <GestureHandlerRootView style={{ flex: 1 }}>
+        <GestureHandlerRootView className="flex-1">
           <RootLayout />
         </GestureHandlerRootView>
       </AuthProvider>

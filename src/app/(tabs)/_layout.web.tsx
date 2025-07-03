@@ -13,11 +13,11 @@ export default function TabLayout() {
   const { isAuthenticated } = useAuth();
 
   return (
-    <View className="flex-1 flex-row bg-white">
+    <View className="flex-1 flex-row">
       {/* Desktop Sidebar */}
       <WebSidebar />
 
-      {/* Main Content Area */}
+      {/* Main Content Area - Centered */}
       <View className="flex-1 main-content-desktop">
         <Tabs
           screenOptions={{
@@ -34,14 +34,8 @@ export default function TabLayout() {
         </Tabs>
       </View>
 
-      {/* Right Panel for Search (when not authenticated) */}
-      <View
-        className="hidden lg:flex lg:w-80 lg:border-l"
-        style={{
-          borderWidth: StyleSheet.hairlineWidth,
-          borderColor: Colors.border[colorScheme],
-        }}
-      >
+      {/* Right Panel for Search/Trending */}
+      <View className="right-sidebar-desktop">
         {!isAuthenticated && <SearchScreen />}
       </View>
 

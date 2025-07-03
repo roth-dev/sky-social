@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import {
-  View,
-  Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
@@ -31,6 +29,7 @@ import {
   Repeat2,
   Share,
 } from "lucide-react-native";
+import { Text, View } from "@/components/ui";
 
 export default function PostScreen() {
   const { uri } = useLocalSearchParams<{ uri: string }>();

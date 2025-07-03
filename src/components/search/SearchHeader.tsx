@@ -1,6 +1,7 @@
-import React from 'react';
-import { View, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import { Search, X } from 'lucide-react-native';
+import React from "react";
+import { TextInput, TouchableOpacity, StyleSheet } from "react-native";
+import { Search, X } from "lucide-react-native";
+import { View } from "../ui";
 
 interface SearchHeaderProps {
   query: string;
@@ -46,14 +47,14 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#e5e7eb',
+    borderBottomColor: "#e5e7eb",
   },
   searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#f3f4f6',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f3f4f6",
     borderRadius: 12,
     paddingHorizontal: 12,
     paddingVertical: 8,
@@ -64,7 +65,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 16,
-    color: '#111827',
+    color: "#111827",
     paddingVertical: 4,
   },
   clearButton: {

@@ -1,8 +1,11 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
+import { TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { EmbedExternal } from "@/types/embed";
 import { ExternalLink } from "lucide-react-native";
 import { Image } from "expo-image";
+import { Text, View } from "../ui";
+import { Colors } from "@/constants/colors";
+import { useSettings } from "@/contexts/SettingsContext";
 
 interface ExternalEmbedProps {
   external?: EmbedExternal;
@@ -18,6 +21,8 @@ export function ExternalEmbed({
   if (!external) {
     return null;
   }
+
+  const { colorScheme, isDarkMode } = useSettings();
 
   const handlePress = async () => {
     try {
@@ -119,7 +124,13 @@ export function ExternalEmbed({
 
   return (
     <TouchableOpacity
-      style={[styles.container, isDetailView && styles.detailContainer]}
+      style={[
+        styles.container,
+        isDetailView && styles.detailContainer,
+        {
+          borderColor: Colors.border[colorScheme],
+        },
+      ]}
       onPress={handlePress}
       activeOpacity={0.8}
     >
@@ -153,7 +164,7 @@ export function ExternalEmbed({
           {external.title}
         </Text>
 
-        {external.description && (
+        {!!external.description && (
           <Text
             style={[
               styles.description,
@@ -172,7 +183,6 @@ export function ExternalEmbed({
 const styles = StyleSheet.create({
   container: {
     borderWidth: 1,
-    borderColor: "#e5e7eb",
     borderRadius: 12,
     overflow: "hidden",
     backgroundColor: "#ffffff",
@@ -205,14 +215,14 @@ const styles = StyleSheet.create({
   },
   domain: {
     fontSize: 12,
-    color: "#6b7280",
+    // color: "#6b7280",
     fontWeight: "500",
     flex: 1,
   },
   title: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#111827",
+    // color: "#111827",
     lineHeight: 20,
     marginBottom: 4,
   },
@@ -222,7 +232,7 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 13,
-    color: "#6b7280",
+    // color: "#6b7280",
     lineHeight: 18,
   },
   detailDescription: {

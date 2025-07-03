@@ -6,9 +6,9 @@ import { SettingsProvider } from "@/contexts/SettingsContext";
 import { I18nProvider } from "@/contexts/I18nContext";
 import { QueryProvider } from "@/contexts/QueryProvider";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Platform } from "react-native";
 import { Fragment } from "react";
 import "../global.css";
+import FontProvider from "@/contexts/FontProvider";
 
 function RootLayout() {
   const { isAuthenticated } = useAuth();
@@ -17,24 +17,33 @@ function RootLayout() {
 
   return (
     <Fragment>
-      <Stack screenOptions={{ headerShown: false }}>
+      <Stack
+        screenOptions={{ headerShown: false, animation: "ios_from_right" }}
+      >
         {/* Always show tabs - authentication is handled within individual screens */}
-        <Stack.Screen
-          name="(tabs)"
-          options={{
-            headerShown: false,
-            animation: "fade_from_bottom",
-            animationTypeForReplace: "push",
-          }}
-        />
-        <Stack.Screen name="post/[uri]" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="profile/[handle]"
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen name="search/people" options={{ headerShown: false }} />
-        <Stack.Screen name="search/feeds" options={{ headerShown: false }} />
-        <Stack.Screen name="feed/[uri]" options={{ headerShown: false }} />
+        <Stack.Protected guard={isAuthenticated}>
+          <Stack.Screen
+            name="(tabs)"
+            options={{
+              headerShown: false,
+              animation: "fade_from_bottom",
+              animationTypeForReplace: "push",
+            }}
+          />
+          <Stack.Screen name="post/[uri]" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="profile/[handle]"
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen name="search/people" options={{ headerShown: false }} />
+          <Stack.Screen name="search/feeds" options={{ headerShown: false }} />
+          <Stack.Screen name="feed/[uri]" options={{ headerShown: false }} />
+        </Stack.Protected>
+
+        <Stack.Protected guard={!isAuthenticated}>
+          <Stack.Screen name="login" />
+        </Stack.Protected>
+
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />
@@ -44,16 +53,18 @@ function RootLayout() {
 
 export default function App() {
   return (
-    <QueryProvider>
-      <AuthProvider>
-        <SettingsProvider>
-          <I18nProvider>
-            <GestureHandlerRootView className="flex-1">
-              <RootLayout />
-            </GestureHandlerRootView>
-          </I18nProvider>
-        </SettingsProvider>
-      </AuthProvider>
-    </QueryProvider>
+    <SettingsProvider>
+      <QueryProvider>
+        <AuthProvider>
+          <FontProvider>
+            <I18nProvider>
+              <GestureHandlerRootView className="flex-1">
+                <RootLayout />
+              </GestureHandlerRootView>
+            </I18nProvider>
+          </FontProvider>
+        </AuthProvider>
+      </QueryProvider>
+    </SettingsProvider>
   );
 }

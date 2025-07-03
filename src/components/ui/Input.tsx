@@ -1,34 +1,44 @@
-import React from 'react';
-import { TextInput, View, Text, TextInputProps } from 'react-native';
+import React from "react";
+import { TextInput, TextInputProps } from "react-native";
+import { Text } from "./Text";
+import { cn } from "@/lib/utils";
+import { View } from "./View";
+import { VStack } from "./Stack";
 
 interface InputProps extends TextInputProps {
   label?: string;
   error?: string;
-  containerStyle?: any;
   className?: string;
+  containerClassName?: string;
 }
 
-export function Input({ 
-  label, 
-  error, 
-  containerStyle, 
-  style, 
+export function Input({
+  label,
+  error,
+  style,
   className,
-  ...props 
+  containerClassName,
+  ...props
 }: InputProps) {
   return (
-    <View className={`mb-4 ${className || ''}`} style={containerStyle}>
-      {label && <Text className="text-sm font-medium text-gray-700 mb-1.5">{label}</Text>}
+    <VStack className={cn("gap-2", containerClassName)}>
+      {label && (
+        <Text font="semiBold" size="sm">
+          {label}
+        </Text>
+      )}
       <TextInput
-        className={`
-          border border-gray-300 rounded-lg px-3 py-2 text-base bg-white
-          ${error ? 'border-red-500' : 'border-gray-300'}
-        `}
-        placeholderTextColor="#9ca3af"
-        style={style}
+        className={cn(
+          "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+          className
+        )}
         {...props}
       />
-      {error && <Text className="text-xs text-red-500 mt-1">{error}</Text>}
-    </View>
+      {error && (
+        <Text size="sm" className="text-red-500">
+          {error}
+        </Text>
+      )}
+    </VStack>
   );
 }

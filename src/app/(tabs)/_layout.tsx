@@ -1,19 +1,29 @@
+import { Colors } from "@/constants/colors";
+import { useSettings } from "@/contexts/SettingsContext";
+import { isIOS } from "@/platform";
 import { Tabs } from "expo-router";
-import { Chrome as Home, Search, SquarePlus as PlusSquare, Heart, User, Settings } from "lucide-react-native";
+import {
+  Home,
+  Search,
+  SquarePlus as PlusSquare,
+  User,
+  Video,
+} from "lucide-react-native";
 
 export default function TabLayout() {
+  const { isDarkMode, colorScheme } = useSettings();
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: "#ffffff",
-          borderTopWidth: 1,
-          borderTopColor: "#e5e7eb",
-          paddingTop: 10,
-          height: 60, // Keep native height
+          backgroundColor: Colors.background.primary[colorScheme],
+          paddingTop: isIOS ? 10 : 5,
+          borderTopColor: Colors.border[colorScheme],
         },
-        tabBarActiveTintColor: "#111827",
+        tabBarActiveTintColor: isDarkMode
+          ? Colors.background.primary.light
+          : Colors.background.primary.dark,
         tabBarInactiveTintColor: "#6b7280",
         tabBarShowLabel: false,
       }}
@@ -45,7 +55,7 @@ export default function TabLayout() {
         name="video"
         options={{
           title: "Video",
-          tabBarIcon: ({ size, color }) => <Heart size={size} color={color} />,
+          tabBarIcon: ({ size, color }) => <Video size={size} color={color} />,
         }}
       />
       <Tabs.Screen
@@ -56,10 +66,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="settings"
+        name="setting"
         options={{
-          title: "Settings",
-          tabBarIcon: ({ size, color }) => <Settings size={size} color={color} />,
+          href: null,
         }}
       />
     </Tabs>

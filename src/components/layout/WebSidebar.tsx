@@ -1,6 +1,6 @@
 import React from "react";
-import { View, Text, TouchableOpacity, Platform } from "react-native";
-import { router, usePathname } from "expo-router";
+import { TouchableOpacity, Platform } from "react-native";
+import { Link, router, usePathname } from "expo-router";
 import { useAuth } from "@/contexts/AuthContext";
 import { Avatar } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
@@ -10,9 +10,11 @@ import {
   SquarePlus as PlusSquare,
   User,
   LogOut,
-  Heart,
   Settings,
+  Video,
 } from "lucide-react-native";
+import { Text, View } from "../ui";
+import { cn } from "@/lib/utils";
 
 const NAVIGATION_ITEMS = [
   { key: "/", label: "Home", icon: Home },
@@ -21,11 +23,11 @@ const NAVIGATION_ITEMS = [
   {
     key: "/video",
     label: "Video",
-    icon: Heart,
+    icon: Video,
     requiresAuth: true,
   },
   { key: "/profile", label: "Profile", icon: User },
-  { key: "/settings", label: "Settings", icon: Settings },
+  { key: "/setting", label: "Settings", icon: Settings },
 ];
 
 export default function WebSidebar() {
@@ -46,6 +48,7 @@ export default function WebSidebar() {
 
   const handleLogout = () => {
     logout();
+    router.replace("/login");
   };
 
   const isActivePath = (path: string) => {
@@ -58,9 +61,13 @@ export default function WebSidebar() {
   return (
     <View className="sidebar-desktop p-5 justify-between">
       {/* Logo/Brand */}
-      <View className="py-4 px-2 mb-5">
-        <Text className="text-2xl font-bold text-blue-600">Sky Social</Text>
-      </View>
+      <Link href="/(tabs)">
+        <View className="py-4 px-2 mb-5">
+          <Text font="bold" size="2xl" className="text-blue-500">
+            Sky Social
+          </Text>
+        </View>
+      </Link>
 
       {/* Navigation */}
       <View className="flex-1 space-y-1">
@@ -75,7 +82,7 @@ export default function WebSidebar() {
             <TouchableOpacity
               key={item.key}
               className={`flex-row items-center py-3 px-4 rounded-full gap-4 ${
-                isActive ? "bg-blue-50" : ""
+                isActive ? "bg-blue-50 dark:bg-[#1f2937]" : ""
               }`}
               onPress={() => handleNavigation(item.key, item.requiresAuth)}
             >
@@ -84,9 +91,11 @@ export default function WebSidebar() {
                 color={isActive ? "#1d4ed8" : "#6b7280"}
               />
               <Text
-                className={`text-lg font-medium ${
-                  isActive ? "text-blue-700 font-semibold" : "text-gray-600"
-                }`}
+                size="lg"
+                font="semiBold"
+                className={cn(
+                  isActive ? "text-blue-700" : "dark:text-white text-gray-600"
+                )}
               >
                 {item.label}
               </Text>
@@ -96,7 +105,7 @@ export default function WebSidebar() {
       </View>
 
       {/* User Section */}
-      <View className="pt-5 border-t border-gray-200">
+      <View className="pt-5 border-t border-gray-500">
         {isAuthenticated && user ? (
           <View className="flex-row items-center gap-3">
             <TouchableOpacity

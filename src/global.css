@@ -46,7 +46,12 @@
   .main-content-desktop {
     @apply lg:ml-64 lg:pb-0;
     /* Set max width similar to mobile viewing */
-    @apply lg:max-w-2xl lg:mx-auto;
+    @apply lg:flex lg:justify-center;
+  }
+
+  .main-content-desktop > * {
+    @apply lg:border-r lg:border-gray-700;
+    @apply lg:w-full lg:max-w-lg;
   }
 
   /* Dark mode component styles */
@@ -105,4 +110,5 @@
     margin-right: auto;
     padding-bottom: 0;
   }
+ 
 }

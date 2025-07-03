@@ -1,9 +1,10 @@
 import React from "react";
-import { View, Text, StyleSheet, ScrollView, Platform } from "react-native";
+import { StyleSheet, ScrollView, Platform } from "react-native";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/Button";
 import { useAuth } from "@/contexts/AuthContext";
 import { router } from "expo-router";
+import { Text, View } from "@/components/ui";
 
 export default function NotificationsScreen() {
   const { isAuthenticated } = useAuth();
@@ -45,7 +46,7 @@ export default function NotificationsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffffff",
+    // backgroundColor: "#ffffff",
   },
   content: {
     flex: 1,

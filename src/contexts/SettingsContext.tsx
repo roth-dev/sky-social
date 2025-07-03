@@ -4,22 +4,29 @@ import React, {
   useState,
   useEffect,
   PropsWithChildren,
+  useCallback,
+  useMemo,
 } from "react";
 import { Appearance, ColorSchemeName } from "react-native";
 import { storage } from "@/lib/storage";
+import { colorScheme } from "nativewind";
 
 export type Language = "en" | "km";
 export type ThemeMode = "light" | "dark" | "system";
+export type ColorScheme = "light" | "dark";
 
 interface SettingsContextType {
   language: Language;
+  colorScheme: ColorScheme;
   themeMode: ThemeMode;
   isDarkMode: boolean;
   setLanguage: (language: Language) => void;
   setThemeMode: (mode: ThemeMode) => void;
 }
 
-const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
+const SettingsContext = createContext<SettingsContextType | undefined>(
+  undefined
+);
 
 export function SettingsProvider({ children }: PropsWithChildren) {
   const [language, setLanguageState] = useState<Language>("en");
@@ -29,9 +36,12 @@ export function SettingsProvider({ children }: PropsWithChildren) {
   );
 
   // Calculate if dark mode should be active
-  const isDarkMode = 
-    themeMode === "dark" || 
-    (themeMode === "system" && systemColorScheme === "dark");
+  const isDarkMode = useMemo(() => {
+    return (
+      themeMode === "dark" ||
+      (themeMode === "system" && systemColorScheme === "dark")
+    );
+  }, [themeMode, systemColorScheme]);
 
   // Load settings from storage on mount
   useEffect(() => {
@@ -40,26 +50,26 @@ export function SettingsProvider({ children }: PropsWithChildren) {
 
   // Listen to system color scheme changes
   useEffect(() => {
-    const subscription = Appearance.addChangeListener(({ colorScheme }) => {
-      setSystemColorScheme(colorScheme);
-    });
+    const subscription = Appearance.addChangeListener(
+      ({ colorScheme: scheme }) => {
+        colorScheme.set(scheme as ThemeMode);
+        setSystemColorScheme(scheme);
+      }
+    );
 
     return () => subscription?.remove();
   }, []);
 
   // Apply theme changes to document
   useEffect(() => {
-    if (typeof document !== "undefined") {
-      const root = document.documentElement;
-      if (isDarkMode) {
-        root.classList.add("dark");
-      } else {
-        root.classList.remove("dark");
-      }
+    if (isDarkMode) {
+      colorScheme.set("dark");
+    } else {
+      colorScheme.set("light");
     }
   }, [isDarkMode]);
 
-  const loadSettings = async () => {
+  const loadSettings = useCallback(async () => {
     try {
       const savedLanguage = await storage.getLanguage();
       const savedThemeMode = await storage.getThemeMode();
@@ -73,7 +83,7 @@ export function SettingsProvider({ children }: PropsWithChildren) {
     } catch (error) {
       console.error("Failed to load settings:", error);
     }
-  };
+  }, []);
 
   const setLanguage = async (newLanguage: Language) => {
     try {
@@ -84,14 +94,19 @@ export function SettingsProvider({ children }: PropsWithChildren) {
     }
   };
 
-  const setThemeMode = async (mode: ThemeMode) => {
+  const setThemeMode = useCallback(async (mode: ThemeMode) => {
     try {
       setThemeModeState(mode);
+      colorScheme.set(mode);
       await storage.saveThemeMode(mode);
     } catch (error) {
       console.error("Failed to save theme mode:", error);
     }
-  };
+  }, []);
+
+  const currentScheme = useMemo(() => {
+    return isDarkMode ? "dark" : "light";
+  }, [isDarkMode]);
 
   return (
     <SettingsContext.Provider
@@ -101,6 +116,7 @@ export function SettingsProvider({ children }: PropsWithChildren) {
         isDarkMode,
         setLanguage,
         setThemeMode,
+        colorScheme: currentScheme,
       }}
     >
       {children}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { View, Alert, Platform, SafeAreaView } from "react-native";
+import { Alert, Platform, SafeAreaView } from "react-native";
 import { Header } from "@/components/Header";
 import { SearchHeader } from "@/components/search/SearchHeader";
 import { SearchFilters } from "@/components/search/SearchFilters";
@@ -21,6 +21,7 @@ import {
 } from "@/types/search";
 import { useAuth } from "@/contexts/AuthContext";
 import { router } from "expo-router";
+import { View } from "@/components/ui";
 
 export default function SearchScreen() {
   const { isAuthenticated } = useAuth();
@@ -246,8 +247,8 @@ export default function SearchScreen() {
   const showTrending = !showSearchResults;
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      <View className="flex-1 bg-white">
+    <SafeAreaView className="flex-1">
+      <View className="flex-1">
         <SearchHeader
           query={searchState.query}
           onQueryChange={handleQueryChange}

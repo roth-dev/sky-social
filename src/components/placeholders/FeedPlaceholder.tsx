@@ -1,6 +1,7 @@
 import React from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import { StyleSheet, ScrollView } from "react-native";
 import { PostPlaceholder } from "./PostPlaceholder";
+import { View } from "../ui";
 
 interface FeedPlaceholderProps {
   count?: number;

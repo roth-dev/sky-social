@@ -1,15 +1,19 @@
 import { Tabs } from "expo-router";
-import { View } from "react-native";
 import { ResponsiveTabBar } from "@/components/layout/ResponsiveTabBar";
 import SearchScreen from "./search";
 import { useAuth } from "@/contexts/AuthContext";
 import WebSidebar from "@/components/layout/WebSidebar";
+import { View } from "@/components/ui";
+import { StyleSheet } from "react-native";
+import { Colors } from "@/constants/colors";
+import { useSettings } from "@/contexts/SettingsContext";
 
 export default function TabLayout() {
+  const { colorScheme } = useSettings();
   const { isAuthenticated } = useAuth();
 
   return (
-    <View className="flex-1 flex-row bg-white">
+    <View className="flex-1 flex-row">
       {/* Desktop Sidebar */}
       <WebSidebar />
 
@@ -29,9 +33,14 @@ export default function TabLayout() {
           <Tabs.Screen name="settings" />
         </Tabs>
       </View>
-
       {/* Right Panel for Search (when not authenticated) */}
-      <View className="hidden lg:flex lg:w-80 lg:border-l lg:border-gray-200">
+      <View
+        className="hidden lg:flex lg:w-80 lg:border-l"
+        style={{
+          borderWidth: StyleSheet.hairlineWidth,
+          borderColor: Colors.border[colorScheme],
+        }}
+      >
         {!isAuthenticated && <SearchScreen />}
       </View>
 

@@ -1,26 +1,28 @@
 import React from "react";
-import { View, TouchableOpacity, Text } from "react-native";
+import { TouchableOpacity } from "react-native";
 import { router, usePathname } from "expo-router";
 import { useAuth } from "@/contexts/AuthContext";
 import {
-  Chrome as Home,
+  Home,
   Search,
   SquarePlus as PlusSquare,
   User,
-  Heart,
-  Settings,
+  Video,
 } from "lucide-react-native";
+import { useSettings } from "@/contexts/SettingsContext";
+import { Colors } from "@/constants/colors";
+import { View } from "../ui";
 
 const NAVIGATION_ITEMS = [
   { key: "/", label: "Home", icon: Home },
   { key: "/search", label: "Search", icon: Search },
   { key: "/create", label: "New Post", icon: PlusSquare, requiresAuth: true },
-  { key: "/video", label: "Video", icon: Heart, requiresAuth: true },
+  { key: "/video", label: "Video", icon: Video, requiresAuth: true },
   { key: "/profile", label: "Profile", icon: User },
-  { key: "/settings", label: "Settings", icon: Settings },
 ];
 
 export function ResponsiveTabBar() {
+  const { isDarkMode } = useSettings();
   const { isAuthenticated } = useAuth();
   const pathname = usePathname();
 
@@ -54,14 +56,16 @@ export function ResponsiveTabBar() {
             className="flex-1 items-center justify-center py-2"
             onPress={() => handleNavigation(item.key, item.requiresAuth)}
           >
-            <IconComponent size={24} color={isActive ? "#111827" : "#6b7280"} />
-            <Text
-              className={`text-xs mt-1 ${
-                isActive ? "text-gray-900" : "text-gray-500"
-              }`}
-            >
-              {item.label}
-            </Text>
+            <IconComponent
+              size={24}
+              color={
+                isActive
+                  ? isDarkMode
+                    ? Colors.background.primary.light
+                    : Colors.background.primary.dark
+                  : "#6b7280"
+              }
+            />
           </TouchableOpacity>
         );
       })}

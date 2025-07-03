@@ -194,7 +194,7 @@ export class ATProtoClient {
                 },
                 {
                   headers: {
-                    "Accept-Language": "en",
+                    "Accept-Language": "en,km",
                   },
                 }
               ),
@@ -238,7 +238,7 @@ export class ATProtoClient {
       }
 
       console.error("All timeline methods failed:", lastError);
-      
+
       // Return empty feed as final fallback
       return {
         success: true,
@@ -249,7 +249,7 @@ export class ATProtoClient {
       };
     } catch (error: any) {
       console.error("Failed to get timeline:", error);
-      
+
       // Return empty feed on error
       return {
         success: true,
@@ -265,7 +265,7 @@ export class ATProtoClient {
   private async getPopularPosts(limit: number = 30) {
     const popularHandles = [
       "bsky.app",
-      "jay.bsky.team", 
+      "jay.bsky.team",
       "pfrazee.com",
       "why.bsky.team",
       "dholms.xyz",
@@ -277,10 +277,11 @@ export class ATProtoClient {
     for (const handle of popularHandles) {
       try {
         const response = await this.retryWithBackoff(
-          () => this.agent.getAuthorFeed({ 
-            actor: handle, 
-            limit: Math.ceil(limit / popularHandles.length) 
-          }),
+          () =>
+            this.agent.getAuthorFeed({
+              actor: handle,
+              limit: Math.ceil(limit / popularHandles.length),
+            }),
           `Get Posts from ${handle}`
         );
 
@@ -300,9 +301,10 @@ export class ATProtoClient {
 
     // Sort by creation time (newest first) and limit
     return allPosts
-      .sort((a, b) => 
-        new Date(b.post.record.createdAt).getTime() - 
-        new Date(a.post.record.createdAt).getTime()
+      .sort(
+        (a, b) =>
+          new Date(b.post.record.createdAt).getTime() -
+          new Date(a.post.record.createdAt).getTime()
       )
       .slice(0, limit);
   }

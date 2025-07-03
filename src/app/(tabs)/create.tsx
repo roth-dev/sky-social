@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import {
-  View,
-  Text,
   TextInput,
   StyleSheet,
   TouchableOpacity,
@@ -14,6 +12,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useCreatePost } from "@/lib/queries";
 import { X, Image as ImageIcon } from "lucide-react-native";
 import { router } from "expo-router";
+import { Text, View } from "@/components/ui";
 
 export default function CreateScreen() {
   const { isAuthenticated, user } = useAuth();

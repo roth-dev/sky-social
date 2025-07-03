@@ -12,6 +12,7 @@ import { EmptyState } from "@/components/placeholders/EmptyState";
 import { ATFeedItem } from "@/types/atproto";
 import { Heart } from "lucide-react-native";
 import { Image } from "expo-image";
+import TabList from "../tabs/List";
 
 interface ProfileTabContentProps {
   tabKey: string;
@@ -175,16 +176,17 @@ export function ProfileTabContent({
       : data;
 
   return (
-    <FlatList
+    <TabList
       data={filteredData}
       renderItem={renderItem}
       keyExtractor={(item, index) => `${tabKey}-${item.post.uri}-${index}`}
       // numColumns={numColumns}
-      contentContainerStyle={[
-        styles.container,
-        tabKey === "media" && styles.mediaContainer,
-        filteredData.length === 0 && styles.emptyContainer,
-      ]}
+      // contentContainerStyle={[
+      //   styles.container,
+      //   tabKey === "media" && styles.mediaContainer,
+      //   filteredData.length === 0 && styles.emptyContainer,
+      // ]}
+      // bounces={false}
       showsVerticalScrollIndicator={false}
       onRefresh={onRefresh}
       refreshing={loading}
@@ -197,14 +199,14 @@ export function ProfileTabContent({
       maxToRenderPerBatch={10}
       windowSize={10}
       initialNumToRender={5}
-      maintainVisibleContentPosition={
-        tabKey !== "media"
-          ? {
-              minIndexForVisible: 0,
-              autoscrollToTopThreshold: 10,
-            }
-          : undefined
-      }
+      // maintainVisibleContentPosition={
+      //   tabKey !== "media"
+      //     ? {
+      //         minIndexForVisible: 0,
+      //         autoscrollToTopThreshold: 10,
+      //       }
+      //     : undefined
+      // }
     />
   );
 }

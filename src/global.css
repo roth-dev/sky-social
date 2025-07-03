@@ -34,9 +34,9 @@
   }
   
   .sidebar-desktop {
-    @apply hidden lg:flex lg:flex-col lg:fixed lg:left-0 lg:top-0 lg:bottom-0;
-    @apply lg:w-64 lg:bg-white lg:border-r lg:border-gray-200;
-    @apply lg:z-40;
+    @apply hidden xl:flex xl:flex-col xl:fixed xl:left-0 xl:top-0 xl:bottom-0;
+    @apply xl:w-72 xl:bg-white xl:border-r xl:border-gray-200;
+    @apply xl:z-40 xl:px-6 xl:py-4;
   }
   
   .main-content-mobile {
@@ -44,14 +44,20 @@
   }
   
   .main-content-desktop {
-    @apply lg:ml-64 lg:pb-0;
-    /* Set max width similar to mobile viewing */
-    @apply lg:flex lg:justify-center;
+    @apply xl:ml-72 xl:pb-0;
+    @apply xl:flex xl:justify-center xl:min-h-screen;
   }
 
   .main-content-desktop > * {
-    @apply lg:border-r lg:border-gray-700;
-    @apply lg:w-full lg:max-w-lg;
+    @apply xl:border-r xl:border-gray-200;
+    @apply xl:w-full xl:max-w-2xl xl:min-h-screen;
+  }
+
+  /* Right sidebar for trending/suggestions */
+  .right-sidebar-desktop {
+    @apply hidden xl:flex xl:flex-col xl:fixed xl:right-0 xl:top-0 xl:bottom-0;
+    @apply xl:w-80 xl:bg-white xl:border-l xl:border-gray-200;
+    @apply xl:z-30 xl:px-6 xl:py-4 xl:overflow-y-auto;
   }
 
   /* Dark mode component styles */
@@ -60,7 +66,15 @@
   }
 
   .dark .sidebar-desktop {
-    @apply lg:bg-gray-900 lg:border-gray-700;
+    @apply xl:bg-gray-900 xl:border-gray-700;
+  }
+
+  .dark .main-content-desktop > * {
+    @apply xl:border-gray-700;
+  }
+
+  .dark .right-sidebar-desktop {
+    @apply xl:bg-gray-900 xl:border-gray-700;
   }
 }
 
@@ -84,17 +98,25 @@
 }
 
 /* Mobile-first responsive design */
-@media (max-width: 1023px) {
+@media (max-width: 1279px) {
   .tab-bar-mobile {
     @apply flex;
   }
   
   .tab-bar-desktop {
+    @apply hidden;
+  }
+  
+  .sidebar-desktop {
+    @apply hidden;
+  }
+  
+  .right-sidebar-desktop {
     @apply hidden;
   }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1280px) {
   .tab-bar-mobile {
     @apply hidden;
   }
@@ -103,12 +125,58 @@
     @apply flex;
   }
   
-  /* Override the main content positioning for desktop */
+  /* Three-column layout for desktop */
   .main-content-desktop {
-    margin-left: 256px; /* 64 * 4 = 256px for lg:w-64 */
-    max-width: 672px; /* 2xl = 42rem = 672px */
-    margin-right: auto;
+    margin-left: 288px; /* 72 * 4 = 288px for xl:w-72 */
+    margin-right: 320px; /* 80 * 4 = 320px for xl:w-80 */
+    max-width: none;
     padding-bottom: 0;
   }
- 
+
+  .main-content-desktop > * {
+    max-width: 672px; /* 2xl = 42rem = 672px */
+    margin: 0 auto;
+  }
+
+  /* Ensure proper spacing and layout */
+  body {
+    @apply xl:bg-gray-50;
+  }
+
+  .dark body {
+    @apply xl:bg-black;
+  }
+}
+
+/* Additional X.com-like styling */
+@layer components {
+  /* Sticky positioning for sidebars */
+  .sidebar-desktop {
+    @apply xl:sticky xl:top-0 xl:h-screen xl:overflow-y-auto;
+  }
+  
+  .right-sidebar-desktop {
+    @apply xl:sticky xl:top-0 xl:h-screen;
+  }
+
+  /* Main content area styling */
+  .main-content-desktop > * {
+    @apply xl:bg-white xl:min-h-screen;
+  }
+
+  .dark .main-content-desktop > * {
+    @apply xl:bg-gray-900;
+  }
+
+  /* Smooth scrolling */
+  .sidebar-desktop,
+  .right-sidebar-desktop {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+  }
+
+  .sidebar-desktop::-webkit-scrollbar,
+  .right-sidebar-desktop::-webkit-scrollbar {
+    display: none; /* WebKit */
+  }
 }

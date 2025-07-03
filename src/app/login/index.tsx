@@ -79,6 +79,7 @@ export default function LoginScreen() {
                 onChangeText={setIdentifier}
                 autoCapitalize="none"
                 autoCorrect={false}
+                className="dark:text-white"
               />
 
               <Input
@@ -88,6 +89,7 @@ export default function LoginScreen() {
                 onChangeText={setPassword}
                 secureTextEntry
                 error={error}
+                className="dark:text-white"
               />
               <Button
                 title={loading ? "Signing in..." : "Sign In"}

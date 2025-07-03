@@ -2,7 +2,6 @@ import React from "react";
 import { TextInput, TextInputProps } from "react-native";
 import { Text } from "./Text";
 import { cn } from "@/lib/utils";
-import { View } from "./View";
 import { VStack } from "./Stack";
 
 interface InputProps extends TextInputProps {

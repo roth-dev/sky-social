@@ -13,7 +13,7 @@ export default function TabLayout() {
   const { isAuthenticated } = useAuth();
 
   return (
-    <View className="flex-1 flex-row">
+    <View className="flex-1 flex-row bg-white">
       {/* Desktop Sidebar */}
       <WebSidebar />
 
@@ -33,6 +33,7 @@ export default function TabLayout() {
           <Tabs.Screen name="settings" />
         </Tabs>
       </View>
+
       {/* Right Panel for Search (when not authenticated) */}
       <View
         className="hidden lg:flex lg:w-80 lg:border-l"

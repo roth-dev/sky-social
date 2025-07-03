@@ -1,12 +1,14 @@
-import React from 'react';
-import { View, FlatList, Text, StyleSheet } from 'react-native';
-import { UserSearchResult } from './UserSearchResult';
-import { PostSearchResult } from './PostSearchResult';
-import { FeedSearchResult } from './FeedSearchResult';
-import { EmptyState, LoadingState } from '@/components/placeholders/EmptyState';
-import { SearchFilters, SearchResultType } from '@/types/search';
-import { SearchActor, FeedGenerator } from '@/types/search';
-import { ATPost } from '@/types/atproto';
+import React from "react";
+import { FlatList, StyleSheet } from "react-native";
+import { UserSearchResult } from "./UserSearchResult";
+import { PostSearchResult } from "./PostSearchResult";
+import { FeedSearchResult } from "./FeedSearchResult";
+import { EmptyState, LoadingState } from "@/components/placeholders/EmptyState";
+import { SearchFilters, SearchResultType } from "@/types/search";
+import { SearchActor, FeedGenerator } from "@/types/search";
+import { ATPost } from "@/types/atproto";
+import { Text, View } from "../ui";
+import { List } from "../list";
 
 interface SearchResultsProps {
   type: SearchResultType;
@@ -53,14 +55,14 @@ export function SearchResults({
       feed={item}
       onSubscribe={() => {
         // TODO: Implement feed subscription
-        console.log('Subscribe to feed:', item.uri);
+        console.log("Subscribe to feed:", item.uri);
       }}
     />
   );
 
   const renderLoadingFooter = () => {
     if (!loadingMore) return null;
-    
+
     return (
       <View style={styles.loadingFooter}>
         <View style={styles.loadingSpinner} />
@@ -72,7 +74,7 @@ export function SearchResults({
   const renderEmptyState = () => {
     if (loading) {
       return (
-        <LoadingState 
+        <LoadingState
           message={`Searching for ${type}...`}
           style={styles.emptyState}
         />
@@ -112,26 +114,29 @@ export function SearchResults({
     );
   };
 
-  const getEmptyStateConfig = (searchType: SearchResultType, searchQuery: string) => {
+  const getEmptyStateConfig = (
+    searchType: SearchResultType,
+    searchQuery: string
+  ) => {
     switch (searchType) {
-      case 'users':
+      case "users":
         return {
-          title: 'No people found',
+          title: "No people found",
           description: `No users found for "${searchQuery}". Try searching with a different term or handle.`,
         };
-      case 'posts':
+      case "posts":
         return {
-          title: 'No posts found',
+          title: "No posts found",
           description: `No posts found for "${searchQuery}". Try searching with different keywords.`,
         };
-      case 'feeds':
+      case "feeds":
         return {
-          title: 'No feeds found',
+          title: "No feeds found",
           description: `No custom feeds found for "${searchQuery}". Try browsing popular feeds instead.`,
         };
       default:
         return {
-          title: 'No results found',
+          title: "No results found",
           description: `No results found for "${searchQuery}". Try a different search term.`,
         };
     }
@@ -139,11 +144,11 @@ export function SearchResults({
 
   const getRenderItem = () => {
     switch (type) {
-      case 'users':
+      case "users":
         return renderUserItem;
-      case 'posts':
+      case "posts":
         return renderPostItem;
-      case 'feeds':
+      case "feeds":
         return renderFeedItem;
       default:
         return renderUserItem;
@@ -152,11 +157,11 @@ export function SearchResults({
 
   const getKeyExtractor = (item: any, index: number) => {
     switch (type) {
-      case 'users':
+      case "users":
         return item.did || `user-${index}`;
-      case 'posts':
+      case "posts":
         return item.uri || `post-${index}`;
-      case 'feeds':
+      case "feeds":
         return item.uri || `feed-${index}`;
       default:
         return `item-${index}`;
@@ -170,12 +175,14 @@ export function SearchResults({
   };
 
   return (
-    <FlatList
+    <List
       data={data}
       renderItem={getRenderItem()}
       keyExtractor={getKeyExtractor}
       style={styles.container}
-      contentContainerStyle={data.length === 0 ? styles.emptyContainer : undefined}
+      contentContainerStyle={
+        data.length === 0 ? styles.emptyContainer : undefined
+      }
       showsVerticalScrollIndicator={false}
       onEndReached={handleLoadMore}
       onEndReachedThreshold={0.3}
@@ -192,7 +199,6 @@ export function SearchResults({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
   },
   emptyContainer: {
     flex: 1,
@@ -202,8 +208,7 @@ const styles = StyleSheet.create({
   },
   loadingFooter: {
     paddingVertical: 20,
-    alignItems: 'center',
-    backgroundColor: '#ffffff',
+    alignItems: "center",
     gap: 8,
   },
   loadingSpinner: {
@@ -211,12 +216,12 @@ const styles = StyleSheet.create({
     height: 24,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: '#e5e7eb',
-    borderTopColor: '#3b82f6',
+    borderColor: "#e5e7eb",
+    borderTopColor: "#3b82f6",
   },
   loadingText: {
     fontSize: 14,
-    color: '#6b7280',
-    fontWeight: '500',
+    color: "#6b7280",
+    fontWeight: "500",
   },
 });

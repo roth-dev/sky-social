@@ -1,7 +1,7 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Post } from '@/components/Post';
-import { ATPost } from '@/types/atproto';
+import React from "react";
+import { Post } from "@/components/Post";
+import { ATPost } from "@/types/atproto";
+import { View } from "../ui";
 
 interface PostSearchResultProps {
   post: ATPost;
@@ -10,14 +10,14 @@ interface PostSearchResultProps {
   onComment?: (uri: string) => void;
 }
 
-export function PostSearchResult({ 
-  post, 
-  onLike, 
-  onRepost, 
-  onComment 
+export function PostSearchResult({
+  post,
+  onLike,
+  onRepost,
+  onComment,
 }: PostSearchResultProps) {
   return (
-    <View style={styles.container}>
+    <View>
       <Post
         post={post}
         onLike={onLike}
@@ -27,9 +27,3 @@ export function PostSearchResult({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#ffffff',
-  },
-});

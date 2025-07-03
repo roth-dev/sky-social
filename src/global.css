@@ -34,9 +34,12 @@
   }
   
   .sidebar-desktop {
-    @apply hidden xl:flex xl:flex-col xl:fixed xl:left-0 xl:top-0 xl:bottom-0;
+    @apply hidden xl:flex xl:flex-col xl:fixed xl:top-0 xl:bottom-0;
     @apply xl:w-72 xl:bg-white xl:border-r xl:border-gray-200;
     @apply xl:z-40 xl:px-6 xl:py-4;
+    /* Center the sidebar by positioning it from the left edge of the centered content area */
+    left: calc(50% - 672px); /* Half screen width minus half of main content width (672px) */
+    transform: translateX(-100%); /* Move it fully to the left of the content area */
   }
   
   .main-content-mobile {
@@ -44,7 +47,7 @@
   }
   
   .main-content-desktop {
-    @apply xl:ml-72 xl:pb-0;
+    @apply xl:pb-0;
     @apply xl:flex xl:justify-center xl:min-h-screen;
   }
 
@@ -55,9 +58,11 @@
 
   /* Right sidebar for trending/suggestions */
   .right-sidebar-desktop {
-    @apply hidden xl:flex xl:flex-col xl:fixed xl:right-0 xl:top-0 xl:bottom-0;
+    @apply hidden xl:flex xl:flex-col xl:fixed xl:top-0 xl:bottom-0;
     @apply xl:w-80 xl:bg-white xl:border-l xl:border-gray-200;
     @apply xl:z-30 xl:px-6 xl:py-4 xl:overflow-y-auto;
+    /* Position right sidebar to the right of the centered content area */
+    left: calc(50% + 336px); /* Half screen width plus half of main content width (336px) */
   }
 
   /* Dark mode component styles */
@@ -125,10 +130,10 @@
     @apply flex;
   }
   
-  /* Three-column layout for desktop */
+  /* Centered three-column layout for desktop */
   .main-content-desktop {
-    margin-left: 288px; /* 72 * 4 = 288px for xl:w-72 */
-    margin-right: 320px; /* 80 * 4 = 320px for xl:w-80 */
+    margin-left: 0;
+    margin-right: 0;
     max-width: none;
     padding-bottom: 0;
   }
@@ -153,10 +158,12 @@
   /* Sticky positioning for sidebars */
   .sidebar-desktop {
     @apply xl:sticky xl:top-0 xl:h-screen xl:overflow-y-auto;
+    position: fixed !important; /* Override sticky for proper centering */
   }
   
   .right-sidebar-desktop {
     @apply xl:sticky xl:top-0 xl:h-screen;
+    position: fixed !important; /* Override sticky for proper centering */
   }
 
   /* Main content area styling */
@@ -178,5 +185,26 @@
   .sidebar-desktop::-webkit-scrollbar,
   .right-sidebar-desktop::-webkit-scrollbar {
     display: none; /* WebKit */
+  }
+}
+
+/* Responsive adjustments for different screen sizes */
+@media (min-width: 1280px) and (max-width: 1535px) {
+  .sidebar-desktop {
+    left: calc(50% - 600px);
+  }
+  
+  .right-sidebar-desktop {
+    left: calc(50% + 300px);
+  }
+}
+
+@media (min-width: 1536px) {
+  .sidebar-desktop {
+    left: calc(50% - 672px);
+  }
+  
+  .right-sidebar-desktop {
+    left: calc(50% + 336px);
   }
 }

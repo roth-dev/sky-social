@@ -35,11 +35,11 @@
   
   .sidebar-desktop {
     @apply hidden xl:flex xl:flex-col xl:fixed xl:top-0 xl:bottom-0;
-    @apply xl:w-72 xl:bg-white xl:border-r xl:border-gray-200;
+    @apply xl:w-80 xl:bg-white xl:border-r xl:border-gray-200;
     @apply xl:z-40 xl:px-6 xl:py-4;
     /* Center the sidebar by positioning it from the center */
     left: 50%;
-    margin-left: -672px; /* -(main content width + sidebar width) */
+    margin-left: -696px; /* -(main content width + sidebar width) = -(336px + 320px + 40px) */
     transform: translateX(-100%);
   }
   
@@ -179,20 +179,37 @@
 /* Responsive adjustments for different screen sizes */
 @media (min-width: 1280px) and (max-width: 1535px) {
   .sidebar-desktop {
-    margin-left: -600px; /* Adjust for smaller screens */
+    @apply xl:w-72; /* Slightly smaller on medium screens */
+    margin-left: -648px; /* Adjust for smaller sidebar */
   }
   
   .right-sidebar-desktop {
+    @apply xl:w-72; /* Match left sidebar */
     margin-left: 300px; /* Adjust for smaller screens */
   }
 }
 
 @media (min-width: 1536px) {
   .sidebar-desktop {
-    margin-left: -672px; /* Full width for larger screens */
+    @apply xl:w-80; /* Full width for larger screens */
+    margin-left: -696px; /* Full width positioning */
   }
   
   .right-sidebar-desktop {
-    margin-left: 336px; /* Full width for larger screens */
+    @apply xl:w-80; /* Full width for larger screens */
+    margin-left: 336px; /* Full width positioning */
+  }
+}
+
+/* Extra large screens - even bigger sidebars */
+@media (min-width: 1920px) {
+  .sidebar-desktop {
+    @apply xl:w-96; /* Even bigger on very large screens */
+    margin-left: -720px; /* Adjust for bigger sidebar */
+  }
+  
+  .right-sidebar-desktop {
+    @apply xl:w-96; /* Match left sidebar */
+    margin-left: 336px; /* Keep right sidebar position */
   }
 }

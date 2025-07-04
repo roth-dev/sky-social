@@ -111,20 +111,33 @@ export function useTimeline() {
 
 // Video Feed Query - filters timeline for video posts
 export function useVideoFeed() {
-  const timelineQuery = useTimeline();
-
-  const videoFeed = useMemo(() => {
-    if (!timelineQuery.data) return [];
-
-    return timelineQuery.data.pages.flatMap((page) =>
-      page?.feed.filter((item) => isVideoPost(item.post))
-    );
-  }, [timelineQuery.data]);
-
-  return {
-    ...timelineQuery,
-    data: videoFeed,
-  };
+  return useInfiniteQuery({
+    queryKey: queryKeys.videoFeed,
+    queryFn: async ({ pageParam }) => {
+      const result = await atprotoClient.getTimeline(50, pageParam); // Get more posts to filter for videos
+      if (!result.success) {
+        throw new Error(result.error || "Failed to fetch video feed");
+      }
+      
+      // Filter for video posts only
+      const videoFeed = result.data.feed.filter((item) => isVideoPost(item.post));
+      
+      return {
+        ...result.data,
+        feed: videoFeed,
+      };
+    },
+    getNextPageParam: (lastPage) => lastPage?.cursor,
+    initialPageParam: undefined as string | undefined,
+    staleTime: 1000 * 60 * 2, // 2 minutes
+    gcTime: 1000 * 60 * 10, // 10 minutes
+    enabled: true,
+    retry: (failureCount, error) => {
+      if (failureCount >= 3) return false;
+      return handleQueryError(error);
+    },
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+  });
 }
 
 // Search Queries

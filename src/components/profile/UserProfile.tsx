@@ -1,18 +1,14 @@
-import React, { useMemo } from "react";
-import { StyleSheet, Alert, Platform } from "react-native";
-import { Header } from "@/components/Header";
+import React, { useMemo, useRef } from "react";
+import { StyleSheet, Alert } from "react-native";
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { ErrorState } from "@/components/placeholders/EmptyState";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile } from "@/lib/queries";
-import { Settings } from "lucide-react-native";
-import { router } from "expo-router";
 import { View } from "@/components/ui";
 import TabView from "@/components/tabs";
 import UserPostSection from "../sections/Post";
 import UserMediaSection from "../sections/Media";
 import UserLikeSection from "../sections/Likes";
-import { Colors } from "@/constants/colors";
 import { useSettings } from "@/contexts/SettingsContext";
 
 interface Props {
@@ -20,9 +16,9 @@ interface Props {
 }
 
 export default function UserProfile({ handle }: Props) {
-  const { logout, user } = useAuth();
-  const { colorScheme } = useSettings();
+  const { user } = useAuth();
   const profileQuery = useProfile(handle);
+  const headerHeight = useRef(200);
 
   const isOwner = useMemo(() => {
     return handle === user?.handle;
@@ -40,15 +36,6 @@ export default function UserProfile({ handle }: Props) {
   if (profileQuery.error) {
     return (
       <View style={styles.container}>
-        {Platform.OS !== "web" && (
-          <Header
-            title="Profile"
-            rightIcon={
-              <Settings size={24} color={Colors.inverted[colorScheme]} />
-            }
-            onRightPress={() => logout()}
-          />
-        )}
         <ErrorState
           title="Unable to load profile"
           description={
@@ -67,13 +54,6 @@ export default function UserProfile({ handle }: Props) {
   if (profileQuery.isLoading || !currentProfile) {
     return (
       <View className="flex-1 bg-white">
-        <Header
-          title="Profile"
-          rightIcon={
-            <Settings size={24} color={Colors.inverted[colorScheme]} />
-          }
-          onRightPress={() => router.push("/(tabs)/profile/settings")}
-        />
         {/* You may want to import and use a ProfilePlaceholder here */}
         {/* Replace the following with your actual placeholder component if available */}
         {/* <ProfilePlaceholder /> */}
@@ -83,21 +63,23 @@ export default function UserProfile({ handle }: Props) {
 
   return (
     <View className="flex-1 bg-white">
-      <Header
+      {/* <Header
         title={currentProfile.displayName || currentProfile.handle || ""}
         rightIcon={<Settings size={24} color={Colors.inverted[colorScheme]} />}
         onRightPress={() => router.push("/(tabs)/profile/settings")}
-      />
+      /> */}
       <TabView
+        headerHeight={headerHeight.current}
         renderHeader={() => (
-          <>
-            <ProfileHeader
-              user={currentProfile}
-              isOwnProfile={true}
-              onEditProfile={handleEditProfile}
-              onMorePress={handleMorePress}
-            />
-          </>
+          <ProfileHeader
+            user={currentProfile}
+            setHeaderHeight={(height) => {
+              headerHeight.current = height;
+            }}
+            isOwnProfile={isOwner}
+            onEditProfile={handleEditProfile}
+            onMorePress={handleMorePress}
+          />
         )}
         routes={[
           {

@@ -9,6 +9,7 @@ export interface TabViewProps {
   refreshing?: boolean;
   onRefresh?: () => void;
   routes: Route[];
+  headerHeight?: number;
   onChange?: (tab: Omit<Route, "component">) => void;
   renderHeader?: () => React.ReactElement | null;
 

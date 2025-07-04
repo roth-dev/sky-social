@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { StyleSheet, TouchableOpacity, Dimensions } from "react-native";
 import { Avatar } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
@@ -23,6 +23,7 @@ interface ProfileHeaderProps {
   onMessage?: () => void;
   onEditProfile?: () => void;
   onMorePress?: () => void;
+  setHeaderHeight?: (height: number) => void;
 }
 
 const { width } = Dimensions.get("window");
@@ -36,6 +37,7 @@ export function ProfileHeader({
   onMessage,
   onEditProfile,
   onMorePress,
+  setHeaderHeight,
 }: ProfileHeaderProps) {
   const { colorScheme } = useSettings();
   const formatJoinDate = (indexedAt?: string) => {
@@ -59,7 +61,13 @@ export function ProfileHeader({
   const website = extractWebsiteFromDescription(user?.description);
 
   return (
-    <View pointerEvents="none" style={styles.container}>
+    <View
+      onLayout={(e) => {
+        setHeaderHeight?.(e.nativeEvent.layout.height);
+      }}
+      pointerEvents="none"
+      style={styles.container}
+    >
       {/* Cover Image */}
       <View
         style={[

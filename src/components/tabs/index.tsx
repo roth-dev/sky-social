@@ -3,6 +3,7 @@ import {
   Tabs,
   TabBarProps,
   CollapsibleRef,
+  MaterialTabBar,
 } from "react-native-collapsible-tab-view";
 import { Route, TabViewProps } from "./type";
 import { HStack } from "../ui";
@@ -41,6 +42,7 @@ export default function TabView({
   routes,
   onChange,
   onRefresh,
+  headerHeight,
   refreshing = false,
   renderHeader,
 }: TabViewProps) {
@@ -64,17 +66,9 @@ export default function TabView({
       ref={ref}
       renderHeader={renderHeader}
       allowHeaderOverscroll
-      renderTabBar={(props) => (
-        <TabBar
-          {...props}
-          onTabPress={(name) => {
-            if (!ref.current) return;
-            ref.current?.jumpToTab(name);
-          }}
-        />
-      )}
+      renderTabBar={(props) => <TabBar {...props} />}
       onIndexChange={handleIndexChange}
-      headerHeight={renderHeader ? 200 : 0}
+      headerHeight={headerHeight}
       headerContainerStyle={{
         elevation: 0,
         shadowRadius: 0,

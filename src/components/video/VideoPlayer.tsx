@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Dimensions,
   Text,
+  Pressable,
 } from "react-native";
 import { useEvent, useEventListener } from "expo";
 import { useVideoPlayer, VideoView, VideoThumbnail } from "expo-video";
@@ -39,9 +40,9 @@ export function VideoPlayer({
     (player) => {
       player.loop = true;
 
-      if (autoPlay) {
-        player.play();
-      }
+      // if (autoPlay) {
+      //   player.play();
+      // }
     }
   );
 
@@ -125,7 +126,12 @@ export function VideoPlayer({
         },
       ]}
     >
-      <TouchableOpacity style={styles.videoContainer} activeOpacity={1}>
+      <Pressable
+        style={styles.videoContainer}
+        onPress={() => {
+          videoRef.current?.enterFullscreen();
+        }}
+      >
         <VideoView
           ref={videoRef}
           style={styles.video}
@@ -143,7 +149,7 @@ export function VideoPlayer({
             <View style={styles.loadingSpinner} />
           </View>
         )}
-      </TouchableOpacity>
+      </Pressable>
     </View>
   );
 }

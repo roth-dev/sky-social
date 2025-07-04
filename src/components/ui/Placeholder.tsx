@@ -1,13 +1,8 @@
-import React from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
-import Animated, { 
-  useSharedValue, 
-  useAnimatedStyle, 
-  withRepeat, 
-  withTiming,
-  interpolate,
-  Easing
-} from 'react-native-reanimated';
+import React from "react";
+import { StyleSheet } from "react-native";
+import { View } from "./View";
+import { useSettings } from "@/contexts/SettingsContext";
+import { Colors } from "@/constants/colors";
 
 interface PlaceholderProps {
   width?: number | string;
@@ -16,47 +11,26 @@ interface PlaceholderProps {
   style?: any;
 }
 
-export function Placeholder({ 
-  width = '100%', 
-  height = 20, 
+export function Placeholder({
+  width = "100%",
+  height = 20,
   borderRadius = 4,
-  style 
+  style,
 }: PlaceholderProps) {
-  const shimmerValue = useSharedValue(0);
-
-  React.useEffect(() => {
-    shimmerValue.value = withRepeat(
-      withTiming(1, {
-        duration: 1500,
-        easing: Easing.bezier(0.4, 0.0, 0.6, 1.0),
-      }),
-      -1,
-      false
-    );
-  }, []);
-
-  const animatedStyle = useAnimatedStyle(() => {
-    const translateX = interpolate(
-      shimmerValue.value,
-      [0, 1],
-      [-100, 100]
-    );
-
-    return {
-      transform: [{ translateX }],
-    };
-  });
-
+  const { colorScheme } = useSettings();
   return (
-    <View 
+    <View
       style={[
         styles.container,
-        { width, height, borderRadius },
-        style
+        {
+          width,
+          height,
+          borderRadius,
+          backgroundColor: Colors.background.secondary[colorScheme],
+        },
+        style,
       ]}
-    >
-      <Animated.View style={[styles.shimmer, animatedStyle]} />
-    </View>
+    />
   );
 }
 
@@ -68,12 +42,12 @@ interface SkeletonTextProps {
   style?: any;
 }
 
-export function SkeletonText({ 
-  lines = 3, 
-  lineHeight = 16, 
+export function SkeletonText({
+  lines = 3,
+  lineHeight = 16,
   spacing = 8,
-  lastLineWidth = '60%',
-  style 
+  lastLineWidth = "60%",
+  style,
 }: SkeletonTextProps) {
   return (
     <View style={[styles.textContainer, style]}>
@@ -81,7 +55,7 @@ export function SkeletonText({
         <Placeholder
           key={index}
           height={lineHeight}
-          width={index === lines - 1 ? lastLineWidth : '100%'}
+          width={index === lines - 1 ? lastLineWidth : "100%"}
           style={{ marginBottom: index < lines - 1 ? spacing : 0 }}
         />
       ))}
@@ -90,11 +64,14 @@ export function SkeletonText({
 }
 
 interface SkeletonAvatarProps {
-  size?: 'small' | 'medium' | 'large' | 'xl';
+  size?: "small" | "medium" | "large" | "xl";
   style?: any;
 }
 
-export function SkeletonAvatar({ size = 'medium', style }: SkeletonAvatarProps) {
+export function SkeletonAvatar({
+  size = "medium",
+  style,
+}: SkeletonAvatarProps) {
   const sizeValue = {
     small: 32,
     medium: 40,
@@ -111,21 +88,10 @@ export function SkeletonAvatar({ size = 'medium', style }: SkeletonAvatarProps) 
     />
   );
 }
-
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#f3f4f6',
-    overflow: 'hidden',
-    position: 'relative',
-  },
-  shimmer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(255, 255, 255, 0.6)',
-    width: 100,
+    overflow: "hidden",
+    position: "relative",
   },
   textContainer: {
     flex: 1,

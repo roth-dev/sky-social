@@ -1,11 +1,13 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import {
   Placeholder,
   SkeletonText,
   SkeletonAvatar,
 } from "@/components/ui/Placeholder";
-import { VideoPlaceholder } from "./VideoPlaceholder";
+import { View } from "../ui";
+import { useSettings } from "@/contexts/SettingsContext";
+import { Colors } from "@/constants/colors";
 
 interface PostPlaceholderProps {
   showImage?: boolean;
@@ -22,8 +24,17 @@ export function PostPlaceholder({
   isDetailView = false,
   style,
 }: PostPlaceholderProps) {
+  const { colorScheme } = useSettings();
   return (
-    <View style={[styles.container, style]}>
+    <View
+      style={[
+        styles.container,
+        {
+          borderBottomColor: Colors.border[colorScheme],
+        },
+        style,
+      ]}
+    >
       {/* Header */}
       <View style={styles.header}>
         <SkeletonAvatar size={isDetailView ? "large" : "medium"} />
@@ -51,14 +62,6 @@ export function PostPlaceholder({
           spacing={isDetailView ? 8 : 6}
           lastLineWidth="75%"
         />
-
-        {/* Video placeholder */}
-        {showVideo && (
-          <VideoPlaceholder
-            isDetailView={isDetailView}
-            style={{ marginTop: 12 }}
-          />
-        )}
 
         {/* Image placeholder */}
         {showImage && !showVideo && (
@@ -111,11 +114,9 @@ export function PostPlaceholder({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#ffffff",
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "#e5e7eb",
   },
   header: {
     flexDirection: "row",

@@ -1,11 +1,11 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { PostEmbed } from '@/types/embed';
-import { ImageEmbed } from './ImageEmbed';
-import { ExternalEmbed } from './ExternalEmbed';
-import { RecordEmbed } from './RecordEmbed';
-import { VideoEmbed } from './VideoEmbed';
-import { RecordWithMediaEmbed } from './RecordWithMediaEmbed';
+import React, { useCallback, useMemo } from "react";
+import { View, StyleSheet } from "react-native";
+import { PostEmbed } from "@/types/embed";
+import { ImageEmbed } from "./ImageEmbed";
+import { ExternalEmbed } from "./ExternalEmbed";
+import { RecordEmbed } from "./RecordEmbed";
+import { VideoEmbed } from "./VideoEmbed";
+import { RecordWithMediaEmbed } from "./RecordWithMediaEmbed";
 
 interface EmbedContainerProps {
   embed: PostEmbed;
@@ -22,9 +22,9 @@ export function EmbedContainer({
   onLinkPress,
   onRecordPress,
 }: EmbedContainerProps) {
-  const renderEmbed = () => {
+  const renderEmbed = useCallback(() => {
     switch (embed.$type) {
-      case 'app.bsky.embed.images#view':
+      case "app.bsky.embed.images#view":
         return (
           <ImageEmbed
             images={embed.images || []}
@@ -33,7 +33,7 @@ export function EmbedContainer({
           />
         );
 
-      case 'app.bsky.embed.external#view':
+      case "app.bsky.embed.external#view":
         return (
           <ExternalEmbed
             external={embed.external}
@@ -42,7 +42,7 @@ export function EmbedContainer({
           />
         );
 
-      case 'app.bsky.embed.record#view':
+      case "app.bsky.embed.record#view":
         return (
           <RecordEmbed
             record={embed.record}
@@ -51,15 +51,10 @@ export function EmbedContainer({
           />
         );
 
-      case 'app.bsky.embed.video#view':
-        return (
-          <VideoEmbed
-            video={embed.video}
-            isDetailView={isDetailView}
-          />
-        );
+      case "app.bsky.embed.video#view":
+        return <VideoEmbed video={embed.video} isDetailView={isDetailView} />;
 
-      case 'app.bsky.embed.recordWithMedia#view':
+      case "app.bsky.embed.recordWithMedia#view":
         return (
           <RecordWithMediaEmbed
             record={embed.record}
@@ -73,10 +68,10 @@ export function EmbedContainer({
       default:
         return null;
     }
-  };
+  }, [embed, isDetailView, onImagePress, onRecordPress, onLinkPress]);
 
-  const embedContent = renderEmbed();
-  
+  const embedContent = useMemo(() => renderEmbed(), [renderEmbed]);
+
   if (!embedContent) {
     return null;
   }
@@ -92,7 +87,7 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 12,
     borderRadius: 12,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   detailContainer: {
     marginTop: 16,

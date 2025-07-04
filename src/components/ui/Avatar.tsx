@@ -20,11 +20,7 @@ export function Avatar({
   return (
     <View style={[styles.container, sizeStyle, style]}>
       {uri ? (
-        <Image
-          source={{ uri }}
-          style={[styles.image, sizeStyle]}
-          transition={800}
-        />
+        <Image source={{ uri }} style={[styles.image, sizeStyle]} />
       ) : (
         <View style={[styles.fallback, sizeStyle]}>
           <Text style={[styles.fallbackText, styles[`${size}Text`]]}>

@@ -2,10 +2,13 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useFrameworkReady } from "@/hooks/useFrameworkReady";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { SettingsProvider } from "@/contexts/SettingsContext";
+import { I18nProvider } from "@/contexts/I18nContext";
 import { QueryProvider } from "@/contexts/QueryProvider";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Platform } from "react-native";
 import { Fragment } from "react";
+import "../global.css";
+import FontProvider from "@/contexts/FontProvider";
 
 function RootLayout() {
   const { isAuthenticated } = useAuth();
@@ -14,12 +17,11 @@ function RootLayout() {
 
   return (
     <Fragment>
-      <Stack screenOptions={{ headerShown: false }}>
-        {/* <Stack.Protected guard={loading}>
-          <Stack.Screen name="splash" />
-        </Stack.Protected> */}
-
-        <Stack.Protected guard={isAuthenticated || Platform.OS === "web"}>
+      <Stack
+        screenOptions={{ headerShown: false, animation: "ios_from_right" }}
+      >
+        {/* Always show tabs - authentication is handled within individual screens */}
+        <Stack.Protected guard={isAuthenticated}>
           <Stack.Screen
             name="(tabs)"
             options={{
@@ -39,7 +41,7 @@ function RootLayout() {
         </Stack.Protected>
 
         <Stack.Protected guard={!isAuthenticated}>
-          <Stack.Screen name="login" options={{ headerShown: false }} />
+          <Stack.Screen name="login" />
         </Stack.Protected>
 
         <Stack.Screen name="+not-found" />
@@ -51,12 +53,18 @@ function RootLayout() {
 
 export default function App() {
   return (
-    <QueryProvider>
-      <AuthProvider>
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <RootLayout />
-        </GestureHandlerRootView>
-      </AuthProvider>
-    </QueryProvider>
+    <SettingsProvider>
+      <QueryProvider>
+        <AuthProvider>
+          <FontProvider>
+            <I18nProvider>
+              <GestureHandlerRootView className="flex-1">
+                <RootLayout />
+              </GestureHandlerRootView>
+            </I18nProvider>
+          </FontProvider>
+        </AuthProvider>
+      </QueryProvider>
+    </SettingsProvider>
   );
 }

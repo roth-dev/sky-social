@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import {
-  View,
-  Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
@@ -31,6 +29,7 @@ import {
   Repeat2,
   Share,
 } from "lucide-react-native";
+import { Text, View } from "@/components/ui";
 
 export default function PostScreen() {
   const { uri } = useLocalSearchParams<{ uri: string }>();
@@ -150,11 +149,7 @@ export default function PostScreen() {
   if (postThreadQuery.isLoading) {
     return (
       <View style={styles.container}>
-        <Header
-          title="Post"
-          leftIcon={<ArrowLeft size={24} color="#111827" />}
-          onLeftPress={() => router.back()}
-        />
+        <Header title="Post" />
         <View style={styles.loadingContainer}>
           <Text style={styles.loadingText}>Loading post...</Text>
         </View>
@@ -165,11 +160,7 @@ export default function PostScreen() {
   if (postThreadQuery.error || !post) {
     return (
       <View style={styles.container}>
-        <Header
-          title="Post"
-          leftIcon={<ArrowLeft size={24} color="#111827" />}
-          onLeftPress={() => router.back()}
-        />
+        <Header title="Post" />
         <View style={styles.errorContainer}>
           <Text style={styles.errorText}>
             {postThreadQuery.error?.message || "Post not found"}
@@ -184,11 +175,7 @@ export default function PostScreen() {
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <Header
-        title="Post"
-        leftIcon={<ArrowLeft size={24} color="#111827" />}
-        onLeftPress={() => router.back()}
-      />
+      <Header title="Post" />
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Main Post */}

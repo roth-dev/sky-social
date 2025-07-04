@@ -17,14 +17,11 @@ import Animated, {
   withTiming,
   runOnJS,
   interpolate,
+  Extrapolation,
 } from "react-native-reanimated";
-import {
-  X,
-  Download,
-  Share,
-  MoveHorizontal as MoreHorizontal,
-} from "lucide-react-native";
+import { X, Download, Share, MoreHorizontal } from "lucide-react-native";
 import { Image } from "expo-image";
+import { isWeb } from "@/platform";
 
 interface LightBoxProps {
   visible: boolean;
@@ -67,30 +64,30 @@ export function LightBox({
   const currentImage = images[currentIndex];
 
   // Calculate image dimensions
-  const getImageDimensions = (aspectRatio?: {
-    width: number;
-    height: number;
-  }) => {
-    if (!aspectRatio) {
-      return { width: screenWidth, height: screenHeight * 0.7 };
-    }
+  const getImageDimensions = useCallback(
+    (aspectRatio?: { width: number; height: number }) => {
+      if (!aspectRatio) {
+        return { width: screenWidth, height: screenHeight * 0.7 };
+      }
 
-    const imageAspectRatio = aspectRatio.width / aspectRatio.height;
-    const screenAspectRatio =
-      screenWidth / (screenHeight - HEADER_HEIGHT - FOOTER_HEIGHT);
+      const imageAspectRatio = aspectRatio.width / aspectRatio.height;
+      const screenAspectRatio =
+        screenWidth / (screenHeight - HEADER_HEIGHT - FOOTER_HEIGHT);
 
-    if (imageAspectRatio > screenAspectRatio) {
-      // Image is wider than screen
-      const width = screenWidth;
-      const height = width / imageAspectRatio;
-      return { width, height };
-    } else {
-      // Image is taller than screen
-      const height = screenHeight - HEADER_HEIGHT - FOOTER_HEIGHT;
-      const width = height * imageAspectRatio;
-      return { width, height };
-    }
-  };
+      if (imageAspectRatio > screenAspectRatio) {
+        // Image is wider than screen
+        const width = screenWidth;
+        const height = width / imageAspectRatio;
+        return { width, height };
+      } else {
+        // Image is taller than screen
+        const height = screenHeight - HEADER_HEIGHT - FOOTER_HEIGHT;
+        const width = height * imageAspectRatio;
+        return { width, height };
+      }
+    },
+    []
+  );
 
   const imageDimensions = getImageDimensions(currentImage?.aspectRatio);
 
@@ -168,7 +165,12 @@ export function LightBox({
         // Dismiss gesture when not zoomed
         translateY.value = savedTranslateY.value + e.translationY;
         const progress = Math.abs(translateY.value) / (screenHeight / 3);
-        opacity.value = interpolate(progress, [0, 1], [1, 0.3], "clamp");
+        opacity.value = interpolate(
+          progress,
+          [0, 1],
+          [1, 0.3],
+          Extrapolation.CLAMP
+        );
       }
     })
     .onEnd((e) => {
@@ -284,7 +286,6 @@ export function LightBox({
       transparent
       animationType="fade"
       onRequestClose={onClose}
-      statusBarTranslucent
     >
       <StatusBar hidden={!headerVisible} />
 
@@ -333,7 +334,7 @@ export function LightBox({
         </View>
 
         {/* Navigation Arrows */}
-        {images.length > 1 && (
+        {images.length > 1 && isWeb && (
           <>
             {currentIndex > 0 && (
               <TouchableOpacity

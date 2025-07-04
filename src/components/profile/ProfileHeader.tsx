@@ -1,22 +1,18 @@
 import React from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Dimensions,
-} from "react-native";
+import { StyleSheet, TouchableOpacity, Dimensions } from "react-native";
 import { Avatar } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
 import { ATProfile } from "@/types/atproto";
 import {
-  MoveHorizontal as MoreHorizontal,
-  MapPin,
+  MoreHorizontal,
   Link as LinkIcon,
   Calendar,
   MessageCircle,
 } from "lucide-react-native";
 import { Image } from "expo-image";
+import { Text, View } from "../ui";
+import { Colors } from "@/constants/colors";
+import { useSettings } from "@/contexts/SettingsContext";
 
 interface ProfileHeaderProps {
   user: ATProfile;
@@ -41,6 +37,7 @@ export function ProfileHeader({
   onEditProfile,
   onMorePress,
 }: ProfileHeaderProps) {
+  const { colorScheme } = useSettings();
   const formatJoinDate = (indexedAt?: string) => {
     if (!indexedAt) return "Recently joined";
 
@@ -59,15 +56,19 @@ export function ProfileHeader({
     return match ? match[0] : null;
   };
 
-  const website = extractWebsiteFromDescription(user.description);
+  const website = extractWebsiteFromDescription(user?.description);
 
   return (
-    <View style={styles.container}>
+    <View pointerEvents="none" style={styles.container}>
       {/* Cover Image */}
       <View
         style={[
           styles.coverImage,
-          { backgroundColor: user.banner ? "transparent" : "#1e40af" },
+          {
+            backgroundColor: user.banner
+              ? "transparent"
+              : Colors.background.secondary[colorScheme],
+          },
         ]}
       >
         {!!user.banner && (
@@ -83,8 +84,15 @@ export function ProfileHeader({
       {/* Profile Content */}
       <View style={styles.content}>
         {/* Avatar and Actions Row */}
-        <View style={styles.avatarRow}>
-          <View style={styles.avatarContainer}>
+        <View darkColor="none" style={styles.avatarRow}>
+          <View
+            style={[
+              styles.avatarContainer,
+              {
+                borderColor: Colors.border[colorScheme],
+              },
+            ]}
+          >
             <Avatar
               uri={user.avatar}
               size="xl"
@@ -95,7 +103,10 @@ export function ProfileHeader({
 
           <View style={styles.actionsContainer}>
             <TouchableOpacity style={styles.moreButton} onPress={onMorePress}>
-              <MoreHorizontal size={20} color="#111827" />
+              <MoreHorizontal
+                size={20}
+                color={Colors.background.primary.light}
+              />
             </TouchableOpacity>
 
             {isOwnProfile ? (
@@ -131,13 +142,13 @@ export function ProfileHeader({
 
         {/* Profile Info */}
         <View style={styles.profileInfo}>
-          <Text style={styles.displayName}>
+          <Text font="bold" style={styles.displayName}>
             {user.displayName || user.handle}
           </Text>
           <Text style={styles.handle}>@{user.handle}</Text>
 
           {!!user.description && (
-            <Text style={styles.description}>{user.description}</Text>
+            <Text style={styles.description}>{user?.description}</Text>
           )}
 
           {/* Metadata Row */}
@@ -161,21 +172,19 @@ export function ProfileHeader({
           {/* Stats Row */}
           <View style={styles.statsRow}>
             <TouchableOpacity style={styles.statItem}>
-              <Text style={styles.statNumber}>
+              <Text font="semiBold">
                 {formatNumber(user.followsCount || 0)}
               </Text>
               <Text style={styles.statLabel}>Following</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.statItem}>
-              <Text style={styles.statNumber}>
+              <Text font="semiBold">
                 {formatNumber(user.followersCount || 0)}
               </Text>
               <Text style={styles.statLabel}>Followers</Text>
             </TouchableOpacity>
             <View style={styles.statItem}>
-              <Text style={styles.statNumber}>
-                {formatNumber(user.postsCount || 0)}
-              </Text>
+              <Text font="semiBold">{formatNumber(user.postsCount || 0)}</Text>
               <Text style={styles.statLabel}>Posts</Text>
             </View>
           </View>
@@ -228,14 +237,8 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   avatarContainer: {
-    borderWidth: 4,
-    borderColor: "#ffffff",
+    borderWidth: 2,
     borderRadius: 52,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
   },
   avatar: {
     width: 96,
@@ -254,7 +257,6 @@ const styles = StyleSheet.create({
     borderColor: "#d1d5db",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#ffffff",
   },
   actionButton: {
     paddingHorizontal: 20,
@@ -283,7 +285,6 @@ const styles = StyleSheet.create({
   displayName: {
     fontSize: 24,
     fontWeight: "700",
-    color: "#111827",
     lineHeight: 32,
   },
   handle: {
@@ -327,11 +328,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "baseline",
     gap: 4,
-  },
-  statNumber: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#111827",
   },
   statLabel: {
     fontSize: 14,

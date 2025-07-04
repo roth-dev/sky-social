@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import {
   View,
   TouchableOpacity,
@@ -27,43 +27,42 @@ export function ImageEmbed({
     return null;
   }
 
-  const calculateImageDimensions = (
-    image: EmbedImage,
-    index: number,
-    total: number
-  ) => {
-    const aspectRatio = image.aspectRatio
-      ? image.aspectRatio.width / image.aspectRatio.height
-      : 1;
+  const calculateImageDimensions = useCallback(
+    (image: EmbedImage, index: number, total: number) => {
+      const aspectRatio = image.aspectRatio
+        ? image.aspectRatio.width / image.aspectRatio.height
+        : 1;
 
-    let width: number;
-    let height: number;
+      let width: number;
+      let height: number;
 
-    if (total === 1) {
-      // Single image - use full width with aspect ratio
-      width = MAX_IMAGE_WIDTH;
-      height = Math.min(width / aspectRatio, isDetailView ? 500 : 400);
-    } else if (total === 2) {
-      // Two images - side by side
-      width = (MAX_IMAGE_WIDTH - 4) / 2;
-      height = isDetailView ? 250 : 200;
-    } else if (total === 3) {
-      // Three images - first full width, others split
-      if (index === 0) {
+      if (total === 1) {
+        // Single image - use full width with aspect ratio
         width = MAX_IMAGE_WIDTH;
+        height = Math.min(width / aspectRatio, isDetailView ? 500 : 400);
+      } else if (total === 2) {
+        // Two images - side by side
+        width = (MAX_IMAGE_WIDTH - 4) / 2;
         height = isDetailView ? 250 : 200;
+      } else if (total === 3) {
+        // Three images - first full width, others split
+        if (index === 0) {
+          width = MAX_IMAGE_WIDTH;
+          height = isDetailView ? 250 : 200;
+        } else {
+          width = (MAX_IMAGE_WIDTH - 4) / 2;
+          height = isDetailView ? 200 : 150;
+        }
       } else {
+        // Four or more images - 2x2 grid
         width = (MAX_IMAGE_WIDTH - 4) / 2;
         height = isDetailView ? 200 : 150;
       }
-    } else {
-      // Four or more images - 2x2 grid
-      width = (MAX_IMAGE_WIDTH - 4) / 2;
-      height = isDetailView ? 200 : 150;
-    }
 
-    return { width, height };
-  };
+      return { width, height };
+    },
+    []
+  );
 
   const handleImagePress = (index: number) => {
     onImagePress?.(images, index);

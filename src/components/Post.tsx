@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   View,
-  Text,
   TouchableOpacity,
   StyleSheet,
   Dimensions,
@@ -21,8 +20,12 @@ import { ATPost } from "@/types/atproto";
 import { router } from "expo-router";
 import { Platform, Linking } from "react-native";
 import { isVideoPost } from "@/utils/embedUtils";
-import { VideoFeed } from "./video/VideoFeed";
-import { VideoPlayer } from "./video/VideoPlayer";
+// import { VideoFeed } from "./video/VideoFeed";
+// import { VideoPlayer } from "./video/VideoPlayer";
+// import { VideoEmbed } from "./embeds/VideoEmbed";
+import { Text } from "./ui";
+import { Colors } from "@/constants/colors";
+import { useSettings } from "@/contexts/SettingsContext";
 import { VideoEmbed } from "./embeds/VideoEmbed";
 
 interface PostProps {
@@ -34,9 +37,7 @@ interface PostProps {
   isReply?: boolean;
 }
 
-const { width } = Dimensions.get("window");
-
-export function Post({
+function Post({
   post,
   onLike,
   onRepost,
@@ -44,6 +45,7 @@ export function Post({
   isDetailView = false,
   isReply = false,
 }: PostProps) {
+  const { isDarkMode } = useSettings();
   const [lightBoxVisible, setLightBoxVisible] = useState(false);
   const [lightBoxIndex, setLightBoxIndex] = useState(0);
 
@@ -212,27 +214,30 @@ export function Post({
     }
   };
 
-  const formatTime = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInHours = Math.floor(
-      (now.getTime() - date.getTime()) / (1000 * 60 * 60)
-    );
+  const formatTime = useCallback(
+    (dateString: string) => {
+      const date = new Date(dateString);
+      const now = new Date();
+      const diffInHours = Math.floor(
+        (now.getTime() - date.getTime()) / (1000 * 60 * 60)
+      );
 
-    if (isDetailView) {
-      return date.toLocaleDateString("en-US", {
-        hour: "numeric",
-        minute: "2-digit",
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      });
-    }
+      if (isDetailView) {
+        return date.toLocaleDateString("en-US", {
+          hour: "numeric",
+          minute: "2-digit",
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        });
+      }
 
-    if (diffInHours < 1) return "now";
-    if (diffInHours < 24) return `${diffInHours}h`;
-    return `${Math.floor(diffInHours / 24)}d`;
-  };
+      if (diffInHours < 1) return "now";
+      if (diffInHours < 24) return `${diffInHours}h`;
+      return `${Math.floor(diffInHours / 24)}d`;
+    },
+    [isDetailView]
+  );
 
   const textStyle = isDetailView ? styles.detailText : styles.text;
   const containerStyle = isReply
@@ -240,17 +245,24 @@ export function Post({
     : styles.container;
 
   // Prepare images for LightBox from embed
-  const embedImages = post.embed?.images || [];
-  const lightBoxImages = embedImages.map((img) => ({
-    uri: img.fullsize,
-    alt: img.alt || `Image from @${post.author.handle}`,
-    aspectRatio: img.aspectRatio,
-  }));
+  const lightBoxImages = useMemo(() => {
+    const embedImages = post.embed?.images || [];
+
+    return embedImages.map((img) => ({
+      uri: img.fullsize,
+      alt: img.alt || `Image from @${post.author.handle}`,
+      aspectRatio: img.aspectRatio,
+    }));
+  }, [post.embed]);
 
   return (
-    <>
+    <View
+      style={{
+        flex: 1,
+      }}
+    >
       <TouchableOpacity
-        style={containerStyle}
+        style={[containerStyle]}
         onPress={handlePostPress}
         activeOpacity={isDetailView ? 1 : 0.95}
         disabled={isDetailView}
@@ -312,15 +324,11 @@ export function Post({
 
           {/* Video indicator for debugging */}
           {!!hasVideo && (
-            <VideoEmbed
-              isDetailView={isDetailView}
-              video={post.embed}
-              autoPlay
-            />
+            <VideoEmbed isDetailView={isDetailView} video={post.embed} />
           )}
         </View>
 
-        {!!isDetailView && (
+        {isDetailView && (
           <View style={styles.detailStats}>
             <View style={styles.statGroup}>
               <Text style={styles.statNumber}>{post.replyCount}</Text>
@@ -387,17 +395,16 @@ export function Post({
         onShare={handleImageShare}
         onDownload={handleImageDownload}
       />
-    </>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#ffffff",
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "#e5e7eb",
+    borderBottomColor: Colors.border.dark,
   },
   replyContainer: {
     paddingLeft: 32,
@@ -421,22 +428,22 @@ const styles = StyleSheet.create({
   displayName: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#111827",
+    // color: "#111827",
     maxWidth: 120,
   },
   handle: {
     fontSize: 15,
-    color: "#6b7280",
+    // color: "#6b7280",
     marginLeft: 4,
   },
   time: {
     fontSize: 15,
-    color: "#6b7280",
+    // color: "#6b7280",
     marginLeft: 4,
   },
   detailTime: {
     fontSize: 14,
-    color: "#6b7280",
+    // color: "#6b7280",
     marginTop: 2,
   },
   moreButton: {
@@ -452,13 +459,13 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 15,
     lineHeight: 20,
-    color: "#111827",
+    // color: "#111827",
     marginBottom: 8,
   },
   detailText: {
     fontSize: 18,
     lineHeight: 26,
-    color: "#111827",
+    // color: "#111827",
     marginBottom: 16,
   },
   debugIndicator: {
@@ -471,7 +478,7 @@ const styles = StyleSheet.create({
   },
   debugText: {
     fontSize: 12,
-    color: "#92400e",
+    // color: "#92400e",
     fontWeight: "500",
   },
   detailStats: {
@@ -493,7 +500,7 @@ const styles = StyleSheet.create({
   },
   statLabel: {
     fontSize: 12,
-    color: "#6b7280",
+    // color: "#6b7280",
     marginTop: 2,
   },
   actions: {
@@ -520,7 +527,7 @@ const styles = StyleSheet.create({
   },
   actionCount: {
     fontSize: 13,
-    color: "#6b7280",
+    // color: "#6b7280",
     marginLeft: 6,
   },
   likedCount: {
@@ -530,3 +537,6 @@ const styles = StyleSheet.create({
     color: "#10b981",
   },
 });
+
+const MemoizedPost = React.memo(Post);
+export { MemoizedPost as Post };

@@ -73,6 +73,47 @@ export function getVideoFromPost(post: any) {
   return getEmbedVideo(post.embed);
 }
 
+// Mock function to simulate video posts for testing
+export function createMockVideoPost(index: number) {
+  return {
+    post: {
+      uri: `at://did:plc:mock${index}/app.bsky.feed.post/mock${index}`,
+      cid: `mock-cid-${index}`,
+      author: {
+        did: `did:plc:mock${index}`,
+        handle: `user${index}.bsky.social`,
+        displayName: `Video Creator ${index}`,
+        avatar: `https://images.pexels.com/photos/${1000 + index}/pexels-photo-${1000 + index}.jpeg?auto=compress&cs=tinysrgb&w=400`,
+      },
+      record: {
+        text: `Amazing video content #${index}! Check this out 🎥`,
+        createdAt: new Date(Date.now() - index * 3600000).toISOString(),
+      },
+      embed: {
+        $type: 'app.bsky.embed.video#view',
+        video: {
+          cid: `video-cid-${index}`,
+          playlist: `https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4`,
+          thumbnail: `https://images.pexels.com/photos/${2000 + index}/pexels-photo-${2000 + index}.jpeg?auto=compress&cs=tinysrgb&w=400`,
+          alt: `Video ${index}`,
+          aspectRatio: {
+            width: 9,
+            height: 16,
+          },
+        },
+      },
+      replyCount: Math.floor(Math.random() * 100),
+      repostCount: Math.floor(Math.random() * 50),
+      likeCount: Math.floor(Math.random() * 500),
+      indexedAt: new Date(Date.now() - index * 3600000).toISOString(),
+      viewer: {
+        like: Math.random() > 0.7 ? `like-uri-${index}` : undefined,
+        repost: Math.random() > 0.8 ? `repost-uri-${index}` : undefined,
+      },
+    },
+  };
+}
+
 export function calculateImageAspectRatio(
   width: number,
   height: number,

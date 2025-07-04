@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useSettings } from '@/contexts/SettingsContext';
 
 interface HeaderProps {
   title: string;
@@ -12,22 +13,28 @@ interface HeaderProps {
 
 export function Header({ title, leftIcon, rightIcon, onLeftPress, onRightPress }: HeaderProps) {
   const insets = useSafeAreaInsets();
+  const { isDarkMode } = useSettings();
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <View style={styles.content}>
+    <View 
+      className={`border-b ${isDarkMode ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'}`}
+      style={{ paddingTop: insets.top }}
+    >
+      <View className="flex-row items-center justify-between px-4 py-3">
         <TouchableOpacity
-          style={styles.iconButton}
+          className="w-10 h-10 items-center justify-center"
           onPress={onLeftPress}
           disabled={!leftIcon}
         >
           {leftIcon}
         </TouchableOpacity>
 
-        <Text style={styles.title}>{title}</Text>
+        <Text className={`text-lg font-semibold flex-1 text-center ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+          {title}
+        </Text>
 
         <TouchableOpacity
-          style={styles.iconButton}
+          className="w-10 h-10 items-center justify-center"
           onPress={onRightPress}
           disabled={!rightIcon}
         >
@@ -37,31 +44,3 @@ export function Header({ title, leftIcon, rightIcon, onLeftPress, onRightPress }
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#ffffff',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#e5e7eb',
-  },
-  content: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#111827',
-    flex: 1,
-    textAlign: 'center',
-  },
-  iconButton: {
-    width: 40,
-    height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

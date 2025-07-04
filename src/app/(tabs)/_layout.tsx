@@ -1,25 +1,30 @@
+import { Colors } from "@/constants/colors";
+import { useSettings } from "@/contexts/SettingsContext";
+import { isIOS } from "@/platform";
 import { Tabs } from "expo-router";
 import {
   Home,
   Search,
   SquarePlus as PlusSquare,
-  Heart,
   User,
   Video,
 } from "lucide-react-native";
 
 export default function TabLayout() {
+  const { isDarkMode, colorScheme } = useSettings();
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
+        tabBarHideOnKeyboard: true,
         tabBarStyle: {
-          backgroundColor: "#ffffff",
-          borderTopWidth: 1,
-          borderTopColor: "#e5e7eb",
-          paddingTop: 4,
+          backgroundColor: Colors.background.primary[colorScheme],
+          paddingTop: isIOS ? 10 : 5,
+          borderTopColor: Colors.border[colorScheme],
         },
-        tabBarActiveTintColor: "#111827",
+        tabBarActiveTintColor: isDarkMode
+          ? Colors.background.primary.light
+          : Colors.background.primary.dark,
         tabBarInactiveTintColor: "#6b7280",
         tabBarShowLabel: false,
       }}
@@ -59,6 +64,12 @@ export default function TabLayout() {
         options={{
           title: "Profile",
           tabBarIcon: ({ size, color }) => <User size={size} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="setting"
+        options={{
+          href: null,
         }}
       />
     </Tabs>

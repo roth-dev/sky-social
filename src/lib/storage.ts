@@ -1,9 +1,12 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Platform } from "react-native";
+import { Language, ThemeMode } from "@/contexts/SettingsContext";
 
 const STORAGE_KEYS = {
   AUTH_SESSION: "@skysocial/auth_session",
   USER_PROFILE: "@skysocial/user_profile",
+  LANGUAGE: "@skysocial/language",
+  THEME_MODE: "@skysocial/theme_mode",
 } as const;
 
 interface AuthSession {
@@ -153,9 +156,50 @@ class StorageManager {
     }
   }
 
+  // Settings methods
+  async saveLanguage(language: Language): Promise<void> {
+    try {
+      await this.setItem(STORAGE_KEYS.LANGUAGE, language);
+    } catch (error) {
+      console.error("Failed to save language:", error);
+    }
+  }
+
+  async getLanguage(): Promise<Language | null> {
+    try {
+      const language = await this.getItem(STORAGE_KEYS.LANGUAGE);
+      return language as Language;
+    } catch (error) {
+      console.error("Failed to get language:", error);
+      return null;
+    }
+  }
+
+  async saveThemeMode(themeMode: ThemeMode): Promise<void> {
+    try {
+      await this.setItem(STORAGE_KEYS.THEME_MODE, themeMode);
+    } catch (error) {
+      console.error("Failed to save theme mode:", error);
+    }
+  }
+
+  async getThemeMode(): Promise<ThemeMode | null> {
+    try {
+      const themeMode = await this.getItem(STORAGE_KEYS.THEME_MODE);
+      return themeMode as ThemeMode;
+    } catch (error) {
+      console.error("Failed to get theme mode:", error);
+      return null;
+    }
+  }
+
   // Clear all stored data
   async clearAll(): Promise<void> {
-    await Promise.all([this.clearAuthSession(), this.clearUserProfile()]);
+    await Promise.all([
+      this.clearAuthSession(), 
+      this.clearUserProfile()
+      // Note: We don't clear settings (language/theme) on logout
+    ]);
   }
 }
 

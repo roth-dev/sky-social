@@ -1,0 +1,215 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom base styles */
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+  }
+
+  /* Dark mode styles */
+  .dark body {
+    background-color: #111827;
+    color: #f9fafb;
+  }
+}
+
+/* Custom component styles */
+@layer components {
+  .tab-bar-mobile {
+    @apply fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200;
+    @apply flex flex-row items-center justify-around;
+    @apply h-16 px-4 pb-safe;
+  }
+  
+  .tab-bar-desktop {
+    @apply hidden;
+  }
+  
+  .sidebar-desktop {
+    @apply hidden xl:flex xl:flex-col xl:fixed xl:top-0 xl:bottom-0;
+    @apply xl:w-80 xl:bg-white xl:border-r xl:border-gray-200;
+    @apply xl:z-40 xl:px-6 xl:py-4;
+    /* Center the sidebar by positioning it from the center */
+    left: 50%;
+    margin-left: -696px; /* -(main content width + sidebar width) = -(336px + 320px + 40px) */
+    transform: translateX(-100%);
+  }
+  
+  .main-content-mobile {
+    @apply flex-1 pb-16;
+  }
+  
+  .main-content-desktop {
+    @apply xl:pb-0;
+    @apply xl:flex xl:justify-center xl:min-h-screen;
+    @apply xl:mx-auto xl:max-w-2xl;
+  }
+
+  .main-content-desktop > * {
+    @apply xl:border-r xl:border-gray-200;
+    @apply xl:w-full xl:min-h-screen;
+  }
+
+  /* Right sidebar for trending/suggestions */
+  .right-sidebar-desktop {
+    @apply hidden xl:flex xl:flex-col xl:fixed xl:top-0 xl:bottom-0;
+    @apply xl:w-80 xl:bg-white xl:border-l xl:border-gray-200;
+    @apply xl:z-30 xl:px-6 xl:py-4 xl:overflow-y-auto;
+    /* Position right sidebar to the right of the centered content */
+    left: 50%;
+    margin-left: 336px; /* Half of main content width */
+  }
+
+  /* Dark mode component styles */
+  .dark .tab-bar-mobile {
+    @apply bg-gray-900 border-gray-700;
+  }
+
+  .dark .sidebar-desktop {
+    @apply xl:bg-gray-900 xl:border-gray-700;
+  }
+
+  .dark .main-content-desktop > * {
+    @apply xl:border-gray-700;
+  }
+
+  .dark .right-sidebar-desktop {
+    @apply xl:bg-gray-900 xl:border-gray-700;
+  }
+}
+
+/* Responsive utilities */
+@layer utilities {
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .pl-safe {
+    padding-left: env(safe-area-inset-left);
+  }
+  
+  .pr-safe {
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* Mobile-first responsive design */
+@media (max-width: 1279px) {
+  .tab-bar-mobile {
+    @apply flex;
+  }
+  
+  .tab-bar-desktop {
+    @apply hidden;
+  }
+  
+  .sidebar-desktop {
+    @apply hidden;
+  }
+  
+  .right-sidebar-desktop {
+    @apply hidden;
+  }
+}
+
+@media (min-width: 1280px) {
+  .tab-bar-mobile {
+    @apply hidden;
+  }
+  
+  .tab-bar-desktop {
+    @apply flex;
+  }
+  
+  /* Ensure proper background for desktop */
+  body {
+    @apply xl:bg-gray-50;
+  }
+
+  .dark body {
+    @apply xl:bg-black;
+  }
+}
+
+/* Additional X.com-like styling */
+@layer components {
+  /* Sticky positioning for sidebars */
+  .sidebar-desktop {
+    @apply xl:h-screen xl:overflow-y-auto;
+  }
+  
+  .right-sidebar-desktop {
+    @apply xl:h-screen;
+  }
+
+  /* Main content area styling */
+  .main-content-desktop > * {
+    @apply xl:bg-white xl:min-h-screen;
+  }
+
+  .dark .main-content-desktop > * {
+    @apply xl:bg-gray-900;
+  }
+
+  /* Smooth scrolling */
+  .sidebar-desktop,
+  .right-sidebar-desktop {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+  }
+
+  .sidebar-desktop::-webkit-scrollbar,
+  .right-sidebar-desktop::-webkit-scrollbar {
+    display: none; /* WebKit */
+  }
+}
+
+/* Responsive adjustments for different screen sizes */
+@media (min-width: 1280px) and (max-width: 1535px) {
+  .sidebar-desktop {
+    @apply xl:w-72; /* Slightly smaller on medium screens */
+    margin-left: -648px; /* Adjust for smaller sidebar */
+  }
+  
+  .right-sidebar-desktop {
+    @apply xl:w-72; /* Match left sidebar */
+    margin-left: 300px; /* Adjust for smaller screens */
+  }
+}
+
+@media (min-width: 1536px) {
+  .sidebar-desktop {
+    @apply xl:w-80; /* Full width for larger screens */
+    margin-left: -696px; /* Full width positioning */
+  }
+  
+  .right-sidebar-desktop {
+    @apply xl:w-80; /* Full width for larger screens */
+    margin-left: 336px; /* Full width positioning */
+  }
+}
+
+/* Extra large screens - even bigger sidebars */
+@media (min-width: 1920px) {
+  .sidebar-desktop {
+    @apply xl:w-96; /* Even bigger on very large screens */
+    margin-left: -720px; /* Adjust for bigger sidebar */
+  }
+  
+  .right-sidebar-desktop {
+    @apply xl:w-96; /* Match left sidebar */
+    margin-left: 336px; /* Keep right sidebar position */
+  }
+}

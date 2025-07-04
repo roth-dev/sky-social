@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { View, StyleSheet, Alert, Platform, SafeAreaView } from "react-native";
-import { Header } from "@/components/Header";
+import { Alert, Platform } from "react-native";
 import { SearchHeader } from "@/components/search/SearchHeader";
 import { SearchFilters } from "@/components/search/SearchFilters";
 import { SearchResults } from "@/components/search/SearchResults";
@@ -21,6 +20,8 @@ import {
 } from "@/types/search";
 import { useAuth } from "@/contexts/AuthContext";
 import { router } from "expo-router";
+import { View } from "@/components/ui";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SearchScreen() {
   const { isAuthenticated } = useAuth();
@@ -42,8 +43,8 @@ export default function SearchScreen() {
   const searchActorsQuery = useSearchActors(debouncedQuery);
   const searchPostsQuery = useSearchPosts(debouncedQuery);
 
-  // Discovery queries
-  const suggestedFollowsQuery = useSuggestedFollows();
+  // Discovery queries - pass authentication status
+  const suggestedFollowsQuery = useSuggestedFollows(isAuthenticated);
   const popularFeedsQuery = usePopularFeeds();
 
   // Post interaction mutations
@@ -246,8 +247,8 @@ export default function SearchScreen() {
   const showTrending = !showSearchResults;
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-      <View style={styles.container}>
+    <SafeAreaView edges={["top"]} className="flex-1">
+      <View className="flex-1 bg-white">
         <SearchHeader
           query={searchState.query}
           onQueryChange={handleQueryChange}
@@ -322,10 +323,3 @@ export default function SearchScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#ffffff",
-  },
-});

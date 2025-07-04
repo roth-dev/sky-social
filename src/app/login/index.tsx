@@ -1,25 +1,27 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
-  View,
-  Text,
   StyleSheet,
-  KeyboardAvoidingView,
+  ScrollView,
   Platform,
+  KeyboardAvoidingView,
 } from "react-native";
-import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
 import { useAuth } from "@/contexts/AuthContext";
-import { router } from "expo-router";
 import { Image } from "expo-image";
+import { Text, View, VStack } from "@/components/ui";
+import { useSettings } from "@/contexts/SettingsContext";
 
-export default function AuthScreen() {
+export default function LoginScreen() {
+  const { themeMode } = useSettings();
   const { login } = useAuth();
+
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleLogin = async () => {
+  const handleLogin = useCallback(async () => {
     if (!identifier.trim() || !password.trim()) {
       setError("Please fill in all fields");
       return;
@@ -31,7 +33,9 @@ export default function AuthScreen() {
     try {
       const result = await login(identifier, password);
       if (result.success) {
-        router.replace("/(tabs)");
+        // Login successful, user will be redirected automatically
+        setIdentifier("");
+        setPassword("");
       } else {
         setError(result.error || "Login failed");
       }
@@ -40,117 +44,94 @@ export default function AuthScreen() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [identifier, password]);
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
+      className="flex-1"
     >
-      <View style={styles.content}>
-        <View style={styles.header}>
-          <Image
-            source={require("../../../assets/images/icon.png")}
-            contentFit="contain"
-            style={{ width: 120, height: 120 }}
-          />
-          <Text style={styles.title}>Welcome to Sky Social</Text>
-          <Text style={styles.subtitle}>
-            Connect with the decentralized social web
-          </Text>
-        </View>
+      <View className="flex-1">
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          contentContainerClassName="flex-1 justify-center"
+        >
+          <View className="justify-center border-gray-500 rounded-md  md:w-96 md:border md:p-4 self-center mx-4">
+            <VStack className="items-center mb-4">
+              <Image
+                source={require("../../../assets/images/icon.png")}
+                style={styles.logo}
+                contentFit="contain"
+              />
+              <Text size="xl" font="bold">
+                Welcome to Sky
+              </Text>
+              <Text font="normal" className="text-gray-500">
+                Connect with the decentralized social web
+              </Text>
+            </VStack>
 
-        <View style={styles.form}>
-          <Input
-            label="Username or Email"
-            placeholder="your.handle or email@example.com"
-            value={identifier}
-            onChangeText={setIdentifier}
-            autoCapitalize="none"
-            autoCorrect={false}
-          />
+            <VStack className="gap-4">
+              <Input
+                label="Username or Email"
+                placeholder="your.handle or email@example.com"
+                value={identifier}
+                onChangeText={setIdentifier}
+                autoCapitalize="none"
+                autoCorrect={false}
+                className="dark:text-white"
+              />
 
-          <Input
-            label="Password"
-            placeholder="Enter your password"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-          />
+              <Input
+                label="Password"
+                placeholder="Enter your password"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+                error={error}
+                className="dark:text-white"
+              />
+              <Button
+                title={loading ? "Signing in..." : "Sign In"}
+                onPress={handleLogin}
+                disabled={loading}
+              />
 
-          {error ? <Text style={styles.error}>{error}</Text> : null}
-
-          <Button
-            title={loading ? "Signing in..." : "Sign In"}
-            onPress={handleLogin}
-            disabled={loading}
-            style={styles.signInButton}
-          />
-
-          <Text style={styles.helpText}>
-            Don't have a Bluesky account? Create one at bsky.app
-          </Text>
-        </View>
+              <Text style={styles.signupText}>
+                Don't have a Bluesky account? Create one at bsky.app
+              </Text>
+            </VStack>
+          </View>
+        </ScrollView>
       </View>
     </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#ffffff",
-    justifyContent: "center",
-    alignItems: "center",
+  logo: {
+    width: 120,
+    height: 120,
+    marginBottom: 16,
   },
-  content: {
-    flex: 1,
-    justifyContent: "center",
-    paddingHorizontal: 24,
-    borderRightWidth: 0.5,
-    borderLeftWidth: 0.5,
-    ...Platform.select({
-      ios: {
-        maxWidth: undefined,
-      },
-      android: {
-        maxWidth: undefined,
-      },
-      default: {
-        maxWidth: 400,
-      },
-    }),
-  },
-  header: {
-    alignItems: "center",
-    marginBottom: 48,
-  },
-  title: {
-    fontSize: 32,
+  loginTitle: {
+    fontSize: 28,
     fontWeight: "700",
     color: "#111827",
     marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: "#6b7280",
     textAlign: "center",
   },
-  form: {
-    gap: 16,
-  },
-  signInButton: {
-    marginTop: 8,
-  },
-  error: {
+  errorText: {
     fontSize: 14,
     color: "#ef4444",
     textAlign: "center",
+    marginBottom: 8,
   },
-  helpText: {
+  signupText: {
     fontSize: 14,
     color: "#6b7280",
     textAlign: "center",
     marginTop: 16,
+    lineHeight: 20,
   },
 });

@@ -1,9 +1,10 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
-import { Avatar } from '@/components/ui/Avatar';
-import { SearchActor, FeedGenerator } from '@/types/search';
-import { TrendingUp, Users, Rss } from 'lucide-react-native';
-import { router } from 'expo-router';
+import React from "react";
+import { TouchableOpacity, StyleSheet, ScrollView } from "react-native";
+import { Avatar } from "@/components/ui/Avatar";
+import { SearchActor, FeedGenerator } from "@/types/search";
+import { TrendingUp, Users, Rss } from "lucide-react-native";
+import { router } from "expo-router";
+import { Text, View } from "../ui";
 
 interface TrendingSectionProps {
   suggestedUsers?: SearchActor[];
@@ -26,7 +27,7 @@ export function TrendingSection({
     if (onSeeAllUsers) {
       onSeeAllUsers();
     } else {
-      router.push('/search/people');
+      router.push("/search/people");
     }
   };
 
@@ -34,7 +35,7 @@ export function TrendingSection({
     if (onSeeAllFeeds) {
       onSeeAllFeeds();
     } else {
-      router.push('/search/feeds');
+      router.push("/search/feeds");
     }
   };
 
@@ -73,11 +74,7 @@ export function TrendingSection({
       style={styles.feedCard}
       onPress={() => handleFeedPress(feed)}
     >
-      <Avatar
-        uri={feed.avatar}
-        size="medium"
-        fallbackText={feed.displayName}
-      />
+      <Avatar uri={feed.avatar} size="medium" fallbackText={feed.displayName} />
       <Text style={styles.feedName} numberOfLines={1}>
         {feed.displayName}
       </Text>
@@ -112,7 +109,7 @@ export function TrendingSection({
               <Text style={styles.seeAllText}>See all</Text>
             </TouchableOpacity>
           </View>
-          
+
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -135,7 +132,7 @@ export function TrendingSection({
               <Text style={styles.seeAllText}>See all</Text>
             </TouchableOpacity>
           </View>
-          
+
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -177,57 +174,55 @@ export function TrendingSection({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
   },
   header: {
     padding: 24,
-    alignItems: 'center',
-    backgroundColor: '#f8fafc',
+    alignItems: "center",
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#e5e7eb',
+    borderBottomColor: "#e5e7eb",
   },
   headerContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 8,
     marginBottom: 8,
   },
   headerTitle: {
     fontSize: 24,
-    fontWeight: '700',
-    color: '#111827',
+    fontWeight: "700",
+    color: "#111827",
   },
   headerSubtitle: {
     fontSize: 16,
-    color: '#6b7280',
-    textAlign: 'center',
+    color: "#6b7280",
+    textAlign: "center",
   },
   section: {
     paddingVertical: 20,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#e5e7eb',
+    borderBottomColor: "#e5e7eb",
   },
   sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingHorizontal: 16,
     marginBottom: 16,
   },
   sectionTitleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 8,
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#111827',
+    fontWeight: "600",
+    color: "#111827",
   },
   seeAllText: {
     fontSize: 14,
-    color: '#3b82f6',
-    fontWeight: '500',
+    color: "#3b82f6",
+    fontWeight: "500",
   },
   horizontalList: {
     paddingHorizontal: 16,
@@ -235,47 +230,46 @@ const styles = StyleSheet.create({
   },
   userCard: {
     width: 120,
-    alignItems: 'center',
+    alignItems: "center",
     padding: 12,
-    backgroundColor: '#f9fafb',
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: "#e5e7eb",
   },
   userName: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#111827',
+    fontWeight: "600",
+    color: "#111827",
     marginTop: 8,
-    textAlign: 'center',
+    textAlign: "center",
   },
   userHandle: {
     fontSize: 12,
-    color: '#6b7280',
+    color: "#6b7280",
     marginTop: 2,
-    textAlign: 'center',
+    textAlign: "center",
   },
   feedCard: {
     width: 140,
-    alignItems: 'center',
+    alignItems: "center",
     padding: 12,
-    backgroundColor: '#f9fafb',
+    // backgroundColor: "#f9fafb",
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: "#e5e7eb",
   },
   feedName: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#111827',
+    fontWeight: "600",
+    color: "#111827",
     marginTop: 8,
-    textAlign: 'center',
+    textAlign: "center",
   },
   feedCreator: {
     fontSize: 12,
-    color: '#6b7280',
+    color: "#6b7280",
     marginTop: 2,
-    textAlign: 'center',
+    textAlign: "center",
   },
   tipsContainer: {
     paddingHorizontal: 16,
@@ -283,20 +277,20 @@ const styles = StyleSheet.create({
   },
   tip: {
     padding: 16,
-    backgroundColor: '#f9fafb',
+    backgroundColor: "#f9fafb",
     borderRadius: 12,
     borderLeftWidth: 4,
-    borderLeftColor: '#3b82f6',
+    borderLeftColor: "#3b82f6",
   },
   tipTitle: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#111827',
+    fontWeight: "600",
+    color: "#111827",
     marginBottom: 4,
   },
   tipDescription: {
     fontSize: 14,
-    color: '#6b7280',
+    color: "#6b7280",
     lineHeight: 20,
   },
 });

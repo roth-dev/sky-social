@@ -169,66 +169,144 @@ export class ATProtoClient {
     }
   }
 
-  // Modified to work for both authenticated and unauthenticated users
+  // Get public timeline for both authenticated and unauthenticated users
   async getTimeline(limit = 30, cursor?: string) {
     try {
-      // For unauthenticated users, we can try to get a public timeline
-      // or return mock data. For now, we'll try the authenticated endpoint
-      // and fall back gracefully
-      if (!this.isAuthenticated) {
-        // Return mock timeline data for unauthenticated users
-        return {
-          success: true,
-          data: {
-            feed: [],
-            cursor: undefined,
-          },
-        };
-      }
+      // Try multiple public feeds for unauthenticated users
+      const publicFeeds = [
+        "at://did:plc:z72i7hdynmk6r22z27h6tvur/app.bsky.feed.generator/whats-hot",
+        "at://did:plc:z72i7hdynmk6r22z27h6tvur/app.bsky.feed.generator/hot-classic",
+        "at://did:plc:z72i7hdynmk6r22z27h6tvur/app.bsky.feed.generator/bsky-team",
+      ];
 
-      const response = await this.retryWithBackoff(
-        () =>
-          this.agent.app.bsky.feed.getFeed(
-            {
-              limit,
-              cursor,
-              feed: "at://did:plc:z72i7hdynmk6r22z27h6tvur/app.bsky.feed.generator/whats-hot",
-            },
-            {
-              headers: {
-                "Accept-Language": "en,km",
-              },
-            }
-          ),
-        "Get Timeline"
-      );
+      let lastError: any;
 
-      return { success: true, data: response.data };
-    } catch (error: any) {
-      // Check if it's an auth error and try to refresh
-      if (error.status === 401 || error.message?.includes("authentication")) {
-        const refreshed = await this.refreshSession();
-        if (refreshed) {
-          // Retry the request once after refresh
-          try {
-            const response = await this.agent.getTimeline({ limit, cursor });
-            return { success: true, data: response.data };
-          } catch (retryError: any) {
-            console.error("Failed to get timeline after refresh:", retryError);
-            return {
-              success: false,
-              error: this.getErrorMessage(retryError),
-            };
-          }
+      // Try each public feed
+      for (const feedUri of publicFeeds) {
+        try {
+          const response = await this.retryWithBackoff(
+            () =>
+              this.agent.app.bsky.feed.getFeed(
+                {
+                  limit,
+                  cursor,
+                  feed: feedUri,
+                },
+                {
+                  headers: {
+                    "Accept-Language": "en,km",
+                  },
+                }
+              ),
+            `Get Public Feed: ${feedUri}`
+          );
+
+          return { success: true, data: response.data };
+        } catch (error: any) {
+          lastError = error;
+          console.warn(`Failed to fetch feed ${feedUri}:`, error.message);
+          continue;
         }
       }
 
-      console.error("Failed to get timeline:", error);
+      // If authenticated, try the personal timeline as fallback
+      if (this.isAuthenticated) {
+        try {
+          const response = await this.retryWithBackoff(
+            () => this.agent.getTimeline({ limit, cursor }),
+            "Get Authenticated Timeline"
+          );
+          return { success: true, data: response.data };
+        } catch (authError: any) {
+          console.error("Failed to get authenticated timeline:", authError);
+          lastError = authError;
+        }
+      }
+
+      // If all feeds fail, try to get posts from popular profiles
+      try {
+        const popularPosts = await this.getPopularPosts(limit);
+        return {
+          success: true,
+          data: {
+            feed: popularPosts,
+            cursor: undefined,
+          },
+        };
+      } catch (popularError: any) {
+        console.error("Failed to get popular posts:", popularError);
+      }
+
+      console.error("All timeline methods failed:", lastError);
+
+      // Return empty feed as final fallback
       return {
-        success: false,
-        error: this.getErrorMessage(error),
+        success: true,
+        data: {
+          feed: [],
+          cursor: undefined,
+        },
+      };
+    } catch (error: any) {
+      console.error("Failed to get timeline:", error);
+
+      // Return empty feed on error
+      return {
+        success: true,
+        data: {
+          feed: [],
+          cursor: undefined,
+        },
       };
     }
+  }
+
+  // Get posts from popular/well-known profiles
+  private async getPopularPosts(limit: number = 30) {
+    const popularHandles = [
+      "bsky.app",
+      "jay.bsky.team",
+      "pfrazee.com",
+      "why.bsky.team",
+      "dholms.xyz",
+      "atproto.com",
+    ];
+
+    const allPosts: any[] = [];
+
+    for (const handle of popularHandles) {
+      try {
+        const response = await this.retryWithBackoff(
+          () =>
+            this.agent.getAuthorFeed({
+              actor: handle,
+              limit: Math.ceil(limit / popularHandles.length),
+            }),
+          `Get Posts from ${handle}`
+        );
+
+        if (response.success && response.data.feed) {
+          allPosts.push(...response.data.feed);
+        }
+      } catch (error: any) {
+        console.warn(`Failed to get posts from ${handle}:`, error.message);
+        continue;
+      }
+
+      // Stop if we have enough posts
+      if (allPosts.length >= limit) {
+        break;
+      }
+    }
+
+    // Sort by creation time (newest first) and limit
+    return allPosts
+      .sort(
+        (a, b) =>
+          new Date(b.post.record.createdAt).getTime() -
+          new Date(a.post.record.createdAt).getTime()
+      )
+      .slice(0, limit);
   }
 
   async getProfile(actor: string) {

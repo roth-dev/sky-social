@@ -1,11 +1,12 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Avatar } from '@/components/ui/Avatar';
-import { Button } from '@/components/ui/Button';
-import { SearchActor } from '@/types/search';
-import { useFollowProfile, useUnfollowProfile } from '@/lib/queries';
-import { useAuth } from '@/contexts/AuthContext';
-import { router } from 'expo-router';
+import React from "react";
+import { TouchableOpacity, StyleSheet } from "react-native";
+import { Avatar } from "@/components/ui/Avatar";
+import { Button } from "@/components/ui/Button";
+import { SearchActor } from "@/types/search";
+import { useFollowProfile, useUnfollowProfile } from "@/lib/queries";
+import { useAuth } from "@/contexts/AuthContext";
+import { router } from "expo-router";
+import { Text, View } from "../ui";
 
 interface UserSearchResultProps {
   user: SearchActor;
@@ -31,20 +32,22 @@ export function UserSearchResult({ user, onPress }: UserSearchResultProps) {
 
   const handleFollow = async () => {
     if (!isAuthenticated) return;
-    
+
     try {
       if (isFollowing && user.viewer?.following) {
-        await unfollowMutation.mutateAsync({ followUri: user.viewer.following });
+        await unfollowMutation.mutateAsync({
+          followUri: user.viewer.following,
+        });
       } else {
         await followMutation.mutateAsync({ did: user.did });
       }
     } catch (error) {
-      console.error('Failed to update follow status:', error);
+      console.error("Failed to update follow status:", error);
     }
   };
 
   const formatFollowerCount = (count?: number) => {
-    if (!count) return '';
+    if (!count) return "";
     if (count >= 1000000) return `${(count / 1000000).toFixed(1)}M`;
     if (count >= 1000) return `${(count / 1000).toFixed(1)}K`;
     return count.toString();
@@ -57,7 +60,7 @@ export function UserSearchResult({ user, onPress }: UserSearchResultProps) {
         size="large"
         fallbackText={user.displayName || user.handle}
       />
-      
+
       <View style={styles.content}>
         <View style={styles.header}>
           <View style={styles.userInfo}>
@@ -68,10 +71,12 @@ export function UserSearchResult({ user, onPress }: UserSearchResultProps) {
               @{user.handle}
             </Text>
           </View>
-          
+
           {!isOwnProfile && isAuthenticated && (
             <Button
-              title={followLoading ? "..." : (isFollowing ? "Following" : "Follow")}
+              title={
+                followLoading ? "..." : isFollowing ? "Following" : "Follow"
+              }
               variant={isFollowing ? "outline" : "primary"}
               size="small"
               onPress={handleFollow}
@@ -80,7 +85,7 @@ export function UserSearchResult({ user, onPress }: UserSearchResultProps) {
             />
           )}
         </View>
-        
+
         {user.description && (
           <Text style={styles.description} numberOfLines={2}>
             {user.description}
@@ -93,20 +98,19 @@ export function UserSearchResult({ user, onPress }: UserSearchResultProps) {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
+    flexDirection: "row",
     padding: 16,
-    backgroundColor: '#ffffff',
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#e5e7eb',
+    borderBottomColor: "#e5e7eb",
     gap: 12,
   },
   content: {
     flex: 1,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
     marginBottom: 4,
   },
   userInfo: {
@@ -115,17 +119,17 @@ const styles = StyleSheet.create({
   },
   displayName: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#111827',
+    fontWeight: "600",
+    color: "#111827",
     marginBottom: 2,
   },
   handle: {
     fontSize: 14,
-    color: '#6b7280',
+    color: "#6b7280",
   },
   description: {
     fontSize: 14,
-    color: '#374151',
+    color: "#374151",
     lineHeight: 20,
     marginTop: 4,
   },

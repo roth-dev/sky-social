@@ -116,6 +116,7 @@ export default function VideoScreen() {
     // TODO: Implement repost functionality
     console.log("Repost video:", uri);
   }, [isAuthenticated]);
+  console.log(videoFeed)
 
   const handleComment = useCallback((uri: string) => {
     const safeUri = encodeURIComponent(uri);

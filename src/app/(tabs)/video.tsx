@@ -208,7 +208,7 @@ export default function VideoScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
-      <Text></Text>
+      <Text>Hello</Text>
       <List
         ref={listRef}
         data={videoFeed}

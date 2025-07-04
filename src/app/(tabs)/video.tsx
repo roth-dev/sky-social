@@ -3,12 +3,12 @@ import { StyleSheet, Dimensions, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useVideoFeed } from "@/lib/queries";
 import { VideoFeedPlayer } from "@/components/video/VideoFeedPlayer";
-import { VideoFeedOverlay } from "../../components/video/VideoFeedOverlay";
+import { VideoFeedOverlay } from "@/components/video/VideoFeedOverlay";
 import { EmptyState, LoadingState } from "@/components/placeholders/EmptyState";
 import { useAuth } from "@/contexts/AuthContext";
 import { router } from "expo-router";
 import { ATFeedItem } from "@/types/atproto";
-import { View,Text } from "@/components/ui";
+import { View } from "@/components/ui";
 import { List } from "@/components/list";
 import { isVideoPost } from "@/utils/embedUtils";
 
@@ -68,13 +68,11 @@ export default function VideoScreen() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const listRef = useRef<any>(null);
 
-  // Filter for video posts only
+  // Get video feed data
   const videoFeed = React.useMemo(() => {
     if (!videoFeedQuery.data) return [];
     
-    return videoFeedQuery.data.pages.flatMap((page) =>
-      page?.feed.filter((item) => isVideoPost(item.post)) || []
-    );
+    return videoFeedQuery.data.pages.flatMap((page) => page?.feed || []);
   }, [videoFeedQuery.data]);
 
   const handleViewableItemsChanged = useCallback(({ viewableItems }: any) => {
@@ -116,7 +114,6 @@ export default function VideoScreen() {
     // TODO: Implement repost functionality
     console.log("Repost video:", uri);
   }, [isAuthenticated]);
-  console.log(videoFeed)
 
   const handleComment = useCallback((uri: string) => {
     const safeUri = encodeURIComponent(uri);
@@ -209,7 +206,6 @@ export default function VideoScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
-      <Text>Hello</Text>
       <List
         ref={listRef}
         data={videoFeed}

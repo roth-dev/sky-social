@@ -8,7 +8,7 @@ import { EmptyState, LoadingState } from "@/components/placeholders/EmptyState";
 import { useAuth } from "@/contexts/AuthContext";
 import { router } from "expo-router";
 import { ATFeedItem } from "@/types/atproto";
-import { View } from "@/components/ui";
+import { View,Text } from "@/components/ui";
 import { List } from "@/components/list";
 import { isVideoPost } from "@/utils/embedUtils";
 
@@ -208,6 +208,7 @@ export default function VideoScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
+      <Text></Text>
       <List
         ref={listRef}
         data={videoFeed}

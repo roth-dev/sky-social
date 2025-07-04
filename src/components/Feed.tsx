@@ -5,7 +5,6 @@ import {
   useTimeline,
   useUnlikePost,
 } from "@/lib/queries";
-import { RefreshControl } from "react-native";
 import { useAuth } from "@/contexts/AuthContext";
 import { router } from "expo-router";
 import React, { useCallback, useMemo } from "react";
@@ -16,10 +15,18 @@ import { EmptyState, ErrorState } from "./placeholders/EmptyState";
 import { FeedPlaceholder } from "./placeholders/FeedPlaceholder";
 import { List } from "./list";
 import { Post } from "./Post";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import Loading from "./ui/Loading";
 
-const Feed = React.memo(function Impl() {
+const Feed = React.memo(function Impl({
+  headerHeight,
+}: {
+  headerHeight?: number;
+}) {
   const { isAuthenticated } = useAuth();
   const timelineQuery = useTimeline();
+  const tabBarHeight = useBottomTabBarHeight();
+
   // const likePostMutation = useLikePost();
   // const unlikePostMutation = useUnlikePost();
   // const repostMutation = useRepost();
@@ -109,7 +116,7 @@ const Feed = React.memo(function Impl() {
 
     return (
       <View className="py-5 items-center bg-white gap-2">
-        <View className="w-6 h-6 rounded-full border-2 border-gray-200 border-t-blue-500" />
+        <Loading />
         <Text className="text-sm text-gray-500 font-medium">
           Loading more posts...
         </Text>
@@ -159,32 +166,34 @@ const Feed = React.memo(function Impl() {
 
   // Only show empty state if we have no posts AND we're not loading
   const showEmptyState = allPosts.length === 0 && !timelineQuery.isLoading;
-
   return (
     <List
       data={allPosts}
       renderItem={renderItem}
       keyExtractor={(item, index) => `${item.post.uri}-${index}`}
       className="flex-1"
-      refreshControl={
-        <RefreshControl
-          refreshing={timelineQuery.isRefetching}
-          onRefresh={() => timelineQuery.refetch()}
-          tintColor="#3b82f6"
-          colors={["#3b82f6"]}
-        />
-      }
+      headerOffset={120}
+      useScrollDetector
+      refreshing={timelineQuery.isRefetching}
+      onRefresh={() => timelineQuery.refetch()}
       onEndReached={handleLoadMore}
       ListEmptyComponent={showEmptyState ? renderEmptyState : null}
       ListFooterComponent={renderLoadingFooter}
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={showEmptyState ? { flex: 1 } : undefined}
+      contentContainerStyle={
+        showEmptyState
+          ? { flex: 1 }
+          : {
+              paddingTop: headerHeight,
+              paddingBottom: tabBarHeight,
+            }
+      }
       removeClippedSubviews
       initialNumToRender={2}
       windowSize={9}
       maxToRenderPerBatch={isIOS ? 5 : 1}
       updateCellsBatchingPeriod={40}
-      onEndReachedThreshold={1} // number of posts left to trigger load more
+      onEndReachedThreshold={3} // number of posts left to trigger load more
       maintainVisibleContentPosition={{
         minIndexForVisible: 0,
         autoscrollToTopThreshold: 10,

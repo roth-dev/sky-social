@@ -17,6 +17,7 @@ import Animated, {
   withTiming,
   runOnJS,
   interpolate,
+  Extrapolation,
 } from "react-native-reanimated";
 import { X, Download, Share, MoreHorizontal } from "lucide-react-native";
 import { Image } from "expo-image";
@@ -164,7 +165,12 @@ export function LightBox({
         // Dismiss gesture when not zoomed
         translateY.value = savedTranslateY.value + e.translationY;
         const progress = Math.abs(translateY.value) / (screenHeight / 3);
-        opacity.value = interpolate(progress, [0, 1], [1, 0.3], "clamp");
+        opacity.value = interpolate(
+          progress,
+          [0, 1],
+          [1, 0.3],
+          Extrapolation.CLAMP
+        );
       }
     })
     .onEnd((e) => {

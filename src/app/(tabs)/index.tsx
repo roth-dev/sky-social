@@ -1,18 +1,22 @@
-import { Platform } from "react-native";
 import { Header } from "@/components/Header";
 import { Home, Sparkles } from "lucide-react-native";
 import { View } from "@/components/ui";
 import { Colors } from "@/constants/colors";
 import { useSettings } from "@/contexts/SettingsContext";
 import { Feed } from "@/components/Feed";
+import { isMobileWeb, isNative } from "@/platform";
+import { useState } from "react";
 
 export default function HomeScreen() {
   const { isDarkMode } = useSettings();
+  const [headerHeight, setHeadeHeight] = useState(120);
 
   return (
     <View className="flex-1 bg-white">
-      {Platform.OS !== "web" && (
+      {(isMobileWeb || isNative) && (
         <Header
+          setHeadeHeight={setHeadeHeight}
+          collapsible
           title="Sky Social"
           leftIcon={
             <Home
@@ -36,8 +40,7 @@ export default function HomeScreen() {
           }
         />
       )}
-
-      <Feed />
+      <Feed headerHeight={headerHeight} />
     </View>
   );
 }

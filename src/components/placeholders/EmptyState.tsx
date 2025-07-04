@@ -10,6 +10,7 @@ import {
   RefreshCw,
   TriangleAlert as AlertTriangle,
 } from "lucide-react-native";
+import Loading from "../ui/Loading";
 
 interface EmptyStateProps {
   type:
@@ -128,7 +129,7 @@ export function LoadingState({
 }: LoadingStateProps) {
   return (
     <View style={[styles.container, style]}>
-      <View style={styles.loadingSpinner} />
+      <Loading size="lg" />
       <Text style={styles.loadingText}>{message}</Text>
     </View>
   );
@@ -233,15 +234,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     lineHeight: 24,
     maxWidth: 300,
-  },
-  loadingSpinner: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    borderWidth: 3,
-    borderColor: "#e5e7eb",
-    borderTopColor: "#3b82f6",
-    marginBottom: 16,
   },
   loadingText: {
     fontSize: 16,

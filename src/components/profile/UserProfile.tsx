@@ -1,5 +1,5 @@
-import React, { Suspense, useMemo } from "react";
-import { StyleSheet, Alert, Platform, ActivityIndicator } from "react-native";
+import React, { useMemo } from "react";
+import { StyleSheet, Alert, Platform } from "react-native";
 import { Header } from "@/components/Header";
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { ErrorState } from "@/components/placeholders/EmptyState";
@@ -12,6 +12,8 @@ import TabView from "@/components/tabs";
 import UserPostSection from "../sections/Post";
 import UserMediaSection from "../sections/Media";
 import UserLikeSection from "../sections/Likes";
+import { Colors } from "@/constants/colors";
+import { useSettings } from "@/contexts/SettingsContext";
 
 interface Props {
   handle: string;
@@ -19,6 +21,7 @@ interface Props {
 
 export default function UserProfile({ handle }: Props) {
   const { logout, user } = useAuth();
+  const { colorScheme } = useSettings();
   const profileQuery = useProfile(handle);
 
   const isOwner = useMemo(() => {
@@ -40,7 +43,9 @@ export default function UserProfile({ handle }: Props) {
         {Platform.OS !== "web" && (
           <Header
             title="Profile"
-            rightIcon={<Settings size={24} color="#111827" />}
+            rightIcon={
+              <Settings size={24} color={Colors.inverted[colorScheme]} />
+            }
             onRightPress={() => logout()}
           />
         )}
@@ -64,7 +69,9 @@ export default function UserProfile({ handle }: Props) {
       <View className="flex-1 bg-white">
         <Header
           title="Profile"
-          rightIcon={<Settings size={24} color="#111827" />}
+          rightIcon={
+            <Settings size={24} color={Colors.inverted[colorScheme]} />
+          }
           onRightPress={() => router.push("/(tabs)/profile/settings")}
         />
         {/* You may want to import and use a ProfilePlaceholder here */}
@@ -78,7 +85,7 @@ export default function UserProfile({ handle }: Props) {
     <View className="flex-1 bg-white">
       <Header
         title={currentProfile.displayName || currentProfile.handle || ""}
-        rightIcon={<Settings size={24} color="#111827" />}
+        rightIcon={<Settings size={24} color={Colors.inverted[colorScheme]} />}
         onRightPress={() => router.push("/(tabs)/profile/settings")}
       />
       <TabView

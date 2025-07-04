@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { router, usePathname } from "expo-router";
 import { useAuth } from "@/contexts/AuthContext";
@@ -15,9 +15,8 @@ import Animated, {
   useAnimatedStyle,
   useDerivedValue,
   withTiming,
-  SharedValue,
-  useSharedValue,
 } from "react-native-reanimated";
+import useScrollDirection from "@/hooks/useScrollDirection";
 
 const NAVIGATION_ITEMS = [
   { key: "/", label: "Home", icon: Home },
@@ -27,37 +26,11 @@ const NAVIGATION_ITEMS = [
   { key: "/profile", label: "Profile", icon: User },
 ];
 
-interface Props {
-  scrollY: SharedValue<number>;
-}
-
-const AnimatedView = Animated.createAnimatedComponent(View);
-
-export function ResponsiveTabBar({ scrollY }: Props) {
+export function ResponsiveTabBar() {
   const { colorScheme, isDarkMode } = useSettings();
   const { isAuthenticated } = useAuth();
   const pathname = usePathname();
-
-  const prevY = useSharedValue(0);
-  const lastDirection = useSharedValue<"up" | "down">("up");
-
-  const SCROLL_DIRECTION_THRESHOLD = 150;
-
-  const direction = useDerivedValue(() => {
-    const diff = scrollY.value - prevY.value;
-
-    if (Math.abs(diff) > SCROLL_DIRECTION_THRESHOLD) {
-      if (diff > 0) {
-        lastDirection.value = "down";
-      } else {
-        lastDirection.value = "up";
-      }
-
-      prevY.value = scrollY.value;
-    }
-
-    return lastDirection.value;
-  });
+  const direction = useScrollDirection();
 
   const translateY = useDerivedValue(() => {
     return withTiming(direction.value === "down" ? 100 : 0, {
@@ -90,7 +63,7 @@ export function ResponsiveTabBar({ scrollY }: Props) {
   };
 
   return (
-    <AnimatedView
+    <Animated.View
       style={[
         styles.container,
         { backgroundColor: Colors.background.primary[colorScheme] },
@@ -123,7 +96,7 @@ export function ResponsiveTabBar({ scrollY }: Props) {
           </TouchableOpacity>
         );
       })}
-    </AnimatedView>
+    </Animated.View>
   );
 }
 

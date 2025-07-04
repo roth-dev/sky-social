@@ -10,14 +10,14 @@ import { Input } from "@/components/ui/Input";
 import { useAuth } from "@/contexts/AuthContext";
 import { Image } from "expo-image";
 import { Text, View, VStack } from "@/components/ui";
-import { useSettings } from "@/contexts/SettingsContext";
 
 export default function LoginScreen() {
-  const { themeMode } = useSettings();
   const { login } = useAuth();
 
-  const [identifier, setIdentifier] = useState("");
-  const [password, setPassword] = useState("");
+  const [identifier, setIdentifier] = useState(
+    __DEV__ ? "rothdev.bsky.social" : ""
+  );
+  const [password, setPassword] = useState(__DEV__ ? "rothdev@bluesky" : "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 

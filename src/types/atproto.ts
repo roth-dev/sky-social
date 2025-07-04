@@ -79,6 +79,14 @@ export interface ATPost {
   };
   embed?: {
     $type: string;
+    cid: string;
+    playlist: string;
+    thumbnail?: string;
+    alt?: string;
+    aspectRatio?: {
+      width: number;
+      height: number;
+    };
     images?: Array<{
       thumb: string;
       fullsize: string;
@@ -97,16 +105,6 @@ export interface ATPost {
     record?: {
       $type: string;
       record: ATPost;
-    };
-    video?: {
-      cid: string;
-      playlist: string;
-      thumbnail?: string;
-      alt?: string;
-      aspectRatio?: {
-        width: number;
-        height: number;
-      };
     };
     media?: {
       images?: Array<{

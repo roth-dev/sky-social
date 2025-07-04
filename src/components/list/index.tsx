@@ -1,65 +1,22 @@
+import { Colors } from "@/constants/colors";
+import { useSettings } from "@/contexts/SettingsContext";
 import { isAndroid } from "@/platform";
-import React, { memo, createContext, useContext, useMemo } from "react";
-import { FlatList, ViewToken } from "react-native";
+import { useScrollStore } from "@/store/scrollStore";
+import { mergeStyle } from "@/utils/style";
+import React, { memo } from "react";
+import { FlatList, RefreshControl, ViewToken } from "react-native";
 import Animated, {
   FlatListPropsWithLayout,
-  runOnJS,
   useAnimatedScrollHandler,
-  useSharedValue,
 } from "react-native-reanimated";
-import { ScrollHandlers } from "react-native-reanimated";
-
-const ScrollContext = createContext<ScrollHandlers<any>>({
-  onBeginDrag: undefined,
-  onEndDrag: undefined,
-  onScroll: undefined,
-  onMomentumEnd: undefined,
-});
-
-export function useScrollHandlers(): ScrollHandlers<any> {
-  return useContext(ScrollContext);
-}
-
-type ProviderProps = { children: React.ReactNode } & ScrollHandlers<any>;
-
-// Note: this completely *overrides* the parent handlers.
-// It's up to you to compose them with the parent ones via useScrollHandlers() if needed.
-export function ScrollProvider({
-  children,
-  onBeginDrag,
-  onEndDrag,
-  onScroll,
-  onMomentumEnd,
-}: ProviderProps) {
-  const handlers = useMemo(
-    () => ({
-      onBeginDrag,
-      onEndDrag,
-      onScroll,
-      onMomentumEnd,
-    }),
-    [onBeginDrag, onEndDrag, onScroll, onMomentumEnd]
-  );
-  return (
-    <ScrollContext.Provider value={handlers}>{children}</ScrollContext.Provider>
-  );
-}
 
 export type ListRef = React.ForwardedRef<FlatList<any>>;
 
-const SCROLLED_DOWN_LIMIT = 200;
-
 export type ListProps<ItemT = any> = Omit<
   FlatListPropsWithLayout<ItemT>,
-  | "onMomentumScrollBegin" // Use ScrollContext instead.
-  | "onMomentumScrollEnd" // Use ScrollContext instead.
-  | "onScroll" // Use ScrollContext instead.
-  | "onScrollBeginDrag" // Use ScrollContext instead.
-  | "onScrollEndDrag" // Use ScrollContext instead.
   | "contentOffset" // Pass headerOffset instead.
   | "progressViewOffset" // Can't be an animated value
 > & {
-  onScrolledDownChange?: (isScrolledDown: boolean) => void;
   headerOffset?: number;
   refreshing?: boolean;
   onRefresh?: () => void;
@@ -67,47 +24,33 @@ export type ListProps<ItemT = any> = Omit<
   desktopFixedHeight?: number | boolean;
   // Web only prop to contain the scroll to the container rather than the window
   disableFullWindowScroll?: boolean;
+  progressViewOffset?: number;
+  useScrollDetector?: boolean;
 };
 
 let List = React.forwardRef<ListRef, ListProps>(
-  ({ onItemSeen, onScrolledDownChange, ...props }, ref) => {
-    const isScrolledDown = useSharedValue(false);
-
-    function handleScrolledDownChange(didScrollDown: boolean) {
-      onScrolledDownChange?.(didScrollDown);
-    }
-
-    // Intentionally destructured outside the main thread closure.
-    // See https://github.com/bluesky-social/social-app/pull/4108.
-    const {
-      onBeginDrag: onBeginDragFromContext,
-      onEndDrag: onEndDragFromContext,
-      onScroll: onScrollFromContext,
-      onMomentumEnd: onMomentumEndFromContext,
-    } = useScrollHandlers();
+  (
+    {
+      style,
+      onItemSeen,
+      refreshing,
+      onRefresh,
+      headerOffset,
+      progressViewOffset,
+      useScrollDetector,
+      automaticallyAdjustsScrollIndicatorInsets = false,
+      ...props
+    },
+    ref
+  ) => {
+    const { colorScheme } = useSettings();
+    const { scrollY } = useScrollStore();
 
     const scrollHandler = useAnimatedScrollHandler({
-      onBeginDrag(e, ctx) {
-        onBeginDragFromContext?.(e, ctx);
-      },
-      onEndDrag(e, ctx) {
-        onEndDragFromContext?.(e, ctx);
-      },
-      onScroll(e, ctx) {
-        onScrollFromContext?.(e, ctx);
-
-        const didScrollDown = e.contentOffset.y > SCROLLED_DOWN_LIMIT;
-        if (isScrolledDown.get() !== didScrollDown) {
-          isScrolledDown.set(didScrollDown);
-          if (onScrolledDownChange != null) {
-            runOnJS(handleScrolledDownChange)(didScrollDown);
-          }
+      onScroll(e) {
+        if (useScrollDetector) {
+          scrollY.value = e.contentOffset.y;
         }
-      },
-      // Note: adding onMomentumBegin here makes simulator scroll
-      // lag on Android. So either don't add it, or figure out why.
-      onMomentumEnd(e, ctx) {
-        onMomentumEndFromContext?.(e, ctx);
       },
     });
 
@@ -133,6 +76,28 @@ let List = React.forwardRef<ListRef, ListProps>(
       ];
     }, [onItemSeen]);
 
+    let refreshControl;
+    if (refreshing !== undefined || onRefresh !== undefined) {
+      refreshControl = (
+        <RefreshControl
+          key={Colors.inverted[colorScheme]}
+          refreshing={refreshing ?? false}
+          onRefresh={onRefresh}
+          tintColor={Colors.inverted[colorScheme]}
+          titleColor={Colors.inverted[colorScheme]}
+          progressViewOffset={progressViewOffset ?? headerOffset}
+        />
+      );
+    }
+
+    let contentOffset;
+    if (headerOffset != null) {
+      style = mergeStyle(style, {
+        paddingTop: headerOffset,
+      });
+      contentOffset = { x: 0, y: headerOffset * -1 };
+    }
+
     return (
       <Animated.FlatList
         showsVerticalScrollIndicator={!isAndroid} // overridable
@@ -140,6 +105,17 @@ let List = React.forwardRef<ListRef, ListProps>(
         viewabilityConfig={viewabilityConfig}
         {...props}
         onScroll={scrollHandler}
+        automaticallyAdjustsScrollIndicatorInsets={
+          automaticallyAdjustsScrollIndicatorInsets
+        }
+        scrollIndicatorInsets={{
+          top: headerOffset,
+          right: 1,
+          ...props.scrollIndicatorInsets,
+        }}
+        indicatorStyle={colorScheme === "dark" ? "white" : "black"}
+        contentOffset={contentOffset}
+        refreshControl={refreshControl}
         scrollEventThrottle={1}
         // @ts-expect-error Animated.FlatList ref type is wrong -sfn
         ref={ref}

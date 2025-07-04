@@ -3,7 +3,7 @@ import { StyleSheet, Dimensions, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useVideoFeed } from "@/lib/queries";
 import { VideoFeedPlayer } from "@/components/video/VideoFeedPlayer";
-import { VideoFeedOverlay } from "@/components/video/VideoFeedOverlay";
+import { VideoFeedOverlay } from "../../components/video/VideoFeedOverlay";
 import { EmptyState, LoadingState } from "@/components/placeholders/EmptyState";
 import { useAuth } from "@/contexts/AuthContext";
 import { router } from "expo-router";

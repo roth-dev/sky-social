@@ -1,5 +1,5 @@
-import { FlatList } from "react-native";
+import { List } from "../list";
 
-const TabList = FlatList;
+const TabList = List;
 
 export default TabList;

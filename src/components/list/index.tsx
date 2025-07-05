@@ -10,7 +10,7 @@ import Animated, {
   useAnimatedScrollHandler,
 } from "react-native-reanimated";
 
-export type ListRef = React.ForwardedRef<FlatList<any>>;
+export type ListRef = React.ForwardedRef<FlatList<unknown>>;
 
 export type ListProps<ItemT = any> = Omit<
   FlatListPropsWithLayout<ItemT>,

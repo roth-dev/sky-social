@@ -172,7 +172,7 @@ const Feed = React.memo(function Impl({
       renderItem={renderItem}
       keyExtractor={(item, index) => `${item.post.uri}-${index}`}
       className="flex-1"
-      headerOffset={120}
+      headerOffset={headerHeight}
       useScrollDetector
       refreshing={timelineQuery.isRefetching}
       onRefresh={() => timelineQuery.refetch()}

@@ -180,13 +180,6 @@ export function ProfileTabContent({
       data={filteredData}
       renderItem={renderItem}
       keyExtractor={(item, index) => `${tabKey}-${item.post.uri}-${index}`}
-      // numColumns={numColumns}
-      // contentContainerStyle={[
-      //   styles.container,
-      //   tabKey === "media" && styles.mediaContainer,
-      //   filteredData.length === 0 && styles.emptyContainer,
-      // ]}
-      // bounces={false}
       showsVerticalScrollIndicator={false}
       onRefresh={onRefresh}
       refreshing={loading}
@@ -194,7 +187,6 @@ export function ProfileTabContent({
       onEndReachedThreshold={0.3}
       ListEmptyComponent={renderEmptyState}
       ListFooterComponent={renderLoadingFooter}
-      // columnWrapperStyle={tabKey === "media" ? styles.mediaRow : undefined}
       removeClippedSubviews={true}
       maxToRenderPerBatch={10}
       windowSize={10}

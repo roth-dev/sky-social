@@ -3,7 +3,6 @@ import React, {
   PropsWithChildren,
   SetStateAction,
   useCallback,
-  useRef,
 } from "react";
 import {
   View,
@@ -19,6 +18,7 @@ import useScrollDirection from "@/hooks/useScrollDirection";
 import Animated, {
   useAnimatedStyle,
   useDerivedValue,
+  useSharedValue,
   withTiming,
 } from "react-native-reanimated";
 import { Colors } from "@/constants/colors";
@@ -39,13 +39,14 @@ function CollapsibleHeader({
   children,
   setHeadeHeight,
 }: PropsWithChildren<Pick<HeaderProps, "setHeadeHeight">>) {
-  const headerHeight = useRef(120);
-  const direction = useScrollDirection(headerHeight.current);
+  const headerHeight = useSharedValue(120);
+
+  const direction = useScrollDirection();
 
   const { colorScheme } = useSettings();
 
   const translateY = useDerivedValue(() => {
-    return withTiming(direction.value === "down" ? -headerHeight.current : 0, {
+    return withTiming(direction.value === "down" ? -headerHeight.value : 0, {
       duration: 150,
     });
   });
@@ -60,7 +61,7 @@ function CollapsibleHeader({
     <Animated.View
       onLayout={(e) => {
         const { height } = e.nativeEvent.layout;
-        headerHeight.current = height;
+        headerHeight.value = height;
         setHeadeHeight?.(height);
       }}
       style={[

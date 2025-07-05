@@ -39,6 +39,7 @@ sky-social/
 ### 1. Prerequisites
 
 - [Node.js](https://nodejs.org/) (v18+ recommended)
+- [npm](https://www.npmjs.com/)
 - [Expo CLI](https://docs.expo.dev/get-started/installation/) (`npm install -g expo-cli`)
 - For native builds:
   - Android Studio (for Android)
@@ -49,8 +50,6 @@ sky-social/
 
 ```sh
 npm install
-# or
-yarn install
 ```
 
 ### 3. Run the App
@@ -59,24 +58,18 @@ yarn install
 
 ```sh
 npm run dev
-# or
-yarn dev
 ```
 
 #### Android
 
 ```sh
 npm run android
-# or
-yarn android
 ```
 
 #### iOS
 
 ```sh
 npm run ios
-# or
-yarn ios
 ```
 
 > **Note:** For iOS, run `cd ios && pod install` if you encounter missing pod dependencies.

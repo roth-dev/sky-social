@@ -1,4 +1,10 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+  useMemo,
+} from "react";
 import {
   View,
   TouchableOpacity,
@@ -16,6 +22,7 @@ interface VideoPlayerProps {
   isDetailView?: boolean;
   autoPlay?: boolean;
   muted?: boolean;
+  shouldPlay?: boolean;
   onPlaybackStatusUpdate?: (status: any) => void;
 }
 
@@ -23,10 +30,9 @@ const { width: screenWidth } = Dimensions.get("window");
 
 export function VideoPlayer({
   uri,
-  thumbnail,
   aspectRatio,
   isDetailView = false,
-  autoPlay = true,
+  shouldPlay,
   onPlaybackStatusUpdate,
 }: VideoPlayerProps) {
   const videoRef = useRef<VideoView>(null);
@@ -39,10 +45,6 @@ export function VideoPlayer({
     },
     (player) => {
       player.loop = true;
-
-      // if (autoPlay) {
-      //   player.play();
-      // }
     }
   );
 
@@ -51,7 +53,7 @@ export function VideoPlayer({
   });
 
   // Calculate video dimensions
-  const calculateDimensions = useCallback(() => {
+  const dimensions = useMemo(() => {
     const maxWidth = screenWidth - 32;
     const defaultAspectRatio = 16 / 9;
     const videoAspectRatio = aspectRatio
@@ -71,11 +73,14 @@ export function VideoPlayer({
     return { width, height };
   }, [aspectRatio]);
 
-  const dimensions = calculateDimensions();
+  useEffect(() => {
+    if (shouldPlay) {
+      player.play();
+    }
+  }, [shouldPlay]);
 
   // Listen for duration and loading/error status
   useEventListener(player, "sourceLoad", () => {
-    // player.play();
     setIsLoading(false);
   });
 

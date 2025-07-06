@@ -18,7 +18,7 @@ import { Post } from "./Post";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import Loading from "./ui/Loading";
 
-const Feed = React.memo(function Impl({
+const Feed = React.memo(function Comp({
   headerHeight,
 }: {
   headerHeight?: number;

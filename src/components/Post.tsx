@@ -20,10 +20,11 @@ import { ATPost } from "@/types/atproto";
 import { router } from "expo-router";
 import { Platform, Linking } from "react-native";
 import { isVideoPost } from "@/utils/embedUtils";
-import { Text } from "./ui";
+import { Text, RichText } from "./ui";
 import { Colors } from "@/constants/colors";
 import { useSettings } from "@/contexts/SettingsContext";
 import { VideoEmbed } from "./embeds/VideoEmbed";
+import { RichText as RichTextAPI } from "@atproto/api";
 
 interface PostProps {
   post: ATPost;
@@ -305,7 +306,20 @@ function Post({
 
         <View style={[styles.content, isDetailView && styles.detailContent]}>
           {!!post.record.text && (
-            <Text style={textStyle}>{post.record.text}</Text>
+            <RichText
+              value={
+                post.record.facets
+                  ? new RichTextAPI({
+                      text: post.record.text,
+                      facets: post.record.facets,
+                    })
+                  : post.record.text
+              }
+              style={textStyle}
+              disableLinks={false}
+              enableTags={true}
+              onLinkPress={handleLinkPress}
+            />
           )}
 
           {/* Embed Content - This will now properly handle videos */}
@@ -493,7 +507,6 @@ const styles = StyleSheet.create({
   statNumber: {
     fontSize: 18,
     fontWeight: "700",
-    color: "#111827",
   },
   statLabel: {
     fontSize: 12,

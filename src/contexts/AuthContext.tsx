@@ -10,6 +10,7 @@ import { atprotoClient } from "@/lib/atproto";
 import { storage } from "@/lib/storage";
 import { ATProfile } from "@/types/atproto";
 import { ActivityIndicator } from "react-native";
+import { View } from "@/components/ui";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -124,10 +125,9 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
   if (loading) {
     return (
-      <ActivityIndicator
-        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        size="large"
-      />
+      <View className="flex-1 justify-center items-center">
+        <ActivityIndicator size="large" />
+      </View>
     );
   }
 

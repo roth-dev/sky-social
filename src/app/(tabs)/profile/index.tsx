@@ -6,10 +6,12 @@ import { Header } from "@/components/Header";
 import { Settings } from "lucide-react-native";
 import { Colors } from "@/constants/colors";
 import { useSettings } from "@/contexts/SettingsContext";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 export default function ProfileScreen() {
   const { user } = useAuth();
   const { colorScheme } = useSettings();
+  const bottom = useBottomTabBarHeight();
   if (!user) return <Text>User not found</Text>;
   return (
     <>
@@ -28,7 +30,7 @@ export default function ProfileScreen() {
           ),
         }}
       />
-      <UserProfile handle={user.handle} />
+      <UserProfile paddingBottom={bottom} handle={user.handle} />
     </>
   );
 }

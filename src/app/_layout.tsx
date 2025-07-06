@@ -38,6 +38,14 @@ function RootLayout() {
           <Stack.Screen name="search/people" options={{ headerShown: false }} />
           <Stack.Screen name="search/feeds" options={{ headerShown: false }} />
           <Stack.Screen name="feed/[uri]" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="(modal)"
+            options={{
+              presentation: "modal",
+              gestureEnabled: false,
+              gestureDirection: "vertical",
+            }}
+          />
         </Stack.Protected>
 
         <Stack.Protected guard={!isAuthenticated}>

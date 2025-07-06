@@ -2,7 +2,7 @@ import { Colors } from "@/constants/colors";
 import { useSettings } from "@/contexts/SettingsContext";
 import useScrollDirection from "@/hooks/useScrollDirection";
 import { isIOS } from "@/platform";
-import { Tabs, useSegments } from "expo-router";
+import { router, Tabs, useSegments } from "expo-router";
 import {
   Home,
   Search,
@@ -95,8 +95,16 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="create"
+        listeners={(e) => {
+          return {
+            tabPress: (e) => {
+              e.preventDefault();
+              router.push("/(modal)/composer");
+            },
+          };
+        }}
         options={{
-          title: "New Post",
+          title: "Post",
           tabBarIcon: ({ size, color }) => (
             <PlusSquare size={size} color={color} />
           ),

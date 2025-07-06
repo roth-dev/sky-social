@@ -3,7 +3,7 @@ import { TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { EmbedExternal } from "@/types/embed";
 import { ExternalLink } from "lucide-react-native";
 import { Image } from "expo-image";
-import { Text, View } from "../ui";
+import { Text, View, RichText } from "../ui";
 import { Colors } from "@/constants/colors";
 import { useSettings } from "@/contexts/SettingsContext";
 
@@ -165,15 +165,17 @@ export function ExternalEmbed({
         </Text>
 
         {!!external.description && (
-          <Text
+          <RichText
+            value={external.description}
             style={[
               styles.description,
               isDetailView && styles.detailDescription,
             ]}
             numberOfLines={isDetailView ? 4 : 2}
-          >
-            {external.description}
-          </Text>
+            disableLinks={false}
+            enableTags={true}
+            onLinkPress={onLinkPress}
+          />
         )}
       </View>
     </TouchableOpacity>

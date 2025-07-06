@@ -1,10 +1,7 @@
 import { Header } from "@/components/Header";
 import UserProfile from "@/components/profile/UserProfile";
 import { Text } from "@/components/ui";
-import { Colors } from "@/constants/colors";
-import { useSettings } from "@/contexts/SettingsContext";
-import { router, Stack, useLocalSearchParams } from "expo-router";
-import { Settings } from "lucide-react-native";
+import { Stack, useLocalSearchParams } from "expo-router";
 
 export default function UserProfileScreen() {
   const { handle } = useLocalSearchParams<{ handle: string }>();

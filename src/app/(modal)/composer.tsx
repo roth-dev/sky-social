@@ -7,6 +7,7 @@ import { Alert } from "react-native";
 import { Button } from "@/components/ui/Button";
 import { Colors } from "@/constants/colors";
 import { useSettings } from "@/contexts/SettingsContext";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 
 export default function ComposerModal() {
   const router = useRouter();
@@ -68,7 +69,9 @@ export default function ComposerModal() {
           },
         }}
       />
-      <Composer onClose={handleClose} onPost={handlePost} />
+      <KeyboardProvider>
+        <Composer onClose={handleClose} onPost={handlePost} />
+      </KeyboardProvider>
     </>
   );
 }

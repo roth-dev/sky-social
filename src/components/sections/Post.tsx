@@ -4,8 +4,9 @@ import { useMemo } from "react";
 
 interface Props {
   handle: string;
+  paddingBottom?: number;
 }
-export default function UserPostSection({ handle }: Props) {
+export default function UserPostSection({ handle, paddingBottom = 0 }: Props) {
   const postsQuery = useAuthorFeed(handle);
 
   const data = useMemo(() => {
@@ -19,6 +20,7 @@ export default function UserPostSection({ handle }: Props) {
     <ProfileTabContent
       tabKey="posts"
       data={data}
+      paddingBottom={paddingBottom}
       loading={postsQuery.isLoading}
       loadingMore={false}
       onRefresh={() => {}}

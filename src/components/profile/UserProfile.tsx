@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from "react";
+import React, { memo, useMemo, useRef } from "react";
 import { StyleSheet, Alert } from "react-native";
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { ErrorState } from "@/components/placeholders/EmptyState";
@@ -9,13 +9,14 @@ import TabView from "@/components/tabs";
 import UserPostSection from "../sections/Post";
 import UserMediaSection from "../sections/Media";
 import UserLikeSection from "../sections/Likes";
-import { useSettings } from "@/contexts/SettingsContext";
+import Loading from "../ui/Loading";
 
 interface Props {
   handle: string;
+  paddingBottom?: number;
 }
 
-export default function UserProfile({ handle }: Props) {
+const UserProfile = ({ handle, paddingBottom = 0 }: Props) => {
   const { user } = useAuth();
   const profileQuery = useProfile(handle);
   const headerHeight = useRef(200);
@@ -53,7 +54,8 @@ export default function UserProfile({ handle }: Props) {
   // Show loading placeholder if profile is loading or not yet available
   if (profileQuery.isLoading || !currentProfile) {
     return (
-      <View className="flex-1 bg-white">
+      <View className="flex-1 bg-white items-center justify-center">
+        <Loading size="lg" />
         {/* You may want to import and use a ProfilePlaceholder here */}
         {/* Replace the following with your actual placeholder component if available */}
         {/* <ProfilePlaceholder /> */}
@@ -63,11 +65,6 @@ export default function UserProfile({ handle }: Props) {
 
   return (
     <View className="flex-1 bg-white">
-      {/* <Header
-        title={currentProfile.displayName || currentProfile.handle || ""}
-        rightIcon={<Settings size={24} color={Colors.inverted[colorScheme]} />}
-        onRightPress={() => router.push("/(tabs)/profile/settings")}
-      /> */}
       <TabView
         headerHeight={headerHeight.current}
         renderHeader={() => (
@@ -85,7 +82,9 @@ export default function UserProfile({ handle }: Props) {
           {
             key: "posts",
             name: "Posts",
-            component: () => <UserPostSection handle={handle} />,
+            component: () => (
+              <UserPostSection paddingBottom={paddingBottom} handle={handle} />
+            ),
           },
           {
             key: "media",
@@ -110,7 +109,9 @@ export default function UserProfile({ handle }: Props) {
       />
     </View>
   );
-}
+};
+
+export default memo(UserProfile);
 
 const styles = StyleSheet.create({
   container: {

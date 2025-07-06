@@ -30,12 +30,30 @@ interface ComposerProps {
     images: string[];
     video: string | null;
   }) => Promise<void>;
+  replyTo?: {
+    post: {
+      uri: string;
+      cid: string;
+      author: {
+        handle: string;
+        displayName?: string;
+      };
+      record: {
+        text: string;
+      };
+    };
+  };
+  onPostStateChange?: (state: { canPost: boolean; isPosting: boolean }) => void;
+  onPostTrigger?: (triggerPost: () => void) => void;
 }
 const MAX_LEGHT = 300;
 
 export const Composer: FunctionComponent<ComposerProps> = ({
   onClose,
   onPost,
+  replyTo,
+  onPostStateChange,
+  onPostTrigger,
 }) => {
   const { user } = useAuth();
   const [text, setText] = useState("");
@@ -143,29 +161,57 @@ export const Composer: FunctionComponent<ComposerProps> = ({
   };
 
   const canPost = useMemo(() => {
-    return (
+    const hasText = text.trim().length > 0;
+    const hasMedia = images.length > 0 || !!video;
+    const result =
       text.length <= MAX_LEGHT &&
+      (hasText || hasMedia) &&
       ((images.map((img) => img.uri).length > 0 && !video) ||
         (video && images.map((img) => img.uri).length === 0) ||
-        (images.map((img) => img.uri).length === 0 && !video))
-    );
+        (images.map((img) => img.uri).length === 0 && !video));
+
+    return result;
   }, [text, images, video]);
 
-  const handlePost = async () => {
+  // Notify parent component about posting state changes
+  React.useEffect(() => {
+    onPostStateChange?.({ canPost, isPosting });
+  }, [canPost, isPosting, onPostStateChange]);
+
+  // Use refs to store the latest onPost and onClose functions
+  const onPostRef = React.useRef(onPost);
+  const onCloseRef = React.useRef(onClose);
+
+  // Update refs when props change
+  React.useEffect(() => {
+    onPostRef.current = onPost;
+    onCloseRef.current = onClose;
+  }, [onPost, onClose]);
+
+  const handlePost = React.useCallback(async () => {
     if (!canPost) return;
     setIsPosting(true);
     try {
-      await onPost({ text, images: images.map((img) => img.uri), video });
+      await onPostRef.current({
+        text,
+        images: images.map((img) => img.uri),
+        video,
+      });
       setText("");
       setImages([]);
       setVideo(null);
-      onClose();
+      onCloseRef.current();
     } catch (e) {
       Alert.alert("Error", "Failed to create post");
     } finally {
       setIsPosting(false);
     }
-  };
+  }, [canPost, text, images, video]);
+
+  // Expose handlePost function to parent component
+  React.useEffect(() => {
+    onPostTrigger?.(handlePost);
+  }, [onPostTrigger, handlePost]);
 
   // Keep keyboard open by refocusing on blur
   const handleBlur = () => {
@@ -191,6 +237,29 @@ export const Composer: FunctionComponent<ComposerProps> = ({
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={{ paddingBottom: 50 }}
       >
+        {/* Reply Preview */}
+        {replyTo && (
+          <VStack className="px-3 pt-3 pb-2 border-b border-gray-200">
+            <Text size="sm" className="text-gray-500 mb-2">
+              Replying to @{replyTo.post.author.handle}
+            </Text>
+            <VStack className="pl-3 border-l-2 border-gray-300">
+              <HStack className="items-center mb-1">
+                <Text size="sm" className="font-semibold text-black">
+                  {replyTo.post.author.displayName ||
+                    replyTo.post.author.handle}
+                </Text>
+                <Text size="sm" className="text-gray-500 ml-1">
+                  @{replyTo.post.author.handle}
+                </Text>
+              </HStack>
+              <Text size="sm" className="text-black" numberOfLines={2}>
+                {replyTo.post.record.text}
+              </Text>
+            </VStack>
+          </VStack>
+        )}
+
         <HStack className="p-3 items-start">
           <Avatar
             uri={user?.avatar}
@@ -199,8 +268,10 @@ export const Composer: FunctionComponent<ComposerProps> = ({
           />
           <TextInput
             ref={inputRef}
-            className="flex-1 ml-3 text-lg text-black min-h-[80px]"
-            placeholder="What's on your mind?"
+            className="flex-1 ml-3 text-lg text-black dark:text-white min-h-[80px]"
+            placeholder={
+              replyTo ? "Write your reply..." : "What's on your mind?"
+            }
             placeholderTextColor="#888"
             value={text}
             onChangeText={setText}

@@ -169,3 +169,12 @@ export interface ATLikesResponse {
   feed: ATFeedItem[];
   cursor?: string;
 }
+
+export interface ATThreadViewPost {
+  post: ATPost;
+  replies?: ATThreadViewPost[];
+}
+
+export interface ATThreadResponse {
+  thread: ATThreadViewPost;
+}

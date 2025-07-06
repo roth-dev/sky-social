@@ -3,7 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  FlatList,
   TouchableOpacity,
   Dimensions,
 } from "react-native";
@@ -21,6 +20,7 @@ interface ProfileTabContentProps {
   loadingMore?: boolean;
   onRefresh?: () => void;
   onLoadMore?: () => void;
+  paddingBottom?: number;
 }
 
 const { width } = Dimensions.get("window");
@@ -33,6 +33,7 @@ export function ProfileTabContent({
   loadingMore = false,
   onRefresh,
   onLoadMore,
+  paddingBottom = 0,
 }: ProfileTabContentProps) {
   const renderPostItem = ({ item }: { item: ATFeedItem }) => (
     <Post
@@ -165,8 +166,6 @@ export function ProfileTabContent({
     }
   };
 
-  const { numColumns } = getItemLayout(tabKey);
-
   // Filter out null items for media tab
   const filteredData =
     tabKey === "media"
@@ -191,14 +190,9 @@ export function ProfileTabContent({
       maxToRenderPerBatch={10}
       windowSize={10}
       initialNumToRender={5}
-      // maintainVisibleContentPosition={
-      //   tabKey !== "media"
-      //     ? {
-      //         minIndexForVisible: 0,
-      //         autoscrollToTopThreshold: 10,
-      //       }
-      //     : undefined
-      // }
+      contentContainerStyle={{
+        paddingBottom: paddingBottom,
+      }}
     />
   );
 }

@@ -351,9 +351,14 @@ export default function SettingsScreen() {
 
   return (
     <View style={[styles.container, isDarkMode && styles.darkContainer]}>
-      {/* {Platform.OS !== "web" && ( */}
-      <Header title="Settings" />
-      {/* )} */}
+      {Platform.OS !== "web" && (
+        <Header
+          disabledLeft
+          title="Settings"
+          // leftIcon={<ArrowLeft size={24} color="#111827" />}
+          onLeftPress={() => router.back()}
+        />
+      )}
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* User Profile Section */}
@@ -363,7 +368,7 @@ export default function SettingsScreen() {
           >
             <TouchableOpacity
               style={[styles.profileCard, isDarkMode && styles.darkProfileCard]}
-              onPress={() => router.push("/profile")}
+              // onPress={() => router.push("/profile")}
             >
               <Avatar
                 uri={user.avatar}

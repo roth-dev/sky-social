@@ -1,6 +1,6 @@
 import { Tabs } from "expo-router";
 import { ResponsiveTabBar } from "@/components/layout/ResponsiveTabBar";
-import SearchScreen from "./search";
+import SearchScreen from "./(index,search,create,video,account)/search";
 import { useAuth } from "@/contexts/AuthContext";
 import WebSidebar from "@/components/layout/WebSidebar";
 import { View } from "@/components/ui";
@@ -28,8 +28,7 @@ export default function TabLayout() {
           <Tabs.Screen name="search" />
           <Tabs.Screen name="create" />
           <Tabs.Screen name="video" />
-          <Tabs.Screen name="profile" />
-          <Tabs.Screen name="settings" />
+          <Tabs.Screen name="account" />
         </Tabs>
       </View>
 

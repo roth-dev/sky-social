@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { StyleSheet, TouchableOpacity, Platform, Alert } from "react-native";
+import { StyleSheet, Platform, Alert } from "react-native";
 import { useLocalSearchParams, router } from "expo-router";
 import { Header } from "@/components/Header";
 import { Post } from "@/components/Post";
@@ -13,13 +13,15 @@ import {
   useRepost,
   useDeleteRepost,
 } from "@/lib/queries";
-import { Heart, Repeat2, Share } from "lucide-react-native";
 import { Text, View } from "@/components/ui";
 import { ATPost, ATThreadViewPost } from "@/types/atproto";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 export default function PostScreen() {
   const { uri } = useLocalSearchParams<{ uri: string }>();
   const { isAuthenticated } = useAuth();
+
+  const tabBarHeight = useBottomTabBarHeight();
 
   const decodedUri = uri ? decodeURIComponent(uri) : "";
 
@@ -230,7 +232,6 @@ export default function PostScreen() {
   return (
     <View className="flex-1 bg-white">
       <Header title="Post" />
-
       <List
         data={replies}
         renderItem={renderReplyItem}
@@ -240,6 +241,9 @@ export default function PostScreen() {
         showsVerticalScrollIndicator={false}
         refreshing={postThreadQuery.isFetching}
         onRefresh={postThreadQuery.refetch}
+        contentContainerStyle={{
+          paddingBottom: tabBarHeight,
+        }}
       />
     </View>
   );

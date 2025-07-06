@@ -53,8 +53,8 @@ export default function TabLayout() {
   const { colorScheme } = useSettings();
 
   const [isHomeTab, isVideoTab] = useMemo(() => {
-    const home = segment.length === 1 && segment[0] === "(tabs)";
-    const video = segment.length === 2 && segment[1] === "video";
+    const home = segment.length === 2 && segment[0] === "(tabs)";
+    const video = segment.length === 2 && segment[1] === "(video)";
     return [home, video];
   }, [segment]);
 
@@ -80,21 +80,21 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="(index)"
         options={{
           title: "Home",
           tabBarIcon: ({ size, color }) => <Home size={size} color={color} />,
         }}
       />
       <Tabs.Screen
-        name="search"
+        name="(search)"
         options={{
           title: "Search",
           tabBarIcon: ({ size, color }) => <Search size={size} color={color} />,
         }}
       />
       <Tabs.Screen
-        name="create"
+        name="(create)"
         listeners={(e) => {
           return {
             tabPress: (e) => {
@@ -111,23 +111,17 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="video"
+        name="(video)"
         options={{
           title: "Video",
           tabBarIcon: ({ size, color }) => <Video size={size} color={color} />,
         }}
       />
       <Tabs.Screen
-        name="profile"
+        name="(account)"
         options={{
-          title: "Profile",
+          title: "Account",
           tabBarIcon: ({ size, color }) => <User size={size} color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="setting"
-        options={{
-          href: null,
         }}
       />
     </Tabs>

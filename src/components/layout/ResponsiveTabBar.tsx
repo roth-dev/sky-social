@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 import { router, usePathname } from "expo-router";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -23,7 +23,7 @@ const NAVIGATION_ITEMS = [
   { key: "/search", label: "Search", icon: Search },
   { key: "/create", label: "New Post", icon: PlusSquare, requiresAuth: true },
   { key: "/video", label: "Video", icon: Video, requiresAuth: true },
-  { key: "/profile", label: "Profile", icon: User },
+  { key: "/account", label: "Account", icon: User },
 ];
 
 export function ResponsiveTabBar() {
@@ -49,7 +49,7 @@ export function ResponsiveTabBar() {
 
   const handleNavigation = (path: string, requiresAuth?: boolean) => {
     if (requiresAuth && !isAuthenticated) {
-      router.push("/profile");
+      router.push("/account");
       return;
     }
     router.push(path);

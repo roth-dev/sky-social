@@ -26,8 +26,8 @@ const NAVIGATION_ITEMS = [
     icon: Video,
     requiresAuth: true,
   },
-  { key: "/profile", label: "Profile", icon: User },
-  { key: "/setting", label: "Settings", icon: Settings },
+  { key: "/account", label: "Account", icon: User },
+  // { key: "/setting", label: "Settings", icon: Settings },
 ];
 
 export default function WebSidebar() {
@@ -36,14 +36,14 @@ export default function WebSidebar() {
 
   const handleNavigation = (path: string, requiresAuth?: boolean) => {
     if (requiresAuth && !isAuthenticated) {
-      router.push("/profile");
+      router.push("/account");
       return;
     }
     router.push(path);
   };
 
   const handleLogin = () => {
-    router.push("/profile");
+    router.push("/account");
   };
 
   const handleLogout = () => {
@@ -55,13 +55,13 @@ export default function WebSidebar() {
     if (path === "/") {
       return pathname === "/" || pathname === "/index";
     }
-    return pathname.startsWith(path);
+    return pathname.includes(path);
   };
 
   return (
     <View className="sidebar-desktop p-5 justify-between">
       {/* Logo/Brand */}
-      <Link href="/(tabs)">
+      <Link href="/(tabs)/(index)">
         <View className="py-4 px-2 mb-5">
           <Text font="bold" size="2xl" className="text-blue-500">
             Sky Social
@@ -110,7 +110,7 @@ export default function WebSidebar() {
           <View className="flex-row items-center gap-3">
             <TouchableOpacity
               className="flex-1 flex-row items-center gap-3 p-2 rounded-xl"
-              onPress={() => router.push("/profile")}
+              onPress={() => router.push("/account")}
             >
               <Avatar
                 uri={user.avatar}

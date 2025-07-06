@@ -8,7 +8,7 @@ import { Colors } from "@/constants/colors";
 import { useSettings } from "@/contexts/SettingsContext";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
-export default function ProfileScreen() {
+export default function Screen() {
   const { user } = useAuth();
   const { colorScheme } = useSettings();
   const bottom = useBottomTabBarHeight();
@@ -25,7 +25,9 @@ export default function ProfileScreen() {
               rightIcon={
                 <Settings size={24} color={Colors.inverted[colorScheme]} />
               }
-              onRightPress={() => router.push("/(tabs)/profile/settings")}
+              onRightPress={() =>
+                router.push("/(tabs)/(account)/account/settings")
+              }
             />
           ),
         }}

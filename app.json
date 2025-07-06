@@ -10,7 +10,11 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.roth-dev.sky-social"
+      "bundleIdentifier": "com.roth-dev.sky-social",
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "This app needs access to your photo library to let you select images and videos for your posts.",
+        "NSCameraUsageDescription": "This app needs access to your camera to let you take photos and videos for your posts."
+      }
     },
     "web": {
       "bundler": "metro",
@@ -33,7 +37,15 @@
       "typedRoutes": true
     },
     "android": {
-      "package": "com.rothdev.skysocial"
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ],
+      "googleServicesFile": "google-services.json",
+      "package": "com.rothdev.skysocial",
+      "versionCode": 1,
+      "config": {}
     }
   }
 }

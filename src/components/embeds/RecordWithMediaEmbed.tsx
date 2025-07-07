@@ -1,9 +1,9 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { EmbedRecord, EmbedImage, EmbedVideo } from '@/types/embed';
-import { RecordEmbed } from './RecordEmbed';
-import { ImageEmbed } from './ImageEmbed';
-import { VideoEmbed } from './VideoEmbed';
+import React from "react";
+import { View, StyleSheet } from "react-native";
+import { EmbedRecord, EmbedImage, EmbedVideo } from "@/types/embed";
+import { RecordEmbed } from "./RecordEmbed";
+import { ImageEmbed } from "./ImageEmbed";
+import { VideoEmbed } from "./VideoEmbed";
 
 interface RecordWithMediaEmbedProps {
   record?: EmbedRecord;
@@ -14,6 +14,7 @@ interface RecordWithMediaEmbedProps {
   isDetailView?: boolean;
   onImagePress?: (images: EmbedImage[], index: number) => void;
   onRecordPress?: (uri: string) => void;
+  shouldPlay?: boolean;
 }
 
 export function RecordWithMediaEmbed({
@@ -22,6 +23,7 @@ export function RecordWithMediaEmbed({
   isDetailView = false,
   onImagePress,
   onRecordPress,
+  shouldPlay = false,
 }: RecordWithMediaEmbedProps) {
   if (!record && !media) {
     return null;
@@ -36,7 +38,7 @@ export function RecordWithMediaEmbed({
           onRecordPress={onRecordPress}
         />
       )}
-      
+
       {media && (
         <View style={[styles.mediaContainer, record && styles.mediaWithRecord]}>
           {media.images && media.images.length > 0 && (
@@ -46,11 +48,12 @@ export function RecordWithMediaEmbed({
               onImagePress={onImagePress}
             />
           )}
-          
+
           {media.video && (
             <VideoEmbed
               video={media.video}
               isDetailView={isDetailView}
+              shouldPlay={shouldPlay}
             />
           )}
         </View>
@@ -62,14 +65,14 @@ export function RecordWithMediaEmbed({
 const styles = StyleSheet.create({
   container: {
     borderRadius: 12,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   detailContainer: {
     borderRadius: 16,
   },
   mediaContainer: {
     borderRadius: 12,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   mediaWithRecord: {
     marginTop: 8,

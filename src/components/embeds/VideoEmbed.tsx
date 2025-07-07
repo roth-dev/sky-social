@@ -8,6 +8,7 @@ interface VideoEmbedProps {
   isDetailView?: boolean;
   autoPlay?: boolean;
   muted?: boolean;
+  shouldPlay?: boolean;
 }
 
 export function VideoEmbed({
@@ -15,6 +16,7 @@ export function VideoEmbed({
   isDetailView = false,
   autoPlay = true,
   muted = true,
+  shouldPlay = false,
 }: VideoEmbedProps) {
   if (!video) {
     return null;
@@ -68,6 +70,7 @@ export function VideoEmbed({
         isDetailView={isDetailView}
         autoPlay={autoPlay}
         muted={muted}
+        shouldPlay={shouldPlay}
       />
 
       {!!video.alt && (

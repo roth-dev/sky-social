@@ -157,6 +157,69 @@ export function ImageEmbed({
     }
 
     // Four or more images - 2x2 grid
+    if (displayImages.length === 4) {
+      return (
+        <View style={styles.gridContainer}>
+          <View style={{ flexDirection: "row", marginBottom: 4 }}>
+            {[0, 1].map((i) => {
+              const dimensions = calculateImageDimensions(
+                displayImages[i],
+                i,
+                4
+              );
+              return (
+                <TouchableOpacity
+                  key={i}
+                  onPress={() =>
+                    handleImagePress(images.indexOf(displayImages[i]))
+                  }
+                  activeOpacity={0.9}
+                  style={[
+                    styles.gridImageWrapper,
+                    { marginRight: i === 0 ? 4 : 0 },
+                  ]}
+                >
+                  <Image
+                    source={{ uri: displayImages[i].fullsize }}
+                    style={[styles.gridImage, dimensions]}
+                    contentFit="cover"
+                  />
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+          <View style={{ flexDirection: "row" }}>
+            {[2, 3].map((i) => {
+              const dimensions = calculateImageDimensions(
+                displayImages[i],
+                i,
+                4
+              );
+              return (
+                <TouchableOpacity
+                  key={i}
+                  onPress={() =>
+                    handleImagePress(images.indexOf(displayImages[i]))
+                  }
+                  activeOpacity={0.9}
+                  style={[
+                    styles.gridImageWrapper,
+                    { marginRight: i === 2 ? 4 : 0 },
+                  ]}
+                >
+                  <Image
+                    source={{ uri: displayImages[i].fullsize }}
+                    style={[styles.gridImage, dimensions]}
+                    contentFit="cover"
+                  />
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </View>
+      );
+    }
+    // Four or more images - 2x2 grid
     return (
       <View style={styles.gridContainer}>
         {displayImages.map((image, index) => {

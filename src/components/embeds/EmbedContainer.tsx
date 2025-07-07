@@ -13,6 +13,7 @@ interface EmbedContainerProps {
   onImagePress?: (images: any[], index: number) => void;
   onLinkPress?: (url: string) => void;
   onRecordPress?: (uri: string) => void;
+  shouldPlay?: boolean;
 }
 
 export function EmbedContainer({
@@ -21,6 +22,7 @@ export function EmbedContainer({
   onImagePress,
   onLinkPress,
   onRecordPress,
+  shouldPlay = false,
 }: EmbedContainerProps) {
   const renderEmbed = useCallback(() => {
     switch (embed.$type) {
@@ -52,7 +54,13 @@ export function EmbedContainer({
         );
 
       case "app.bsky.embed.video#view":
-        return <VideoEmbed video={embed.video} isDetailView={isDetailView} />;
+        return (
+          <VideoEmbed
+            video={embed.video}
+            isDetailView={isDetailView}
+            shouldPlay={shouldPlay}
+          />
+        );
 
       case "app.bsky.embed.recordWithMedia#view":
         return (
@@ -62,13 +70,21 @@ export function EmbedContainer({
             isDetailView={isDetailView}
             onImagePress={onImagePress}
             onRecordPress={onRecordPress}
+            shouldPlay={shouldPlay}
           />
         );
 
       default:
         return null;
     }
-  }, [embed, isDetailView, onImagePress, onRecordPress, onLinkPress]);
+  }, [
+    embed,
+    isDetailView,
+    onImagePress,
+    onRecordPress,
+    onLinkPress,
+    shouldPlay,
+  ]);
 
   const embedContent = useMemo(() => renderEmbed(), [renderEmbed]);
 

@@ -7,7 +7,7 @@ import {
 } from "@/lib/queries";
 import { useAuth } from "@/contexts/AuthContext";
 import { router } from "expo-router";
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import { ATFeedItem } from "@/types/atproto";
 import { isIOS } from "@/platform";
 import { Text, View } from "./ui";
@@ -17,6 +17,7 @@ import { List } from "./list";
 import { Post } from "./Post";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import Loading from "./ui/Loading";
+import { isVideoPost } from "@/utils/embedUtils";
 
 const Feed = React.memo(function Comp({
   headerHeight,
@@ -90,10 +91,29 @@ const Feed = React.memo(function Comp({
     return timelineQuery.data?.pages.flatMap((page) => page?.feed) || [];
   }, [timelineQuery.data]);
 
+  const [visiblePostUris, setVisiblePostUris] = useState<Set<string>>(
+    new Set()
+  );
+  const [isScrolling, setIsScrolling] = useState(false);
+
+  const handleViewableItemsChangedFull = useCallback((items: ATFeedItem[]) => {
+    const firstVisibleVideo = items.find((item) => isVideoPost(item.post));
+    setVisiblePostUris(
+      firstVisibleVideo && firstVisibleVideo.post?.uri
+        ? new Set([firstVisibleVideo.post.uri])
+        : new Set()
+    );
+  }, []);
+
+  const handleScrollStateChange = useCallback((scrolling: boolean) => {
+    setIsScrolling(scrolling);
+  }, []);
+
   const renderItem = useCallback(
     ({ item }: { item: ATFeedItem }) => (
       <Post
         post={item.post}
+        shouldPlay={!isScrolling && visiblePostUris.has(item.post.uri)}
         // onLike={(uri, cid) =>
         //   handleLike(uri, cid, !!item.post.viewer?.like, item.post.viewer?.like)
         // }
@@ -108,7 +128,7 @@ const Feed = React.memo(function Comp({
         // onComment={handleComment}
       />
     ),
-    []
+    [visiblePostUris, isScrolling]
   );
 
   const renderLoadingFooter = useCallback(() => {
@@ -171,7 +191,6 @@ const Feed = React.memo(function Comp({
       data={allPosts}
       renderItem={renderItem}
       keyExtractor={(item, index) => `${item.post.uri}-${index}`}
-      className="flex-1"
       headerOffset={headerHeight}
       useScrollDetector
       refreshing={timelineQuery.isRefetching}
@@ -198,6 +217,8 @@ const Feed = React.memo(function Comp({
         minIndexForVisible: 0,
         autoscrollToTopThreshold: 10,
       }}
+      onViewableItemsChangedFull={handleViewableItemsChangedFull}
+      onScrollStateChange={handleScrollStateChange}
     />
   );
 });

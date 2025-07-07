@@ -33,6 +33,7 @@ interface PostProps {
   onComment?: (uri: string) => void;
   isDetailView?: boolean;
   isReply?: boolean;
+  shouldPlay?: boolean;
 }
 
 function Post({
@@ -42,6 +43,7 @@ function Post({
   onComment,
   isDetailView = false,
   isReply = false,
+  shouldPlay = false,
 }: PostProps) {
   const { isDarkMode } = useSettings();
   const [lightBoxVisible, setLightBoxVisible] = useState(false);
@@ -330,12 +332,17 @@ function Post({
               onImagePress={handleImagePress}
               onLinkPress={handleLinkPress}
               onRecordPress={handleRecordPress}
+              shouldPlay={shouldPlay}
             />
           )}
 
           {/* Video indicator for debugging */}
           {!!hasVideo && (
-            <VideoEmbed isDetailView={isDetailView} video={post.embed} />
+            <VideoEmbed
+              isDetailView={isDetailView}
+              video={post.embed}
+              shouldPlay={shouldPlay}
+            />
           )}
         </View>
 

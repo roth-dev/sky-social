@@ -24,11 +24,11 @@ export default function TabLayout() {
             tabBarStyle: { display: "none" }, // Hide default tab bar on web
           }}
         >
-          <Tabs.Screen name="index" />
-          <Tabs.Screen name="search" />
-          <Tabs.Screen name="create" />
-          <Tabs.Screen name="video" />
-          <Tabs.Screen name="account" />
+          <Tabs.Screen name="(index)" />
+          <Tabs.Screen name="(search)" />
+          <Tabs.Screen name="(create)" />
+          <Tabs.Screen name="(video)" />
+          <Tabs.Screen name="(account)" />
         </Tabs>
       </View>
 

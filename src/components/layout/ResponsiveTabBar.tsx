@@ -69,6 +69,7 @@ export function ResponsiveTabBar() {
         { backgroundColor: Colors.background.primary[colorScheme] },
         animatedStyle,
       ]}
+      className="tab-bar-mobile"
     >
       {NAVIGATION_ITEMS.map((item) => {
         const IconComponent = item.icon;

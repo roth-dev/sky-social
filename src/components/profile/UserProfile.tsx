@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useRef } from "react";
+import React, { useMemo, useRef } from "react";
 import { StyleSheet, Alert } from "react-native";
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { ErrorState } from "@/components/placeholders/EmptyState";
@@ -10,13 +10,13 @@ import UserPostSection from "../sections/Post";
 import UserMediaSection from "../sections/Media";
 import UserLikeSection from "../sections/Likes";
 import Loading from "../ui/Loading";
+import UserVideoSection from "../sections/Videos";
 
 interface Props {
   handle: string;
-  paddingBottom?: number;
 }
 
-const UserProfile = ({ handle, paddingBottom = 0 }: Props) => {
+const UserProfile = ({ handle }: Props) => {
   const { user } = useAuth();
   const profileQuery = useProfile(handle);
   const headerHeight = useRef(200);
@@ -24,6 +24,35 @@ const UserProfile = ({ handle, paddingBottom = 0 }: Props) => {
   const isOwner = useMemo(() => {
     return handle === user?.handle;
   }, [handle, user]);
+
+  const routes = useMemo(() => {
+    return [
+      {
+        key: "posts",
+        name: "Posts",
+        component: () => <UserPostSection handle={handle} />,
+      },
+      {
+        key: "media",
+        name: "Media",
+        component: () => <UserMediaSection handle={handle} />,
+      },
+      {
+        key: "videos",
+        name: "Videos",
+        component: () => <UserVideoSection handle={handle} />,
+      },
+      ...(isOwner
+        ? [
+            {
+              key: "liked",
+              name: "Liked",
+              component: () => <UserLikeSection handle={handle} />,
+            },
+          ]
+        : []),
+    ];
+  }, [handle]);
 
   const handleEditProfile = () => {
     Alert.alert("Coming Soon", "Profile editing will be available soon!");
@@ -78,40 +107,13 @@ const UserProfile = ({ handle, paddingBottom = 0 }: Props) => {
             onMorePress={handleMorePress}
           />
         )}
-        routes={[
-          {
-            key: "posts",
-            name: "Posts",
-            component: () => (
-              <UserPostSection paddingBottom={paddingBottom} handle={handle} />
-            ),
-          },
-          {
-            key: "media",
-            name: "Media",
-            component: () => <UserMediaSection handle={handle} />,
-          },
-          {
-            key: "videos",
-            name: "Videos",
-            component: () => <UserPostSection handle={handle} />,
-          },
-          ...(isOwner
-            ? [
-                {
-                  key: "liked",
-                  name: "Liked",
-                  component: () => <UserLikeSection handle={handle} />,
-                },
-              ]
-            : []),
-        ]}
+        routes={routes}
       />
     </View>
   );
 };
 
-export default memo(UserProfile);
+export default UserProfile;
 
 const styles = StyleSheet.create({
   container: {

@@ -17,8 +17,8 @@ import { Text, View } from "../ui";
 import { cn } from "@/lib/utils";
 
 const NAVIGATION_ITEMS = [
-  { key: "/", label: "Home", icon: Home },
-  { key: "/search", label: "Search", icon: Search },
+  { key: "/", label: "Home", icon: Home, requiresAuth: true },
+  { key: "/search", label: "Search", icon: Search, requiresAuth: true },
   { key: "/create", label: "New Post", icon: PlusSquare, requiresAuth: true },
   {
     key: "/video",
@@ -26,8 +26,8 @@ const NAVIGATION_ITEMS = [
     icon: Video,
     requiresAuth: true,
   },
-  { key: "/account", label: "Account", icon: User },
-  // { key: "/setting", label: "Settings", icon: Settings },
+  { key: "/account", label: "Account", icon: User, requiresAuth: true },
+  { key: "/setting", label: "Settings", icon: Settings },
 ];
 
 export default function WebSidebar() {

@@ -11,7 +11,6 @@ import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 export default function Screen() {
   const { user } = useAuth();
   const { colorScheme } = useSettings();
-  const bottom = useBottomTabBarHeight();
   if (!user) return <Text>User not found</Text>;
   return (
     <>
@@ -20,7 +19,7 @@ export default function Screen() {
           headerShown: true,
           header: () => (
             <Header
-              title={user.displayName ? `@${user.handle}` : ""}
+              title={user.displayName ? `${user.handle}` : ""}
               disabledLeft
               rightIcon={
                 <Settings size={24} color={Colors.inverted[colorScheme]} />
@@ -32,7 +31,7 @@ export default function Screen() {
           ),
         }}
       />
-      <UserProfile paddingBottom={bottom} handle={user.handle} />
+      <UserProfile handle={user.handle} />
     </>
   );
 }

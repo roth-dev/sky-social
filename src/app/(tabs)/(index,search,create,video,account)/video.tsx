@@ -8,10 +8,10 @@ import { router } from "expo-router";
 import { ATFeedItem } from "@/types/atproto";
 import { View } from "@/components/ui";
 import { List, ListRef } from "@/components/list";
-import { VideoPlayer } from "@/components/video/VideoFeedPlayer";
+import { VideoPlayer } from "@/components/video/VideoPlayer";
 import { VideoFeedOverlay } from "@/components/video/VideoFeedOverlay";
 
-const { height: screenHeight, width: screenWidth } = Dimensions.get("window");
+const { height: screenHeight } = Dimensions.get("window");
 
 interface VideoFeedItemProps {
   item: ATFeedItem;
@@ -53,9 +53,13 @@ function VideoFeedItem({
         uri={videoEmbed.playlist}
         thumbnail={videoEmbed.thumbnail}
         aspectRatio={videoEmbed.aspectRatio}
-        isActive={isActive}
-        autoPlay={isActive}
+        shouldPlay={isActive}
         muted={false}
+        contentFit="contain"
+        containerStyle={{
+          borderRadius: 0,
+          height: undefined,
+        }}
       />
       <VideoFeedOverlay
         post={item.post}
@@ -238,7 +242,6 @@ export default function VideoScreen() {
         keyExtractor={(item, index) => `video-${item.post.uri}-${index}`}
         pagingEnabled
         showsVerticalScrollIndicator={false}
-        useScrollDetector
         onEndReached={handleLoadMore}
         onItemSeen={onItemSeen}
         onEndReachedThreshold={0.1}
@@ -265,9 +268,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   videoContainer: {
-    width: screenWidth,
-    position: "relative",
-    backgroundColor: "#000000",
+    width: "100%",
   },
   emptyState: {
     flex: 1,

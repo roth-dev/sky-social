@@ -4,7 +4,6 @@ import { View } from "@/components/ui";
 import { Colors } from "@/constants/colors";
 import { useSettings } from "@/contexts/SettingsContext";
 import { Feed } from "@/components/Feed";
-import { isMobileWeb, isNative } from "@/platform";
 import { useState } from "react";
 
 export default function HomeScreen() {

@@ -1,20 +1,17 @@
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  useCallback,
-  useMemo,
-} from "react";
+import React, { useState, useRef, useEffect, useMemo, memo } from "react";
 import {
   View,
   TouchableOpacity,
   StyleSheet,
   Dimensions,
   Text,
-  Pressable,
+  ViewStyle,
+  Platform,
 } from "react-native";
 import { useEvent, useEventListener } from "expo";
-import { useVideoPlayer, VideoView, VideoThumbnail } from "expo-video";
+import { useVideoPlayer, VideoContentFit, VideoView } from "expo-video";
+import { useIsFocused } from "@react-navigation/native";
+import Loading from "../ui/Loading";
 interface VideoPlayerProps {
   uri: string;
   thumbnail?: string;
@@ -23,17 +20,21 @@ interface VideoPlayerProps {
   autoPlay?: boolean;
   muted?: boolean;
   shouldPlay?: boolean;
+  contentFit?: VideoContentFit;
   onPlaybackStatusUpdate?: (status: any) => void;
+  containerStyle?: ViewStyle | ViewStyle[];
 }
 
 const { width: screenWidth } = Dimensions.get("window");
 
-export function VideoPlayer({
+export const VideoPlayer = memo(function Comp({
   uri,
   aspectRatio,
   isDetailView = false,
   shouldPlay,
+  contentFit = "cover",
   onPlaybackStatusUpdate,
+  containerStyle,
 }: VideoPlayerProps) {
   const videoRef = useRef<VideoView>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -45,12 +46,15 @@ export function VideoPlayer({
     },
     (player) => {
       player.loop = true;
+      if (Platform.OS === "web") player.muted = true;
     }
   );
 
   const { isPlaying } = useEvent(player, "playingChange", {
     isPlaying: player.playing,
   });
+
+  const isFocused = useIsFocused();
 
   // Calculate video dimensions
   const dimensions = useMemo(() => {
@@ -71,13 +75,15 @@ export function VideoPlayer({
     }
 
     return { width, height };
-  }, [aspectRatio]);
+  }, [aspectRatio, isDetailView, screenWidth]);
 
   useEffect(() => {
-    if (shouldPlay) {
+    if (shouldPlay && isFocused) {
       player.play();
+    } else {
+      player.pause();
     }
-  }, [shouldPlay]);
+  }, [shouldPlay, isFocused]);
 
   // Listen for duration and loading/error status
   useEventListener(player, "sourceLoad", () => {
@@ -106,7 +112,13 @@ export function VideoPlayer({
 
   if (hasError) {
     return (
-      <View style={[styles.container, { height: dimensions.height }]}>
+      <View
+        style={[
+          styles.container,
+          { height: dimensions.height },
+          containerStyle,
+        ]}
+      >
         <View style={styles.errorContainer}>
           <Text style={styles.errorText}>Unable to load video</Text>
           <TouchableOpacity
@@ -124,54 +136,38 @@ export function VideoPlayer({
   }
   return (
     <View
-      style={[
-        styles.container,
-        {
-          height: dimensions.height,
-        },
-      ]}
+      style={[styles.container, { height: dimensions.height }, containerStyle]}
     >
-      <Pressable
-        style={styles.videoContainer}
-        onPress={() => {
-          videoRef.current?.enterFullscreen();
-        }}
-      >
-        <VideoView
-          ref={videoRef}
-          style={styles.video}
-          player={player}
-          allowsFullscreen
-          allowsPictureInPicture
-          contentFit="cover"
-          playsInline
-          allowsVideoFrameAnalysis
-        />
+      <VideoView
+        ref={videoRef}
+        style={styles.video}
+        player={player}
+        allowsPictureInPicture={false}
+        contentFit={contentFit}
+        playsInline
+        allowsVideoFrameAnalysis
+        // Remove 'muted' prop, not supported by VideoView
+      />
 
-        {/* Loading Overlay */}
-        {isLoading && (
-          <View style={styles.loadingOverlay}>
-            <View style={styles.loadingSpinner} />
-          </View>
-        )}
-      </Pressable>
+      {/* Loading Overlay */}
+      {isLoading && (
+        <View style={styles.loadingOverlay}>
+          <Loading size="lg" />
+        </View>
+      )}
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   container: {
     borderRadius: 12,
     overflow: "hidden",
-    backgroundColor: "#000000",
-    position: "relative",
-  },
-  videoContainer: {
-    flex: 1,
     position: "relative",
   },
   video: {
-    flex: 1,
+    width: "100%",
+    height: "100%",
     backgroundColor: "#000000",
   },
   loadingOverlay: {

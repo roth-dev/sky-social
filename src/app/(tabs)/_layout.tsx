@@ -11,7 +11,6 @@ import {
   Video,
 } from "lucide-react-native";
 import { useMemo } from "react";
-import { Platform } from "react-native";
 import Animated, {
   useAnimatedStyle,
   withTiming,
@@ -54,7 +53,7 @@ export default function TabLayout() {
 
   const [isHomeTab, isVideoTab] = useMemo(() => {
     const home = segment.length === 2 && segment[0] === "(tabs)";
-    const video = segment.length === 2 && segment[1] === "(video)";
+    const video = segment.length === 3 && segment[1] === "(video)";
     return [home, video];
   }, [segment]);
 

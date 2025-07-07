@@ -1,6 +1,7 @@
 import { useAuthorMediaFeed } from "@/lib/queries";
 import { ProfileTabContent } from "../profile/ProfileTabContent";
 import { useMemo } from "react";
+import { ATFeedItem } from "@/types/atproto";
 
 interface Props {
   handle: string;
@@ -18,7 +19,7 @@ export default function UserMediaSection({ handle }: Props) {
   return (
     <ProfileTabContent
       tabKey="media"
-      data={data}
+      data={data as unknown as ATFeedItem[]}
       loading={mediaQuery.isLoading}
       loadingMore={false}
       onRefresh={() => {}}

@@ -132,7 +132,6 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    // bottom: 100,
     zIndex: 10,
   },
   bottomGradient: {

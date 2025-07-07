@@ -9,6 +9,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Fragment } from "react";
 import "../global.css";
 import FontProvider from "@/contexts/FontProvider";
+import { isNative, isWeb } from "@/platform";
 
 function RootLayout() {
   const { isAuthenticated } = useAuth();
@@ -20,8 +21,7 @@ function RootLayout() {
       <Stack
         screenOptions={{ headerShown: false, animation: "ios_from_right" }}
       >
-        {/* Always show tabs - authentication is handled within individual screens */}
-        <Stack.Protected guard={isAuthenticated}>
+        <Stack.Protected guard={isAuthenticated || isWeb}>
           <Stack.Screen
             name="(tabs)"
             options={{
@@ -40,7 +40,7 @@ function RootLayout() {
           />
         </Stack.Protected>
 
-        <Stack.Protected guard={!isAuthenticated}>
+        <Stack.Protected guard={!isAuthenticated && isNative}>
           <Stack.Screen name="login" />
         </Stack.Protected>
 

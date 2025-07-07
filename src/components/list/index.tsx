@@ -21,6 +21,8 @@ export type ListProps<ItemT = any> = Omit<
   refreshing?: boolean;
   onRefresh?: () => void;
   onItemSeen?: (item: ItemT) => void;
+  onViewableItemsChangedFull?: (items: ItemT[]) => void;
+  onScrollStateChange?: (isScrolling: boolean) => void;
   desktopFixedHeight?: number | boolean;
   // Web only prop to contain the scroll to the container rather than the window
   disableFullWindowScroll?: boolean;
@@ -33,6 +35,8 @@ let List = React.forwardRef<ListRef, ListProps>(
     {
       style,
       onItemSeen,
+      onViewableItemsChangedFull,
+      onScrollStateChange,
       refreshing,
       onRefresh,
       headerOffset,
@@ -55,7 +59,7 @@ let List = React.forwardRef<ListRef, ListProps>(
     });
 
     const [onViewableItemsChanged, viewabilityConfig] = React.useMemo(() => {
-      if (!onItemSeen) {
+      if (!onItemSeen && !onViewableItemsChangedFull) {
         return [undefined, undefined];
       }
       return [
@@ -63,9 +67,14 @@ let List = React.forwardRef<ListRef, ListProps>(
           viewableItems: Array<ViewToken>;
           changed: Array<ViewToken>;
         }) => {
-          for (const item of info.changed) {
-            if (item.isViewable) {
-              onItemSeen(item.item);
+          if (onViewableItemsChangedFull) {
+            onViewableItemsChangedFull(info.viewableItems.map((v) => v.item));
+          }
+          if (onItemSeen) {
+            for (const item of info.changed) {
+              if (item.isViewable) {
+                onItemSeen(item.item);
+              }
             }
           }
         },
@@ -74,7 +83,7 @@ let List = React.forwardRef<ListRef, ListProps>(
           minimumViewTime: 0.5e3,
         },
       ];
-    }, [onItemSeen]);
+    }, [onItemSeen, onViewableItemsChangedFull]);
 
     let refreshControl;
     if (refreshing !== undefined || onRefresh !== undefined) {
@@ -105,6 +114,10 @@ let List = React.forwardRef<ListRef, ListProps>(
         viewabilityConfig={viewabilityConfig}
         {...props}
         onScroll={scrollHandler}
+        onScrollBeginDrag={() => onScrollStateChange?.(true)}
+        onScrollEndDrag={() => onScrollStateChange?.(false)}
+        onMomentumScrollBegin={() => onScrollStateChange?.(true)}
+        onMomentumScrollEnd={() => onScrollStateChange?.(false)}
         automaticallyAdjustsScrollIndicatorInsets={
           automaticallyAdjustsScrollIndicatorInsets
         }

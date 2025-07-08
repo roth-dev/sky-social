@@ -43,7 +43,7 @@ export default function WebSidebar() {
   };
 
   const handleLogin = () => {
-    router.push("/account");
+    router.push("/login");
   };
 
   const handleLogout = () => {

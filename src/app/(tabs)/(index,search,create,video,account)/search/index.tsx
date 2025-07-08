@@ -4,16 +4,12 @@ import { SearchHeader } from "@/components/search/SearchHeader";
 import { SearchFilters } from "@/components/search/SearchFilters";
 import { SearchResults } from "@/components/search/SearchResults";
 import { TrendingSection } from "@/components/search/TrendingSection";
-import {
-  useSearchActors,
-  useSearchPosts,
-  useSuggestedFollows,
-  usePopularFeeds,
-  useLikePost,
-  useUnlikePost,
-  useRepost,
-  useDeleteRepost,
-} from "@/lib/queries";
+import { useLikePost } from "@/hooks/mutation/useLikePost";
+import { useUnlikePost } from "@/hooks/mutation/useUnlikePost";
+import { useRepost } from "@/hooks/mutation/useRepost";
+import { useDeleteRepost } from "@/hooks/mutation/useDeleteRepost";
+import { useSuggestedFollows } from "@/hooks/query/useSuggestedFollows";
+import { usePopularFeeds } from "@/hooks/query/usePopularFeeds";
 import {
   SearchFilters as SearchFiltersType,
   SearchState,
@@ -22,6 +18,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { router } from "expo-router";
 import { View } from "@/components/ui";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useSearchActors, useSearchPosts } from "@/hooks/query";
 
 export default function SearchScreen() {
   const { isAuthenticated } = useAuth();

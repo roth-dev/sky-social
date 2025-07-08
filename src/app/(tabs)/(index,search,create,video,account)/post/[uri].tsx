@@ -6,13 +6,11 @@ import { Post } from "@/components/Post";
 import { List } from "@/components/list";
 import { PostScreenPlaceholder } from "@/components/placeholders";
 import { useAuth } from "@/contexts/AuthContext";
-import {
-  usePostThread,
-  useLikePost,
-  useUnlikePost,
-  useRepost,
-  useDeleteRepost,
-} from "@/lib/queries";
+import { usePostThread } from "@/hooks/query/usePostThread";
+import { useLikePost } from "@/hooks/mutation/useLikePost";
+import { useUnlikePost } from "@/hooks/mutation/useUnlikePost";
+import { useRepost } from "@/hooks/mutation/useRepost";
+import { useDeleteRepost } from "@/hooks/mutation/useDeleteRepost";
 import { Text, View } from "@/components/ui";
 import { ATPost, ATThreadViewPost } from "@/types/atproto";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";

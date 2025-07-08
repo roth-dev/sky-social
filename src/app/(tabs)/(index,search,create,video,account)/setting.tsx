@@ -477,7 +477,7 @@ export default function SettingsScreen() {
             </Text>
             <Button
               title={t("auth.signin")}
-              onPress={() => router.push("/profile")}
+              onPress={() => router.push("/account")}
               variant="primary"
               size="large"
               style={styles.signInButton}

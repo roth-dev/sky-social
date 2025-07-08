@@ -1,7 +1,6 @@
 import React from "react";
 import { Stack, useRouter, useLocalSearchParams } from "expo-router";
 import { Composer } from "@/components/composer";
-import { useCreatePost, useCreateReply } from "@/lib/queries";
 import { useAuth } from "@/contexts/AuthContext";
 import { Alert } from "react-native";
 import { Button } from "@/components/ui/Button";
@@ -9,6 +8,7 @@ import { Colors } from "@/constants/colors";
 import { useSettings } from "@/contexts/SettingsContext";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { ATPost } from "@/types/atproto";
+import { useCreatePost, useCreateReply } from "@/hooks/mutation";
 
 export default function ComposerModal() {
   const router = useRouter();

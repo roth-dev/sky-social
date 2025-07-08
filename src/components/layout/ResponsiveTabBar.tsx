@@ -22,8 +22,8 @@ const NAVIGATION_ITEMS = [
   { key: "/", label: "Home", icon: Home },
   { key: "/search", label: "Search", icon: Search },
   { key: "/create", label: "New Post", icon: PlusSquare, requiresAuth: true },
-  { key: "/video", label: "Video", icon: Video, requiresAuth: true },
-  { key: "/account", label: "Account", icon: User },
+  { key: "/video", label: "Video", icon: Video },
+  { key: "/account", label: "Account", icon: User, requiresAuth: true },
 ];
 
 export function ResponsiveTabBar() {

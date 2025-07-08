@@ -7,6 +7,7 @@ import {
   Text,
   ViewStyle,
   Platform,
+  StyleProp,
 } from "react-native";
 import { useEvent, useEventListener } from "expo";
 import { useVideoPlayer, VideoContentFit, VideoView } from "expo-video";
@@ -22,7 +23,7 @@ interface VideoPlayerProps {
   shouldPlay?: boolean;
   contentFit?: VideoContentFit;
   onPlaybackStatusUpdate?: (status: any) => void;
-  containerStyle?: ViewStyle | ViewStyle[];
+  containerStyle?: StyleProp<ViewStyle>;
 }
 
 const { width: screenWidth } = Dimensions.get("window");

@@ -3,10 +3,10 @@ import { TouchableOpacity, StyleSheet } from "react-native";
 import { Avatar } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
 import { SearchActor } from "@/types/search";
-import { useFollowProfile, useUnfollowProfile } from "@/lib/queries";
 import { useAuth } from "@/contexts/AuthContext";
 import { router } from "expo-router";
 import { Text, View } from "../ui";
+import { useFollowProfile, useUnfollowProfile } from "@/hooks/mutation";
 
 interface UserSearchResultProps {
   user: SearchActor;

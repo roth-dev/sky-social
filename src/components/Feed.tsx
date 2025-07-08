@@ -1,15 +1,13 @@
-import {
-  useDeleteRepost,
-  useLikePost,
-  useRepost,
-  useTimeline,
-  useUnlikePost,
-} from "@/lib/queries";
+import { useTimeline } from "@/hooks/query/useTimeline";
+import { useLikePost } from "@/hooks/mutation/useLikePost";
+import { useUnlikePost } from "@/hooks/mutation/useUnlikePost";
+import { useRepost } from "@/hooks/mutation/useRepost";
+import { useDeleteRepost } from "@/hooks/mutation/useDeleteRepost";
 import { useAuth } from "@/contexts/AuthContext";
 import { router } from "expo-router";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { ATFeedItem } from "@/types/atproto";
-import { isIOS } from "@/platform";
+import { isIOS, isAndroid, isNative, isWeb } from "@/platform";
 import { Text, View } from "./ui";
 import { EmptyState, ErrorState } from "./placeholders/EmptyState";
 import { FeedPlaceholder } from "./placeholders/FeedPlaceholder";
@@ -158,6 +156,21 @@ const Feed = React.memo(function Comp({
     ),
     [isAuthenticated]
   );
+
+  // If on native (iOS/Android) and not authenticated, show login prompt
+  if (isNative && !isAuthenticated) {
+    return (
+      <View className="flex-1 items-center justify-center bg-white px-8">
+        <Text className="text-xl font-bold mb-2 text-center">
+          Sign in required
+        </Text>
+        <Text className="text-gray-500 mb-4 text-center">
+          Please sign in to view your personalized feed and interact with posts.
+        </Text>
+        {/* You can add a button to navigate to login if needed */}
+      </View>
+    );
+  }
 
   // Show loading placeholder on initial load
   if (timelineQuery.isLoading) {

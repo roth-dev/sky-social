@@ -32,17 +32,6 @@ export default function TabLayout() {
         </Tabs>
       </View>
 
-      {/* Right Panel for Search (when not authenticated) */}
-      <View
-        className="hidden lg:flex lg:w-80 lg:border-l"
-        style={{
-          borderWidth: StyleSheet.hairlineWidth,
-          borderColor: Colors.border[colorScheme],
-        }}
-      >
-        {!isAuthenticated && <SearchScreen />}
-      </View>
-
       {/* Mobile Tab Bar */}
       <ResponsiveTabBar />
     </View>

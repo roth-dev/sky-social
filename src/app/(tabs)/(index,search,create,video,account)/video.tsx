@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useRef } from "react";
 import { StyleSheet, Dimensions, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useVideoFeed } from "@/lib/queries";
+import { useVideoFeed } from "@/hooks/query/useVideoFeed";
 import { EmptyState, LoadingState } from "@/components/placeholders/EmptyState";
 import { useAuth } from "@/contexts/AuthContext";
 import { router } from "expo-router";

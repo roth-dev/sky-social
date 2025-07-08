@@ -3,7 +3,6 @@ import { StyleSheet, Alert } from "react-native";
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { ErrorState } from "@/components/placeholders/EmptyState";
 import { useAuth } from "@/contexts/AuthContext";
-import { useProfile } from "@/lib/queries";
 import { View } from "@/components/ui";
 import TabView from "@/components/tabs";
 import UserPostSection from "../sections/Post";
@@ -11,6 +10,7 @@ import UserMediaSection from "../sections/Media";
 import UserLikeSection from "../sections/Likes";
 import Loading from "../ui/Loading";
 import UserVideoSection from "../sections/Videos";
+import { useProfile } from "@/hooks/query";
 
 interface Props {
   handle: string;

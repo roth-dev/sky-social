@@ -1,17 +1,17 @@
 import { AtpAgent } from "@atproto/api";
 import { storage, AuthSession } from "./storage";
+import { SERVICE_URL } from "@/constants";
 
 export class ATProtoClient {
   private agent: AtpAgent;
   private isAuthenticated = false;
   private currentSession: AuthSession | null = null;
-  private retryCount = 0;
   private maxRetries = 3;
   private retryDelay = 1000; // Start with 1 second
 
   constructor() {
     this.agent = new AtpAgent({
-      service: "https://bsky.social",
+      service: SERVICE_URL,
     });
   }
 
@@ -29,7 +29,6 @@ export class ATProtoClient {
       try {
         const result = await operation();
         // Reset retry count on success
-        this.retryCount = 0;
         return result;
       } catch (error: any) {
         lastError = error;
@@ -65,7 +64,6 @@ export class ATProtoClient {
         await this.delay(delayMs);
       }
     }
-
     throw lastError;
   }
 
@@ -82,7 +80,7 @@ export class ATProtoClient {
           email: session.email,
           emailConfirmed: session.emailConfirmed,
           emailAuthFactor: session.emailAuthFactor,
-          active: session.active,
+          active: session.active ?? false,
         });
 
         this.currentSession = session;
@@ -91,7 +89,6 @@ export class ATProtoClient {
       }
       return false;
     } catch (error) {
-      console.error("Failed to initialize from storage:", error);
       // Clear invalid session data
       await storage.clearAuthSession();
       return false;
@@ -219,7 +216,6 @@ export class ATProtoClient {
           return { success: true, data: response.data };
         } catch (authError: any) {
           console.error("Failed to get authenticated timeline:", authError);
-          lastError = authError;
         }
       }
 
@@ -236,8 +232,6 @@ export class ATProtoClient {
       } catch (popularError: any) {
         console.error("Failed to get popular posts:", popularError);
       }
-
-      console.error("All timeline methods failed:", lastError);
 
       // Return empty feed as final fallback
       return {
@@ -569,7 +563,7 @@ export class ATProtoClient {
       );
 
       return { success: true };
-    } catch (error: any) {
+    } catch (error) {
       console.error("Failed to unfollow profile:", error);
       return {
         success: false,

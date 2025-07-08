@@ -1,7 +1,7 @@
-import { useAuthorMediaFeed } from "@/lib/queries";
 import { ProfileTabContent } from "../profile/ProfileTabContent";
 import { useMemo } from "react";
 import { ATFeedItem } from "@/types/atproto";
+import { useAuthorMediaFeed } from "@/hooks/query";
 
 interface Props {
   handle: string;

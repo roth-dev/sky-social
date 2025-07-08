@@ -1,4 +1,4 @@
-import { useAuthorFeed, useAuthorMediaFeed } from "@/lib/queries";
+import { useAuthorMediaFeed } from "@/hooks/query";
 import { ProfileTabContent } from "../profile/ProfileTabContent";
 import { useMemo } from "react";
 

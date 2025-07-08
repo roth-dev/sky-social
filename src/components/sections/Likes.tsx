@@ -1,4 +1,4 @@
-import { useActorLikes } from "@/lib/queries";
+import { useActorLikes } from "@/hooks/query/useActorLikes";
 import { useMemo } from "react";
 import { ProfileTabContent } from "../profile/ProfileTabContent";
 

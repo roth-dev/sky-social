@@ -1,15 +1,10 @@
-import React, {
-  Dispatch,
-  PropsWithChildren,
-  SetStateAction,
-  useCallback,
-} from "react";
+import React, { PropsWithChildren, useCallback } from "react";
 import {
   View,
-  Text,
   TouchableOpacity,
   StyleSheet,
   Pressable,
+  LayoutChangeEvent,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useSettings } from "@/contexts/SettingsContext";
@@ -22,9 +17,11 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { Colors } from "@/constants/colors";
-import { isAndroid } from "@/platform";
+import { isAndroid, isMobileWeb, isNative } from "@/platform";
 import { ArrowLeft } from "lucide-react-native";
 import { router } from "expo-router";
+import { HStack, Text, VStack } from "./ui";
+import { cn } from "@/lib/utils";
 interface HeaderProps {
   title: string;
   leftIcon?: React.ReactNode;
@@ -33,12 +30,13 @@ interface HeaderProps {
   onRightPress?: () => void;
   collapsible?: boolean;
   disabledLeft?: boolean;
-  setHeadeHeight?: Dispatch<SetStateAction<number>>;
+  onHeightChange?: (height: number) => void;
+  renderHeader?: () => React.ReactNode;
 }
 function CollapsibleHeader({
   children,
-  setHeadeHeight,
-}: PropsWithChildren<Pick<HeaderProps, "setHeadeHeight">>) {
+  onHeightChange,
+}: PropsWithChildren<Pick<HeaderProps, "onHeightChange">>) {
   const headerHeight = useSharedValue(120);
 
   const direction = useScrollDirection();
@@ -57,13 +55,18 @@ function CollapsibleHeader({
     };
   });
 
+  const onLayout = useCallback(
+    (e: LayoutChangeEvent) => {
+      const { height } = e.nativeEvent.layout;
+      headerHeight.set(height);
+      onHeightChange?.(height);
+    },
+    [onHeightChange]
+  );
+
   return (
     <Animated.View
-      onLayout={(e) => {
-        const { height } = e.nativeEvent.layout;
-        headerHeight.value = height;
-        setHeadeHeight?.(height);
-      }}
+      onLayout={onLayout}
       style={[
         {
           position: "absolute",
@@ -87,7 +90,8 @@ export function Header({
   onRightPress,
   collapsible,
   disabledLeft,
-  setHeadeHeight,
+  onHeightChange,
+  renderHeader,
 }: HeaderProps) {
   const { colorScheme } = useSettings();
 
@@ -105,7 +109,7 @@ export function Header({
 
   let header = (
     <BlurView
-      intensity={!collapsible ? undefined : 100}
+      intensity={!collapsible ? undefined : 80}
       tint={collapsible ? colorScheme : undefined}
       style={{
         backgroundColor:
@@ -113,41 +117,47 @@ export function Header({
             ? Colors.background.primary[colorScheme]
             : undefined,
         paddingTop: insets.top,
-        justifyContent: "flex-end",
       }}
+      className={cn(isMobileWeb || isNative ? "pb-3" : "pb-4", "justify-end")}
     >
-      <View className="flex-row items-center justify-between px-4 py-3">
-        <Pressable
-          className="w-10 h-10 items-center justify-center"
-          onPress={handleLeftIconPress}
-          disabled={disabledLeft}
-        >
-          {leftIcon ? (
-            leftIcon
-          ) : disabledLeft ? (
-            <></>
-          ) : (
-            <ArrowLeft size={24} color={Colors.inverted[colorScheme]} />
-          )}
-        </Pressable>
-        <Text className="text-lg font-semibold flex-1 text-center dark:text-white text-gray-900">
-          {title}
-        </Text>
+      {(isMobileWeb || isNative) && (
+        <View className="flex-row items-center justify-between px-4">
+          <Pressable
+            className="w-10 h-10 items-center justify-center"
+            onPress={handleLeftIconPress}
+            disabled={disabledLeft}
+          >
+            {leftIcon ? (
+              leftIcon
+            ) : disabledLeft ? (
+              <></>
+            ) : (
+              <ArrowLeft size={24} color={Colors.inverted[colorScheme]} />
+            )}
+          </Pressable>
+          <Text font="bold" size="lg" className="flex-1 text-center">
+            {title}
+          </Text>
 
-        <TouchableOpacity
-          className="w-10 h-10 items-center justify-center"
-          onPress={onRightPress}
-          disabled={!rightIcon}
-        >
-          {rightIcon}
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity
+            className="w-10 h-10 items-center justify-center"
+            onPress={onRightPress}
+            disabled={!rightIcon}
+          >
+            {rightIcon}
+          </TouchableOpacity>
+        </View>
+      )}
+      {
+        // consider as footer of main header
+      }
+      {renderHeader?.()}
     </BlurView>
   );
 
   if (collapsible) {
     return (
-      <CollapsibleHeader setHeadeHeight={setHeadeHeight}>
+      <CollapsibleHeader onHeightChange={onHeightChange}>
         {header}
       </CollapsibleHeader>
     );

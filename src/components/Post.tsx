@@ -28,6 +28,7 @@ import { RichText as RichTextAPI } from "@atproto/api";
 
 interface PostProps {
   post: ATPost;
+  isFocused?: boolean;
   onLike?: (uri: string, cid: string) => void;
   onRepost?: (uri: string, cid: string) => void;
   onComment?: (uri: string) => void;
@@ -41,6 +42,7 @@ function Post({
   onLike,
   onRepost,
   onComment,
+  isFocused,
   isDetailView = false,
   isReply = false,
   shouldPlay = false,
@@ -254,6 +256,10 @@ function Post({
       aspectRatio: img.aspectRatio,
     }));
   }, [post.embed]);
+
+  const shouldPlayWhenFocused = useMemo(() => {
+    return shouldPlay && isFocused;
+  }, [shouldPlay, isFocused]);
 
   return (
     <View

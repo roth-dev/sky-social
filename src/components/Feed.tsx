@@ -17,11 +17,11 @@ import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import Loading from "./ui/Loading";
 import { isVideoPost } from "@/utils/embedUtils";
 
-const Feed = React.memo(function Comp({
-  headerHeight,
-}: {
+interface FeedProps {
+  isFocused?: boolean;
   headerHeight?: number;
-}) {
+}
+const Feed = React.memo(function Comp({ headerHeight, isFocused }: FeedProps) {
   const { isAuthenticated } = useAuth();
   const timelineQuery = useTimeline();
   const tabBarHeight = useBottomTabBarHeight();
@@ -111,7 +111,9 @@ const Feed = React.memo(function Comp({
     ({ item }: { item: ATFeedItem }) => (
       <Post
         post={item.post}
-        shouldPlay={!isScrolling && visiblePostUris.has(item.post.uri)}
+        shouldPlay={
+          !isScrolling && visiblePostUris.has(item.post.uri) && isFocused
+        }
         // onLike={(uri, cid) =>
         //   handleLike(uri, cid, !!item.post.viewer?.like, item.post.viewer?.like)
         // }
@@ -126,7 +128,7 @@ const Feed = React.memo(function Comp({
         // onComment={handleComment}
       />
     ),
-    [visiblePostUris, isScrolling]
+    [visiblePostUris, isScrolling, isFocused]
   );
 
   const renderLoadingFooter = useCallback(() => {

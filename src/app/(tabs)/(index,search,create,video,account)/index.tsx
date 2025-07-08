@@ -4,6 +4,7 @@ import { View } from "@/components/ui";
 import { Colors } from "@/constants/colors";
 import { useSettings } from "@/contexts/SettingsContext";
 import { Feed } from "@/components/Feed";
+import { PUBLIC_FEED_DESCRIPTOR } from "@/lib/atproto";
 import { useState, useRef, useCallback, useMemo } from "react";
 import PagerView from "@/components/pager";
 import { useScrollStore } from "@/store/scrollStore";
@@ -88,13 +89,13 @@ export default function HomeScreen() {
         className="flex-1 "
       >
         <Feed
-          // feed="public"
+          feed={PUBLIC_FEED_DESCRIPTOR}
           key="forYou"
           isFocused={page === 0}
           headerHeight={headerHeight}
         />
         <Feed
-          // fead="author"
+          feed="following"
           key="following"
           isFocused={page === 1}
           headerHeight={headerHeight}

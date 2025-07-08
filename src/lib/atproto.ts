@@ -2,6 +2,40 @@ import { AtpAgent } from "@atproto/api";
 import { storage, AuthSession } from "./storage";
 import { SERVICE_URL } from "@/constants";
 
+type ActorDid = string;
+export type AuthorFilter =
+  | "posts_with_replies"
+  | "posts_no_replies"
+  | "posts_and_author_threads"
+  | "posts_with_media"
+  | "posts_with_video";
+type FeedUri = string;
+type ListUri = string;
+
+export type FeedDescriptor =
+  | "following"
+  | `author|${ActorDid}|${AuthorFilter}`
+  | `feedgen|${FeedUri}`
+  | `likes|${ActorDid}`
+  | `list|${ListUri}`;
+
+export interface FeedParams {
+  mergeFeedEnabled?: boolean;
+  mergeFeedSources?: string[];
+  feedCacheKey?: "discover" | "explore" | undefined;
+}
+
+const publicFeeds = [
+  "at://did:plc:z72i7hdynmk6r22z27h6tvur/app.bsky.feed.generator/whats-hot",
+  "at://did:plc:z72i7hdynmk6r22z27h6tvur/app.bsky.feed.generator/hot-classic",
+  "at://did:plc:z72i7hdynmk6r22z27h6tvur/app.bsky.feed.generator/bsky-team",
+] as const;
+
+// Feed generator URIs
+export const WHATS_HOT_FEEDGEN_URI =
+  "at://did:plc:z72i7hdynmk6r22z27h6tvur/app.bsky.feed.generator/whats-hot";
+export const PUBLIC_FEED_DESCRIPTOR: FeedDescriptor = `feedgen|${WHATS_HOT_FEEDGEN_URI}`;
+
 export class ATProtoClient {
   private agent: AtpAgent;
   private isAuthenticated = false;
@@ -170,11 +204,6 @@ export class ATProtoClient {
   async getTimeline(limit = 30, cursor?: string) {
     try {
       // Try multiple public feeds for unauthenticated users
-      const publicFeeds = [
-        "at://did:plc:z72i7hdynmk6r22z27h6tvur/app.bsky.feed.generator/whats-hot",
-        "at://did:plc:z72i7hdynmk6r22z27h6tvur/app.bsky.feed.generator/hot-classic",
-        "at://did:plc:z72i7hdynmk6r22z27h6tvur/app.bsky.feed.generator/bsky-team",
-      ];
 
       let lastError: any;
 
@@ -251,6 +280,23 @@ export class ATProtoClient {
           feed: [],
           cursor: undefined,
         },
+      };
+    }
+  }
+
+  // Get the authenticated user's timeline (following feed)
+  async getFollowingFeed(limit = 30, cursor?: string) {
+    try {
+      const response = await this.retryWithBackoff(
+        () => this.agent.getTimeline({ limit, cursor }),
+        "Get Following Feed"
+      );
+      return { success: true, data: response.data };
+    } catch (error: any) {
+      console.error("Failed to get following feed:", error);
+      return {
+        success: false,
+        error: this.getErrorMessage(error),
       };
     }
   }
@@ -757,6 +803,77 @@ export class ATProtoClient {
     }
   }
 
+  /**
+   * Fetch a feed based on FeedDescriptor
+   */
+  async getFeedByDescriptor(
+    descriptor: FeedDescriptor,
+    limit = 30,
+    cursor?: string
+  ) {
+    try {
+      if (descriptor === "following") {
+        // Authenticated timeline
+        return await this.getFollowingFeed(limit, cursor);
+      }
+      if (descriptor.startsWith("author|")) {
+        // Author feed: author|<did>|<filter>
+        const [, did, filter] = descriptor.split("|");
+        const response = await this.retryWithBackoff(
+          () =>
+            this.agent.getAuthorFeed({
+              actor: did,
+              limit,
+              cursor,
+              filter: filter as any,
+            }),
+          "Get Author Feed"
+        );
+        return { success: true, data: response.data };
+      }
+      if (descriptor.startsWith("feedgen|")) {
+        // Feed generator: feedgen|<feedUri>
+        const [, feedUri] = descriptor.split("|");
+        const response = await this.retryWithBackoff(
+          () =>
+            this.agent.app.bsky.feed.getFeed({
+              feed: feedUri,
+              limit,
+              cursor,
+            }),
+          "Get Feed Generator"
+        );
+        return { success: true, data: response.data };
+      }
+      if (descriptor.startsWith("likes|")) {
+        // Likes feed: likes|<did>
+        const [, did] = descriptor.split("|");
+        return await this.getActorLikes(did, limit, cursor);
+      }
+      if (descriptor.startsWith("list|")) {
+        // List feed: list|<listUri>
+        const [, listUri] = descriptor.split("|");
+        const response = await this.retryWithBackoff(
+          () =>
+            this.agent.app.bsky.feed.getListFeed({
+              list: listUri,
+              limit,
+              cursor,
+            }),
+          "Get List Feed"
+        );
+        return { success: true, data: response.data };
+      }
+      // fallback: public timeline
+      return await this.getTimeline(limit, cursor);
+    } catch (error) {
+      return {
+        success: false,
+        error: this.getErrorMessage(error),
+      };
+    }
+  }
+
   private getErrorMessage(error: any): string {
     // Handle specific AT Protocol errors
     if (error.status) {
@@ -827,7 +944,6 @@ export class ATProtoClient {
   async logout() {
     this.isAuthenticated = false;
     this.currentSession = null;
-    this.retryCount = 0;
 
     // Clear stored session data
     await storage.clearAll();

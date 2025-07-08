@@ -16,15 +16,24 @@ import { Post } from "./Post";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import Loading from "./ui/Loading";
 import { isVideoPost } from "@/utils/embedUtils";
+import { FeedDescriptor } from "@/lib/atproto";
+import { useFeeds } from "@/hooks/query/useFeeds";
 
 interface FeedProps {
   isFocused?: boolean;
   headerHeight?: number;
+  feed: FeedDescriptor;
 }
-const Feed = React.memo(function Comp({ headerHeight, isFocused }: FeedProps) {
+const Feed = React.memo(function Comp({
+  headerHeight,
+  isFocused,
+  feed,
+}: FeedProps) {
   const { isAuthenticated } = useAuth();
-  const timelineQuery = useTimeline();
   const tabBarHeight = useBottomTabBarHeight();
+
+  // Unified query for all feed types
+  const feedQuery = useFeeds(feed);
 
   // const likePostMutation = useLikePost();
   // const unlikePostMutation = useUnlikePost();
@@ -77,17 +86,17 @@ const Feed = React.memo(function Comp({ headerHeight, isFocused }: FeedProps) {
 
   const handleLoadMore = useCallback(() => {
     if (
-      timelineQuery.hasNextPage &&
-      !timelineQuery.isFetchingNextPage &&
-      !timelineQuery.isLoading
+      feedQuery.hasNextPage &&
+      !feedQuery.isFetchingNextPage &&
+      !feedQuery.isLoading
     ) {
-      timelineQuery.fetchNextPage();
+      feedQuery.fetchNextPage();
     }
-  }, [timelineQuery]);
+  }, [feedQuery]);
 
   const allPosts = useMemo(() => {
-    return timelineQuery.data?.pages.flatMap((page) => page?.feed) || [];
-  }, [timelineQuery.data]);
+    return feedQuery.data?.pages.flatMap((page) => page?.feed) || [];
+  }, [feedQuery.data]);
 
   const [visiblePostUris, setVisiblePostUris] = useState<Set<string>>(
     new Set()
@@ -132,7 +141,7 @@ const Feed = React.memo(function Comp({ headerHeight, isFocused }: FeedProps) {
   );
 
   const renderLoadingFooter = useCallback(() => {
-    if (!timelineQuery.isFetchingNextPage) return null;
+    if (!feedQuery.isFetchingNextPage) return null;
 
     return (
       <View className="py-5 items-center bg-white gap-2">
@@ -142,7 +151,7 @@ const Feed = React.memo(function Comp({ headerHeight, isFocused }: FeedProps) {
         </Text>
       </View>
     );
-  }, [timelineQuery.isFetchingNextPage]);
+  }, [feedQuery.isFetchingNextPage]);
 
   const renderEmptyState = useCallback(
     () => (
@@ -175,7 +184,7 @@ const Feed = React.memo(function Comp({ headerHeight, isFocused }: FeedProps) {
   }
 
   // Show loading placeholder on initial load
-  if (timelineQuery.isLoading) {
+  if (feedQuery.isLoading) {
     return (
       <View className="flex-1">
         <FeedPlaceholder count={6} showVariety={true} includeVideos={true} />
@@ -184,23 +193,23 @@ const Feed = React.memo(function Comp({ headerHeight, isFocused }: FeedProps) {
   }
 
   // Show error state
-  if (timelineQuery.error) {
+  if (feedQuery.error) {
     return (
       <View className="flex-1 bg-white">
         <ErrorState
           title="Unable to load timeline"
           description={
-            timelineQuery.error?.message ||
+            feedQuery.error?.message ||
             "Something went wrong while loading the timeline. Please try again."
           }
-          onRetry={() => timelineQuery.refetch()}
+          onRetry={() => feedQuery.refetch()}
         />
       </View>
     );
   }
 
   // Only show empty state if we have no posts AND we're not loading
-  const showEmptyState = allPosts.length === 0 && !timelineQuery.isLoading;
+  const showEmptyState = allPosts.length === 0 && !feedQuery.isLoading;
   return (
     <List
       data={allPosts}
@@ -208,8 +217,8 @@ const Feed = React.memo(function Comp({ headerHeight, isFocused }: FeedProps) {
       keyExtractor={(item, index) => `${item.post.uri}-${index}`}
       headerOffset={headerHeight}
       useScrollDetector
-      refreshing={timelineQuery.isRefetching}
-      onRefresh={() => timelineQuery.refetch()}
+      refreshing={feedQuery.isRefetching}
+      onRefresh={() => feedQuery.refetch()}
       onEndReached={handleLoadMore}
       ListEmptyComponent={showEmptyState ? renderEmptyState : null}
       ListFooterComponent={renderLoadingFooter}

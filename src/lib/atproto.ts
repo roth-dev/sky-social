@@ -31,10 +31,7 @@ const publicFeeds = [
   "at://did:plc:z72i7hdynmk6r22z27h6tvur/app.bsky.feed.generator/bsky-team",
 ] as const;
 
-// Feed generator URIs
-export const WHATS_HOT_FEEDGEN_URI =
-  "at://did:plc:z72i7hdynmk6r22z27h6tvur/app.bsky.feed.generator/whats-hot";
-export const PUBLIC_FEED_DESCRIPTOR: FeedDescriptor = `feedgen|${WHATS_HOT_FEEDGEN_URI}`;
+export const PUBLIC_FEED_DESCRIPTOR: FeedDescriptor = `feedgen|${publicFeeds[0]}`;
 
 export class ATProtoClient {
   private agent: AtpAgent;

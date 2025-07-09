@@ -4,7 +4,7 @@ import { View } from "@/components/ui";
 import { Colors } from "@/constants/colors";
 import { useSettings } from "@/contexts/SettingsContext";
 import { Feed } from "@/components/Feed";
-import { PUBLIC_FEED_DESCRIPTOR } from "@/lib/atproto";
+import { FeedDescriptor, PUBLIC_FEED_DESCRIPTOR } from "@/lib/atproto";
 import { useState, useRef, useCallback, useMemo } from "react";
 import PagerView from "@/components/pager";
 import { useScrollStore } from "@/store/scrollStore";
@@ -41,7 +41,20 @@ export default function HomeScreen() {
       pagerRef.current.setPage(idx);
     }
   }, []);
-  const tabTitles = useMemo(() => ["For You", "Following"], []);
+
+  const pages: { title: string; feed: FeedDescriptor }[] = useMemo(
+    () => [
+      {
+        title: "For You",
+        feed: PUBLIC_FEED_DESCRIPTOR,
+      },
+      {
+        title: "Following",
+        feed: "following",
+      },
+    ],
+    []
+  );
   return (
     <View className="flex-1 bg-white">
       <Header
@@ -51,7 +64,7 @@ export default function HomeScreen() {
             indicatorIndex={indicatorIndex}
             setPage={handleTabPress}
             page={page}
-            tabTitles={tabTitles}
+            tabTitles={pages.map((p) => p.title)}
             tabLayouts={tabLayouts}
             setTabLayouts={setTabLayouts}
           />
@@ -79,27 +92,24 @@ export default function HomeScreen() {
           />
         }
       />
-
       <PagerView
         ref={pagerRef}
         initialPage={0}
         // No need for onPageScroll for indicator
         onPageSelected={handlePageSelected}
         style={{ flex: 1 }}
-        className="flex-1 "
+        className="flex-1"
       >
-        <Feed
-          feed={PUBLIC_FEED_DESCRIPTOR}
-          key="forYou"
-          isFocused={page === 0}
-          headerHeight={headerHeight}
-        />
-        <Feed
-          feed="following"
-          key="following"
-          isFocused={page === 1}
-          headerHeight={headerHeight}
-        />
+        {pages.map((pageItem, index) => {
+          return (
+            <Feed
+              feed={pageItem.feed}
+              key={pageItem.feed}
+              headerHeight={headerHeight}
+              isFocused={page === index}
+            />
+          );
+        })}
       </PagerView>
     </View>
   );

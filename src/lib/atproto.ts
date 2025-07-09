@@ -1,4 +1,4 @@
-import { AtpAgent } from "@atproto/api";
+import { AtpAgent, AppBskyFeedDefs } from "@atproto/api";
 import { storage, AuthSession } from "./storage";
 import { SERVICE_URL } from "@/constants";
 
@@ -309,7 +309,7 @@ export class ATProtoClient {
       "atproto.com",
     ];
 
-    const allPosts: any[] = [];
+    const allPosts: AppBskyFeedDefs.FeedViewPost[] = [];
 
     for (const handle of popularHandles) {
       try {

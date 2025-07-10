@@ -5,6 +5,7 @@ import { Avatar } from "@/components/ui/Avatar";
 import { Text, RichText } from "@/components/ui";
 import { Quote } from "lucide-react-native";
 import { RichText as RichTextAPI } from "@atproto/api";
+import { Formater } from "@/lib/format";
 
 interface RecordEmbedProps {
   record?: EmbedRecord;
@@ -27,18 +28,6 @@ export function RecordEmbed({
     if (onRecordPress && post.uri) {
       onRecordPress(post.uri);
     }
-  };
-
-  const formatTime = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInHours = Math.floor(
-      (now.getTime() - date.getTime()) / (1000 * 60 * 60)
-    );
-
-    if (diffInHours < 1) return "now";
-    if (diffInHours < 24) return `${diffInHours}h`;
-    return `${Math.floor(diffInHours / 24)}d`;
   };
 
   return (
@@ -67,9 +56,7 @@ export function RecordEmbed({
               @{post.author?.handle}
             </Text>
             <Text style={styles.time}>·</Text>
-            <Text style={styles.time}>
-              {formatTime(post.record?.createdAt)}
-            </Text>
+            <Text style={styles.time}>{Formater.time(post.indexedAt)}</Text>
           </View>
         </View>
 

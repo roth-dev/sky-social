@@ -1,6 +1,7 @@
 import { AtpAgent, AppBskyFeedDefs } from "@atproto/api";
 import { storage, AuthSession } from "./storage";
-import { SERVICE_URL } from "@/constants";
+import { POST_PRIFIX, PUBLIC_SERVICE_URL, SERVICE_URL } from "@/constants";
+import { isNative } from "@/platform";
 
 type ActorDid = string;
 export type AuthorFilter =
@@ -41,9 +42,26 @@ export class ATProtoClient {
   private retryDelay = 1000; // Start with 1 second
 
   constructor() {
-    this.agent = new AtpAgent({
-      service: SERVICE_URL,
+    this.agent = this.createAgent(false);
+  }
+
+  /**
+   * Create a new AtpAgent instance with the correct service URL
+   * @param authenticated Whether the user is authenticated
+   */
+  private createAgent(authenticated: boolean) {
+    // Native always uses SERVICE_URL and requires login
+    if (isNative) {
+      return new AtpAgent({ service: SERVICE_URL });
+    }
+    // Web: use SERVICE_URL if authenticated, else PUBLIC_SERVICE_URL
+    return new AtpAgent({
+      service: authenticated ? SERVICE_URL : PUBLIC_SERVICE_URL,
     });
+  }
+
+  private setAgent(authenticated: boolean) {
+    this.agent = this.createAgent(authenticated);
   }
 
   private async delay(ms: number): Promise<void> {
@@ -103,6 +121,7 @@ export class ATProtoClient {
       const session = await storage.getAuthSession();
       if (session) {
         // Resume session with stored credentials
+        this.setAgent(true); // Use SERVICE_URL for authenticated
         await this.agent.resumeSession({
           accessJwt: session.accessJwt,
           refreshJwt: session.refreshJwt,
@@ -117,17 +136,22 @@ export class ATProtoClient {
         this.currentSession = session;
         this.isAuthenticated = true;
         return true;
+      } else {
+        // Not authenticated
+        this.setAgent(false); // Use PUBLIC_SERVICE_URL for unauthenticated web
       }
       return false;
     } catch (error) {
       // Clear invalid session data
       await storage.clearAuthSession();
+      this.setAgent(false); // Use PUBLIC_SERVICE_URL for unauthenticated web
       return false;
     }
   }
 
   async login(identifier: string, password: string) {
     try {
+      this.setAgent(true); // Switch to SERVICE_URL for login
       const response = await this.retryWithBackoff(
         () => this.agent.login({ identifier, password }),
         "Login"
@@ -154,8 +178,12 @@ export class ATProtoClient {
         return { success: true, data: response.data };
       }
 
+      // If login fails, revert to unauthenticated agent for web
+      this.setAgent(false);
       return { success: false, error: "Login failed" };
     } catch (error: any) {
+      // If login fails, revert to unauthenticated agent for web
+      this.setAgent(false);
       console.error("Login failed:", error);
       return {
         success: false,
@@ -202,8 +230,6 @@ export class ATProtoClient {
     try {
       // Try multiple public feeds for unauthenticated users
 
-      let lastError: any;
-
       // Try each public feed
       for (const feedUri of publicFeeds) {
         try {
@@ -225,9 +251,9 @@ export class ATProtoClient {
           );
 
           return { success: true, data: response.data };
-        } catch (error: any) {
-          lastError = error;
-          console.warn(`Failed to fetch feed ${feedUri}:`, error.message);
+        } catch (error: unknown) {
+          // Swallow error, try next feed
+          console.warn(`Failed to fetch feed ${feedUri}:`, error);
           continue;
         }
       }
@@ -267,7 +293,7 @@ export class ATProtoClient {
           cursor: undefined,
         },
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to get timeline:", error);
 
       // Return empty feed on error
@@ -289,7 +315,7 @@ export class ATProtoClient {
         "Get Following Feed"
       );
       return { success: true, data: response.data };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to get following feed:", error);
       return {
         success: false,
@@ -325,8 +351,8 @@ export class ATProtoClient {
         if (response.success && response.data.feed) {
           allPosts.push(...response.data.feed);
         }
-      } catch (error: any) {
-        console.warn(`Failed to get posts from ${handle}:`, error.message);
+      } catch (error: unknown) {
+        console.warn(`Failed to get posts from ${handle}:`, error);
         continue;
       }
 
@@ -361,7 +387,7 @@ export class ATProtoClient {
       );
 
       return { success: true, data: response.data };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to get profile:", error);
       return {
         success: false,
@@ -385,7 +411,7 @@ export class ATProtoClient {
       );
 
       return { success: true, data: response.data };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to get author feed:", error);
       return {
         success: false,
@@ -418,7 +444,7 @@ export class ATProtoClient {
       );
 
       return { success: true, data: response.data };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to get actor likes:", error);
 
       // Handle specific cases where likes might not be available
@@ -447,8 +473,7 @@ export class ATProtoClient {
       if (!uri || typeof uri !== "string" || uri.trim().length === 0) {
         throw new Error("Invalid post URI");
       }
-
-      const cleanUri = uri.trim();
+      const cleanUri = `${POST_PRIFIX}${uri.trim()}`;
 
       const response = await this.retryWithBackoff(
         () => this.agent.getPostThread({ uri: cleanUri, depth, parentHeight }),
@@ -456,11 +481,16 @@ export class ATProtoClient {
       );
 
       return { success: true, data: response.data };
-    } catch (error: any) {
-      console.error("Failed to get post thread:", error);
+    } catch (error: unknown) {
+      const err = error as any;
+      if (err && err.message) {
+        console.error("Failed to get post thread:", err.message);
+      } else {
+        console.error("Failed to get post thread:", err);
+      }
       return {
         success: false,
-        error: this.getErrorMessage(error),
+        error: this.getErrorMessage(err),
       };
     }
   }
@@ -485,7 +515,7 @@ export class ATProtoClient {
       );
 
       return { success: true, data: response.data };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to search actors:", error);
       return {
         success: false,
@@ -514,7 +544,7 @@ export class ATProtoClient {
       );
 
       return { success: true, data: response.data };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to search posts:", error);
       return {
         success: false,
@@ -535,7 +565,7 @@ export class ATProtoClient {
       );
 
       return { success: true, data: response.data };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to get popular feed generators:", error);
       return {
         success: false,
@@ -552,7 +582,7 @@ export class ATProtoClient {
       );
 
       return { success: true, data: response.data };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to get suggested follows:", error);
       return {
         success: false,
@@ -577,7 +607,7 @@ export class ATProtoClient {
       );
 
       return { success: true, data: response };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to follow profile:", error);
       return {
         success: false,
@@ -606,7 +636,7 @@ export class ATProtoClient {
       );
 
       return { success: true };
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Failed to unfollow profile:", error);
       return {
         success: false,
@@ -641,7 +671,7 @@ export class ATProtoClient {
       );
 
       return { success: true, data: response };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to create post:", error);
       return {
         success: false,
@@ -691,7 +721,7 @@ export class ATProtoClient {
       );
 
       return { success: true, data: response };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to create reply:", error);
       return {
         success: false,
@@ -716,7 +746,7 @@ export class ATProtoClient {
       );
 
       return { success: true, data: response };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to like post:", error);
       return {
         success: false,
@@ -741,7 +771,7 @@ export class ATProtoClient {
       );
 
       return { success: true };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to unlike post:", error);
       return {
         success: false,
@@ -766,7 +796,7 @@ export class ATProtoClient {
       );
 
       return { success: true, data: response };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to repost:", error);
       return {
         success: false,
@@ -791,7 +821,7 @@ export class ATProtoClient {
       );
 
       return { success: true };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to delete repost:", error);
       return {
         success: false,
@@ -863,7 +893,7 @@ export class ATProtoClient {
       }
       // fallback: public timeline
       return await this.getTimeline(limit, cursor);
-    } catch (error) {
+    } catch (error: unknown) {
       return {
         success: false,
         error: this.getErrorMessage(error),
@@ -871,10 +901,11 @@ export class ATProtoClient {
     }
   }
 
-  private getErrorMessage(error: any): string {
+  private getErrorMessage(error: unknown): string {
+    const err = error as any;
     // Handle specific AT Protocol errors
-    if (error.status) {
-      switch (error.status) {
+    if (err.status) {
+      switch (err.status) {
         case 400:
           return "Invalid request. Please check your input and try again.";
         case 401:
@@ -894,7 +925,7 @@ export class ATProtoClient {
         case 504:
           return "Service temporarily unavailable. Please try again in a few moments.";
         default:
-          if (error.status >= 500) {
+          if (err.status >= 500) {
             return "Server error. Please try again later.";
           }
           break;
@@ -902,32 +933,32 @@ export class ATProtoClient {
     }
 
     // Handle specific error messages
-    if (error.message) {
-      if (error.message.includes("UpstreamFailure")) {
+    if (err.message) {
+      if (err.message.includes("UpstreamFailure")) {
         return "Service temporarily unavailable. Please try again in a few moments.";
       }
-      if (error.message.includes("network")) {
+      if (err.message.includes("network")) {
         return "Network error. Please check your internet connection.";
       }
-      if (error.message.includes("timeout")) {
+      if (err.message.includes("timeout")) {
         return "Request timed out. Please try again.";
       }
-      if (error.message.includes("authentication")) {
+      if (err.message.includes("authentication")) {
         return "Authentication error. Please log in again.";
       }
       if (
-        error.message.includes("Profile not found") ||
-        error.message.includes("Actor not found")
+        err.message.includes("Profile not found") ||
+        err.message.includes("Actor not found")
       ) {
         return "Profile not found. The user may not exist or may have changed their handle.";
       }
-      if (error.message.includes("Invalid request")) {
+      if (err.message.includes("Invalid request")) {
         return "Invalid request. Please check your input and try again.";
       }
     }
 
     // Fallback to original error message or generic message
-    return error.message || "An unexpected error occurred. Please try again.";
+    return err.message || "An unexpected error occurred. Please try again.";
   }
 
   getIsAuthenticated() {
@@ -947,6 +978,9 @@ export class ATProtoClient {
 
     // Clear agent session
     this.agent.session = undefined;
+
+    // On web, switch back to PUBLIC_SERVICE_URL after logout
+    this.setAgent(false);
   }
 }
 

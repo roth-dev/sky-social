@@ -9,7 +9,7 @@ export function usePostThread(uri: string) {
       if (!uri || typeof uri !== "string" || uri.trim().length === 0) {
         throw new Error("Invalid post URI");
       }
-      const result = await atprotoClient.getPostThread(uri);
+      const result = await atprotoClient.getPostThread(decodeURIComponent(uri));
       if (!result.success) {
         throw new Error(result.error || "Failed to fetch post thread");
       }

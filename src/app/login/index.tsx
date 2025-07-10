@@ -14,10 +14,8 @@ import { Text, View, VStack } from "@/components/ui";
 export default function LoginScreen() {
   const { login } = useAuth();
 
-  const [identifier, setIdentifier] = useState(
-    __DEV__ ? "rothdev.bsky.social" : ""
-  );
-  const [password, setPassword] = useState(__DEV__ ? "rothdev@bluesky" : "");
+  const [identifier, setIdentifier] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 

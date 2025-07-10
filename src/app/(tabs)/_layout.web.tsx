@@ -1,16 +1,9 @@
 import { Tabs } from "expo-router";
 import { ResponsiveTabBar } from "@/components/layout/ResponsiveTabBar";
-import SearchScreen from "./(index,search,create,video,account)/search";
-import { useAuth } from "@/contexts/AuthContext";
 import WebSidebar from "@/components/layout/WebSidebar";
 import { View } from "@/components/ui";
-import { StyleSheet } from "react-native";
-import { Colors } from "@/constants/colors";
-import { useSettings } from "@/contexts/SettingsContext";
 
 export default function TabLayout() {
-  const { colorScheme } = useSettings();
-  const { isAuthenticated } = useAuth();
   return (
     <View className="flex-1 flex-row bg-white">
       {/* Desktop Sidebar */}

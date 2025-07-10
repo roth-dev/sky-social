@@ -1,5 +1,5 @@
 import React from "react";
-import { TouchableOpacity, Platform } from "react-native";
+import { TouchableOpacity } from "react-native";
 import { Link, router, usePathname } from "expo-router";
 import { useAuth } from "@/contexts/AuthContext";
 import { Avatar } from "@/components/ui/Avatar";
@@ -17,14 +17,13 @@ import { Text, View } from "../ui";
 import { cn } from "@/lib/utils";
 
 const NAVIGATION_ITEMS = [
-  { key: "/", label: "Home", icon: Home, requiresAuth: true },
-  { key: "/search", label: "Search", icon: Search, requiresAuth: true },
+  { key: "/", label: "Home", icon: Home },
+  { key: "/search", label: "Search", icon: Search },
   { key: "/create", label: "New Post", icon: PlusSquare, requiresAuth: true },
   {
     key: "/video",
     label: "Video",
     icon: Video,
-    requiresAuth: true,
   },
   { key: "/account", label: "Account", icon: User, requiresAuth: true },
   { key: "/setting", label: "Settings", icon: Settings },

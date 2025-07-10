@@ -1,3 +1,4 @@
+import "react-native-reanimated";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useFrameworkReady } from "@/hooks/useFrameworkReady";
@@ -21,10 +22,7 @@ function RootLayout() {
       <Stack
         screenOptions={{ headerShown: false, animation: "ios_from_right" }}
       >
-        {/* <Stack.Protected guard={!isAuthenticated && isWeb}>
-          <Stack.Screen name="(public)" />
-        </Stack.Protected> */}
-        <Stack.Protected guard={isAuthenticated}>
+        <Stack.Protected guard={isAuthenticated || isWeb}>
           <Stack.Screen
             name="(tabs)"
             options={{

@@ -22,6 +22,7 @@ import Animated, {
 import { X, Download, Share, MoreHorizontal } from "lucide-react-native";
 import { Image } from "expo-image";
 import { isWeb } from "@/platform";
+import { useLightBoxOpen } from "@/store/lightBox";
 
 interface LightBoxProps {
   visible: boolean;
@@ -50,6 +51,8 @@ export function LightBox({
 }: LightBoxProps) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [headerVisible, setHeaderVisible] = useState(true);
+
+  const lightBoxState = useLightBoxOpen();
 
   // Animation values
   const scale = useSharedValue(1);
@@ -276,7 +279,15 @@ export function LightBox({
     }
   };
 
-  if (!visible || !currentImage) {
+  const onModalShow = useCallback(() => {
+    lightBoxState.setValue(true);
+  }, [lightBoxState]);
+
+  const onModalHide = useCallback(() => {
+    lightBoxState.setValue(false);
+  }, [lightBoxState]);
+
+  if (!currentImage) {
     return null;
   }
 
@@ -286,6 +297,8 @@ export function LightBox({
       transparent
       animationType="fade"
       onRequestClose={onClose}
+      onShow={onModalShow}
+      onDismiss={onModalHide}
     >
       <StatusBar hidden={!headerVisible} />
 

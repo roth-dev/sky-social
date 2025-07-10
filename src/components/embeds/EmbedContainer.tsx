@@ -6,11 +6,12 @@ import { ExternalEmbed } from "./ExternalEmbed";
 import { RecordEmbed } from "./RecordEmbed";
 import { VideoEmbed } from "./VideoEmbed";
 import { RecordWithMediaEmbed } from "./RecordWithMediaEmbed";
+import { AppBskyEmbedImages } from "@atproto/api";
 
 interface EmbedContainerProps {
   embed: PostEmbed;
   isDetailView?: boolean;
-  onImagePress?: (images: any[], index: number) => void;
+  onImagePress?: (images: AppBskyEmbedImages.Image[], index: number) => void;
   onLinkPress?: (url: string) => void;
   onRecordPress?: (uri: string) => void;
   shouldPlay?: boolean;

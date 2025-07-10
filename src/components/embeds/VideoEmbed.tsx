@@ -1,7 +1,8 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { useMemo } from "react";
+import { StyleSheet } from "react-native";
 import { EmbedVideo } from "@/types/embed";
 import { VideoPlayer } from "@/components/video/VideoPlayer";
+import { Text, View } from "../ui";
 
 interface VideoEmbedProps {
   video?: EmbedVideo;
@@ -18,51 +19,28 @@ export function VideoEmbed({
   muted = true,
   shouldPlay = false,
 }: VideoEmbedProps) {
-  if (!video) {
-    return null;
-  }
-
   // Handle different video URL formats
-  const getVideoUrl = () => {
-    if (video.playlist) {
-      return video.playlist;
+  const videoUrl = useMemo(() => {
+    if (video?.playlist) {
+      return;
     }
-
     // Fallback to other possible video URL properties
     if (typeof video === "string") {
       return video;
     }
-
     // If video has a cid, construct a URL (this might need adjustment based on AT Protocol)
-    if (video.cid) {
+    if (video?.cid) {
       return `https://bsky.social/xrpc/com.atproto.sync.getBlob?did=${video.cid}`;
     }
+  }, [video]);
 
-    return null;
-  };
-
-  const videoUrl = getVideoUrl();
-
-  if (!videoUrl) {
-    // Show a placeholder if video URL is not available
-    return (
-      <View style={[styles.container, isDetailView && styles.detailContainer]}>
-        <View style={styles.placeholderContainer}>
-          <Text style={styles.placeholderText}>Video not available</Text>
-        </View>
-        {!!video.alt && (
-          <View style={styles.altTextContainer}>
-            <Text style={styles.altText} numberOfLines={2}>
-              {video.alt}
-            </Text>
-          </View>
-        )}
-      </View>
-    );
-  }
+  if (!video || !videoUrl) return <></>;
 
   return (
-    <View style={[styles.container, isDetailView && styles.detailContainer]}>
+    <View
+      style={[styles.container, isDetailView && styles.detailContainer]}
+      darkColor="secondary"
+    >
       <VideoPlayer
         uri={videoUrl}
         thumbnail={video.thumbnail}
@@ -74,8 +52,8 @@ export function VideoEmbed({
       />
 
       {!!video.alt && (
-        <View style={styles.altTextContainer}>
-          <Text style={styles.altText} numberOfLines={2}>
+        <View className="py-3 px-2" darkColor="secondary">
+          <Text size="sm" numberOfLines={2} className="opacity-50">
             {video.alt}
           </Text>
         </View>
@@ -94,7 +72,6 @@ const styles = StyleSheet.create({
   },
   placeholderContainer: {
     height: 200,
-    backgroundColor: "#f3f4f6",
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 12,
@@ -103,16 +80,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#6b7280",
     fontWeight: "500",
-  },
-  altTextContainer: {
-    padding: 12,
-    backgroundColor: "#ffffff",
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: "#e5e7eb",
-  },
-  altText: {
-    fontSize: 13,
-    color: "#6b7280",
-    lineHeight: 18,
   },
 });

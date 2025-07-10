@@ -1,6 +1,5 @@
 import React, { PropsWithChildren, useCallback } from "react";
 import {
-  View,
   TouchableOpacity,
   StyleSheet,
   Pressable,
@@ -20,10 +19,11 @@ import { Colors } from "@/constants/colors";
 import { isAndroid, isMobileWeb, isNative } from "@/platform";
 import { ArrowLeft } from "lucide-react-native";
 import { router } from "expo-router";
-import { HStack, Text, VStack } from "./ui";
+import { Text, View } from "./ui";
 import { cn } from "@/lib/utils";
 interface HeaderProps {
   title: string;
+  isBlur?: boolean;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   onLeftPress?: () => void;
@@ -61,7 +61,7 @@ function CollapsibleHeader({
       headerHeight.set(height);
       onHeightChange?.(height);
     },
-    [onHeightChange]
+    [onHeightChange, headerHeight]
   );
 
   return (
@@ -86,6 +86,7 @@ export function Header({
   title,
   leftIcon,
   rightIcon,
+  isBlur,
   onLeftPress,
   onRightPress,
   collapsible,
@@ -105,7 +106,7 @@ export function Header({
         router.back();
       }
     }
-  }, []);
+  }, [onLeftPress]);
 
   let header = (
     <BlurView
@@ -118,36 +119,37 @@ export function Header({
             : undefined,
         paddingTop: insets.top,
       }}
-      className={cn(isMobileWeb || isNative ? "pb-3" : "pb-4", "justify-end")}
+      className={cn((isMobileWeb || isNative) && "pb-3", "justify-end")}
     >
-      {(isMobileWeb || isNative) && (
-        <View className="flex-row items-center justify-between px-4">
-          <Pressable
-            className="w-10 h-10 items-center justify-center"
-            onPress={handleLeftIconPress}
-            disabled={disabledLeft}
-          >
-            {leftIcon ? (
-              leftIcon
-            ) : disabledLeft ? (
-              <></>
-            ) : (
-              <ArrowLeft size={24} color={Colors.inverted[colorScheme]} />
-            )}
-          </Pressable>
-          <Text font="bold" size="lg" className="flex-1 text-center">
-            {title}
-          </Text>
+      <View
+        darkColor={isBlur ? "none" : "primary"}
+        className="flex-row items-center justify-between px-4 py-3"
+      >
+        <Pressable
+          className="w-10 h-10 items-center justify-center"
+          onPress={handleLeftIconPress}
+          disabled={disabledLeft}
+        >
+          {leftIcon ? (
+            leftIcon
+          ) : disabledLeft ? (
+            <></>
+          ) : (
+            <ArrowLeft size={24} color={Colors.inverted[colorScheme]} />
+          )}
+        </Pressable>
+        <Text font="bold" size="lg" className="flex-1 text-center">
+          {title}
+        </Text>
 
-          <TouchableOpacity
-            className="w-10 h-10 items-center justify-center"
-            onPress={onRightPress}
-            disabled={!rightIcon}
-          >
-            {rightIcon}
-          </TouchableOpacity>
-        </View>
-      )}
+        <TouchableOpacity
+          className="w-10 h-10 items-center justify-center"
+          onPress={onRightPress}
+          disabled={!rightIcon}
+        >
+          {rightIcon}
+        </TouchableOpacity>
+      </View>
       {
         // consider as footer of main header
       }

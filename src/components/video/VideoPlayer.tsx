@@ -7,6 +7,7 @@ import VideoContainer from "./VideoContainer";
 import { VideoPlayerProps } from "./type";
 import VideoError from "./VideoError";
 import { useLightBoxOpen } from "@/store/lightBox";
+import { isAndroid } from "@/platform";
 
 export const VideoPlayer = memo(function Comp({
   uri,
@@ -34,7 +35,7 @@ export const VideoPlayer = memo(function Comp({
   const isFocused = useIsFocused();
 
   useEffect(() => {
-    if (shouldPlay && isFocused && !isOpen) {
+    if (shouldPlay && isFocused && !isOpen && !isAndroid) {
       player.play();
     } else {
       player.pause();
@@ -75,6 +76,7 @@ export const VideoPlayer = memo(function Comp({
         allowsPictureInPicture={false}
         contentFit={contentFit}
         playsInline
+        nativeControls={false}
         allowsVideoFrameAnalysis
       />
     </VideoContainer>

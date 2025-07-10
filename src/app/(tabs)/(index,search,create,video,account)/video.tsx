@@ -10,6 +10,7 @@ import { View } from "@/components/ui";
 import { List, ListRef } from "@/components/list";
 import { VideoPlayer } from "@/components/video/VideoPlayer";
 import { VideoFeedOverlay } from "@/components/video/VideoFeedOverlay";
+import { FeedViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
 
 const { height: screenHeight } = Dimensions.get("window");
 
@@ -27,7 +28,6 @@ interface VideoFeedItemProps {
 
 function VideoFeedItem({
   item,
-  index,
   isActive,
   height,
   onLike,
@@ -86,7 +86,9 @@ export default function VideoScreen() {
   const videoFeed = React.useMemo(() => {
     if (!videoFeedQuery.data) return [];
 
-    return videoFeedQuery.data.pages.flatMap((page) => page?.feed || []);
+    return videoFeedQuery.data.pages.flatMap(
+      (page) => page?.feed as FeedViewPost[]
+    );
   }, [videoFeedQuery.data]);
 
   const onItemSeen = useCallback((item: ATFeedItem) => {
@@ -173,7 +175,6 @@ export default function VideoScreen() {
       />
     ),
     [
-      height.current,
       seenItem,
       handleLike,
       handleRepost,

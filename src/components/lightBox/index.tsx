@@ -20,17 +20,14 @@ import Animated, {
   Extrapolation,
 } from "react-native-reanimated";
 import { X, Download, Share, MoreHorizontal } from "lucide-react-native";
-import { Image } from "expo-image";
 import { isWeb } from "@/platform";
 import { useLightBoxOpen } from "@/store/lightBox";
+import LightBoxImage from "./LightBoxImage";
+import { EmbedImage } from "@/types/embed";
 
 interface LightBoxProps {
   visible: boolean;
-  images: Array<{
-    uri: string;
-    alt?: string;
-    aspectRatio?: { width: number; height: number };
-  }>;
+  images: EmbedImage[];
   initialIndex?: number;
   onClose: () => void;
   onShare?: (imageUri: string, index: number) => void;
@@ -328,20 +325,8 @@ export function LightBox({
         {/* Image Container */}
         <View style={styles.imageContainer}>
           <GestureDetector gesture={composedGesture}>
-            <Animated.View style={styles.imageWrapper}>
-              <Animated.View style={imageAnimatedStyle}>
-                <Image
-                  source={{ uri: currentImage.uri }}
-                  style={[
-                    styles.image,
-                    {
-                      width: imageDimensions.width,
-                      height: imageDimensions.height,
-                    },
-                  ]}
-                  contentFit="contain"
-                />
-              </Animated.View>
+            <Animated.View className="flex-1" style={imageAnimatedStyle}>
+              <LightBoxImage images={images} initailIndex={initialIndex} />
             </Animated.View>
           </GestureDetector>
         </View>
@@ -467,15 +452,9 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingTop: HEADER_HEIGHT,
-    paddingBottom: FOOTER_HEIGHT,
   },
   imageWrapper: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
   },
   image: {
     backgroundColor: "transparent",

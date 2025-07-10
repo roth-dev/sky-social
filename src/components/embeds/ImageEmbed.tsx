@@ -23,10 +23,6 @@ export function ImageEmbed({
   isDetailView = false,
   onImagePress,
 }: ImageEmbedProps) {
-  if (!images || images.length === 0) {
-    return null;
-  }
-
   const calculateImageDimensions = useCallback(
     (image: EmbedImage, index: number, total: number) => {
       const aspectRatio = image.aspectRatio
@@ -61,13 +57,16 @@ export function ImageEmbed({
 
       return { width, height };
     },
-    []
+    [isDetailView]
   );
 
   const handleImagePress = (index: number) => {
     onImagePress?.(images, index);
   };
 
+  if (!images || images.length === 0) {
+    return null;
+  }
   const renderImageGrid = () => {
     const totalImages = images.length;
     const displayImages = totalImages > 4 ? images.slice(0, 4) : images;

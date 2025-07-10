@@ -11,8 +11,10 @@ import { useScrollStore } from "@/store/scrollStore";
 import { useSharedValue } from "react-native-reanimated";
 import type PagerViewType from "react-native-pager-view";
 import HeaderTab from "@/components/home/HeaderTab";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function HomeScreen() {
+  const { isAuthenticated } = useAuth();
   const { isDarkMode } = useSettings();
   const { scrollY } = useScrollStore();
   const [headerHeight, setHeaderHeight] = useState(120);
@@ -31,16 +33,19 @@ export default function HomeScreen() {
       indicatorIndex.value = e.nativeEvent.position;
       setTimeout(() => scrollY.set(0), 100);
     },
-    []
+    [indicatorIndex, scrollY]
   );
 
-  const handleTabPress = useCallback((idx: number) => {
-    setPage(idx);
-    indicatorIndex.value = idx;
-    if (pagerRef.current) {
-      pagerRef.current.setPage(idx);
-    }
-  }, []);
+  const handleTabPress = useCallback(
+    (idx: number) => {
+      setPage(idx);
+      indicatorIndex.value = idx;
+      if (pagerRef.current) {
+        pagerRef.current.setPage(idx);
+      }
+    },
+    [indicatorIndex]
+  );
 
   const pages: { title: string; feed: FeedDescriptor }[] = useMemo(
     () => [
@@ -48,6 +53,7 @@ export default function HomeScreen() {
         title: "For You",
         feed: PUBLIC_FEED_DESCRIPTOR,
       },
+
       {
         title: "Following",
         feed: "following",
@@ -55,20 +61,34 @@ export default function HomeScreen() {
     ],
     []
   );
+
+  const renderHeaderTabs = useCallback(() => {
+    if (!isAuthenticated) return undefined;
+    return (
+      <HeaderTab
+        indicatorIndex={indicatorIndex}
+        setPage={handleTabPress}
+        page={page}
+        tabTitles={pages.map((p) => p.title)}
+        tabLayouts={tabLayouts}
+        setTabLayouts={setTabLayouts}
+      />
+    );
+  }, [
+    indicatorIndex,
+    pages,
+    isAuthenticated,
+    handleTabPress,
+    page,
+    tabLayouts,
+  ]);
+
   return (
     <View className="flex-1 bg-white">
       <Header
+        isBlur
         onHeightChange={setHeaderHeight}
-        renderHeader={() => (
-          <HeaderTab
-            indicatorIndex={indicatorIndex}
-            setPage={handleTabPress}
-            page={page}
-            tabTitles={pages.map((p) => p.title)}
-            tabLayouts={tabLayouts}
-            setTabLayouts={setTabLayouts}
-          />
-        )}
+        renderHeader={renderHeaderTabs}
         collapsible
         title="Sky Social"
         leftIcon={
@@ -92,25 +112,34 @@ export default function HomeScreen() {
           />
         }
       />
-      <PagerView
-        ref={pagerRef}
-        initialPage={0}
-        // No need for onPageScroll for indicator
-        onPageSelected={handlePageSelected}
-        style={{ flex: 1 }}
-        className="flex-1"
-      >
-        {pages.map((pageItem, index) => {
-          return (
-            <Feed
-              feed={pageItem.feed}
-              key={pageItem.feed}
-              headerHeight={headerHeight}
-              isFocused={page === index}
-            />
-          );
-        })}
-      </PagerView>
+      {isAuthenticated ? (
+        <PagerView
+          ref={pagerRef}
+          initialPage={0}
+          // No need for onPageScroll for indicator
+          onPageSelected={handlePageSelected}
+          style={{ flex: 1 }}
+          className="flex-1"
+        >
+          {pages.map((pageItem, index) => {
+            return (
+              <Feed
+                feed={pageItem.feed}
+                key={pageItem.feed}
+                headerHeight={headerHeight}
+                isFocused={page === index}
+              />
+            );
+          })}
+        </PagerView>
+      ) : (
+        <Feed
+          feed={PUBLIC_FEED_DESCRIPTOR}
+          key="public_feed"
+          headerHeight={headerHeight}
+          isFocused={true}
+        />
+      )}
     </View>
   );
 }

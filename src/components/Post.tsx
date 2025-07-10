@@ -1,20 +1,13 @@
 import React, { useCallback, useMemo, useState } from "react";
-import {
-  View,
-  TouchableOpacity,
-  StyleSheet,
-  Dimensions,
-  Alert,
-} from "react-native";
+import { View, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import {
   Heart,
   MessageCircle,
   Repeat2,
   Share,
-  MoveHorizontal as MoreHorizontal,
+  MoreHorizontal,
 } from "lucide-react-native";
 import { Avatar } from "./ui/Avatar";
-import { LightBox } from "./ui/LightBox";
 import { EmbedContainer } from "./embeds/EmbedContainer";
 import { ATPost } from "@/types/atproto";
 import { router } from "expo-router";
@@ -22,9 +15,11 @@ import { Platform, Linking } from "react-native";
 import { isVideoPost } from "@/utils/embedUtils";
 import { Text, RichText } from "./ui";
 import { Colors } from "@/constants/colors";
-import { useSettings } from "@/contexts/SettingsContext";
 import { VideoEmbed } from "./embeds/VideoEmbed";
 import { RichText as RichTextAPI } from "@atproto/api";
+import { POST_PRIFIX } from "@/constants";
+import { Formater } from "@/lib/format";
+import { LightBox } from "./lightBox";
 
 interface PostProps {
   post: ATPost;
@@ -47,7 +42,6 @@ function Post({
   isReply = false,
   shouldPlay = false,
 }: PostProps) {
-  const { isDarkMode } = useSettings();
   const [lightBoxVisible, setLightBoxVisible] = useState(false);
   const [lightBoxIndex, setLightBoxIndex] = useState(0);
 
@@ -67,17 +61,20 @@ function Post({
     if (isDetailView) {
       onComment?.(post.uri);
     } else {
-      const safeUri = encodeURIComponent(post.uri);
-      router.push(`/post/${safeUri}`);
+      // const safeUri = encodeURIComponent(post.uri);
+      // router.push(`/post/${safeUri}`);
     }
   };
 
-  const handlePostPress = () => {
+  const handlePostPress = useCallback(() => {
     if (!isDetailView) {
-      const safeUri = encodeURIComponent(post.uri);
-      router.push(`/post/${safeUri}`);
+      const safeUri = post.uri.startsWith(POST_PRIFIX)
+        ? post.uri.slice(POST_PRIFIX.length)
+        : post.uri;
+      const formatedUri = encodeURIComponent(safeUri);
+      router.push(`/profile/${post.author.handle}/post/${formatedUri}`);
     }
-  };
+  }, [isDetailView, post]);
 
   const handleProfilePress = () => {
     router.push(`/profile/${post.author.handle}`);
@@ -157,7 +154,7 @@ function Post({
 
   const handleRecordPress = (uri: string) => {
     const safeUri = encodeURIComponent(uri);
-    router.push(`/post/${safeUri}`);
+    router.push(`/profile/post/${safeUri}`);
   };
 
   const handleShare = async () => {
@@ -255,11 +252,7 @@ function Post({
       alt: img.alt || `Image from @${post.author.handle}`,
       aspectRatio: img.aspectRatio,
     }));
-  }, [post.embed]);
-
-  const shouldPlayWhenFocused = useMemo(() => {
-    return shouldPlay && isFocused;
-  }, [shouldPlay, isFocused]);
+  }, [post.embed, post.author]);
 
   return (
     <View
@@ -343,7 +336,7 @@ function Post({
           )}
 
           {/* Video indicator for debugging */}
-          {!!hasVideo && (
+          {!!hasVideo && post.embed && (
             <VideoEmbed
               isDetailView={isDetailView}
               video={post.embed}
@@ -355,15 +348,21 @@ function Post({
         {isDetailView && (
           <View style={styles.detailStats}>
             <View style={styles.statGroup}>
-              <Text style={styles.statNumber}>{post.replyCount}</Text>
+              <Text style={styles.statNumber}>
+                {Formater.formatNumberToKOrM(post.replyCount)}
+              </Text>
               <Text style={styles.statLabel}>Replies</Text>
             </View>
             <View style={styles.statGroup}>
-              <Text style={styles.statNumber}>{post.repostCount}</Text>
+              <Text style={styles.statNumber}>
+                {Formater.formatNumberToKOrM(post.repostCount)}
+              </Text>
               <Text style={styles.statLabel}>Reposts</Text>
             </View>
             <View style={styles.statGroup}>
-              <Text style={styles.statNumber}>{post.likeCount}</Text>
+              <Text style={styles.statNumber}>
+                {Formater.formatNumberToKOrM(post.likeCount)}
+              </Text>
               <Text style={styles.statLabel}>Likes</Text>
             </View>
           </View>
@@ -373,7 +372,9 @@ function Post({
           <TouchableOpacity style={styles.actionButton} onPress={handleComment}>
             <MessageCircle size={isDetailView ? 22 : 20} color="#6b7280" />
             {!isDetailView && post.replyCount > 0 && (
-              <Text style={styles.actionCount}>{post.replyCount}</Text>
+              <Text style={styles.actionCount}>
+                {Formater.formatNumberToKOrM(post.replyCount)}
+              </Text>
             )}
           </TouchableOpacity>
 
@@ -386,7 +387,7 @@ function Post({
               <Text
                 style={[styles.actionCount, isReposted && styles.repostedCount]}
               >
-                {post.repostCount}
+                {Formater.formatNumberToKOrM(post.repostCount)}
               </Text>
             )}
           </TouchableOpacity>
@@ -399,7 +400,7 @@ function Post({
             />
             {!isDetailView && post.likeCount > 0 && (
               <Text style={[styles.actionCount, isLiked && styles.likedCount]}>
-                {post.likeCount}
+                {Formater.formatNumberToKOrM(post.likeCount)}
               </Text>
             )}
           </TouchableOpacity>
@@ -415,7 +416,9 @@ function Post({
         visible={lightBoxVisible}
         images={lightBoxImages}
         initialIndex={lightBoxIndex}
-        onClose={() => setLightBoxVisible(false)}
+        onClose={() => {
+          setLightBoxVisible(false);
+        }}
         onShare={handleImageShare}
         onDownload={handleImageDownload}
       />

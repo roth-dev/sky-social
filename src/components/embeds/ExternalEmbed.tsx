@@ -1,5 +1,5 @@
 import React from "react";
-import { TouchableOpacity, StyleSheet, Alert } from "react-native";
+import { TouchableOpacity, StyleSheet, Alert, Linking } from "react-native";
 import { EmbedExternal } from "@/types/embed";
 import { ExternalLink } from "lucide-react-native";
 import { Image } from "expo-image";
@@ -18,11 +18,11 @@ export function ExternalEmbed({
   isDetailView = false,
   onLinkPress,
 }: ExternalEmbedProps) {
+  const { colorScheme } = useSettings();
+
   if (!external) {
     return null;
   }
-
-  const { colorScheme, isDarkMode } = useSettings();
 
   const handlePress = async () => {
     try {
@@ -40,7 +40,6 @@ export function ExternalEmbed({
         onLinkPress(url);
       } else {
         // Try to open the URL with better error handling
-        const { Linking } = require("react-native");
         const canOpen = await Linking.canOpenURL(url);
 
         if (canOpen) {

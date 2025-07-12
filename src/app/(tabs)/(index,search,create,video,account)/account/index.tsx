@@ -6,12 +6,12 @@ import { Header } from "@/components/Header";
 import { Settings } from "lucide-react-native";
 import { Colors } from "@/constants/colors";
 import { useSettings } from "@/contexts/SettingsContext";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import LoginScreen from "@/app/login";
 
 export default function Screen() {
   const { user } = useAuth();
   const { colorScheme } = useSettings();
-  if (!user) return <Text>User not found</Text>;
+  if (!user) return <LoginScreen />;
   return (
     <>
       <Stack.Screen

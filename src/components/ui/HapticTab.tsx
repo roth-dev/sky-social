@@ -1,10 +1,11 @@
 import React, { useCallback, ReactNode, forwardRef } from "react";
-import { TouchableOpacity, View, Text, Pressable } from "react-native";
+import { TouchableOpacity, View, Pressable } from "react-native";
 import * as Haptics from "expo-haptics";
 import { LucideIcon } from "lucide-react-native";
 import { cn } from "@/lib/utils";
 import { cva, VariantProps } from "class-variance-authority";
 import { Formater } from "@/lib/format";
+import { Text } from "./Text";
 
 const hapticTabVariants = cva(
   "flex-row items-center justify-center rounded-lg transition-colors",
@@ -178,17 +179,18 @@ export const HapticTab = forwardRef<
 
         {(children || count !== undefined) && (
           <View
-            className={cn((Icon || LeftIcon) && "ml-2", RightIcon && "mr-2")}
+            className={cn((Icon || LeftIcon) && "ml-1", RightIcon && "mr-1")}
           >
             {count !== undefined && count > 0 && (
               <Text
+                font="semiBold"
                 className={cn(
-                  "text-sm ml-1",
+                  "ml-1",
                   isActive
                     ? isRepostIcon
-                      ? "text-green-500"
-                      : "text-red-500"
-                    : "text-gray-500"
+                      ? "text-green-500 dark:text-green-500"
+                      : "text-red-500 dark:text-red-500"
+                    : "text-gray-500 dark:text-gray-500"
                 )}
               >
                 {Formater.formatNumberToKOrM(count)}

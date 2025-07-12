@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { HapticTab } from "@/components/ui";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -34,28 +34,26 @@ export function ActionButtons({
   const repostMutation = useRepost();
   const deleteRepostMutation = useDeleteRepost();
 
+  const [likeCount, setLikeCount] = useState(post.likeCount ?? 0);
+  const [repostCount, setRepostCount] = useState(post.repostCount ?? 0);
   const [isLiked, setIsLiked] = useState(!!post.viewer?.like);
   const [isReposted, setIsReposted] = useState(!!post.viewer?.repost);
-
-  const currentLikeState = useRef<boolean>(!!post.viewer?.like);
-  const currentRepostState = useRef<boolean>(!!post.viewer?.repost);
 
   const handleLike = useCallback(() => {
     if (!isAuthenticated) {
       return;
     }
-    setIsLiked(!isLiked);
-
+    setIsLiked((prev) => !prev);
+    setLikeCount((prev) => (isLiked ? prev - 1 : prev + 1));
     if (post.viewer?.like) {
       // Unlike the post
       unlikePostMutation.mutate(
         { likeUri: post.viewer.like },
         {
-          onSuccess: () => {
-            currentLikeState.current = !isLiked;
-          },
+          //fallback to defualt like state
           onError: () => {
-            setIsLiked(currentLikeState.current);
+            setLikeCount(post.likeCount);
+            setIsLiked(!!post.viewer?.like);
           },
         }
       );
@@ -64,11 +62,10 @@ export function ActionButtons({
       likePostMutation.mutate(
         { uri: post.uri, cid: post.cid },
         {
-          onSuccess: () => {
-            currentLikeState.current = !isLiked;
-          },
           onError: () => {
-            setIsLiked(currentLikeState.current);
+            //fallback to defualt like state
+            setLikeCount(post.likeCount);
+            setIsLiked(!!post.viewer?.like);
           },
         }
       );
@@ -78,28 +75,27 @@ export function ActionButtons({
   }, [
     isAuthenticated,
     post,
+    isLiked,
     unlikePostMutation,
     likePostMutation,
     onLike,
-    currentLikeState,
-    isLiked,
   ]);
 
   const handleRepost = useCallback(() => {
     if (!isAuthenticated) {
       return;
     }
-    setIsReposted(!isReposted);
+    setIsReposted((prev) => !prev);
+    setRepostCount((prev) => (isReposted ? prev - 1 : prev + 1));
     if (post.viewer?.repost) {
       // Delete repost
       deleteRepostMutation.mutate(
         { repostUri: post.viewer.repost },
         {
-          onSuccess: () => {
-            currentRepostState.current = !isReposted;
-          },
           onError: () => {
-            setIsReposted(currentRepostState.current);
+            //fallback to defualt repost state
+            setRepostCount(post.repostCount);
+            setIsReposted(!!post.viewer?.repost);
           },
         }
       );
@@ -108,11 +104,9 @@ export function ActionButtons({
       repostMutation.mutate(
         { uri: post.uri, cid: post.cid },
         {
-          onSuccess: () => {
-            currentRepostState.current = !isReposted;
-          },
           onError: () => {
-            setIsReposted(currentRepostState.current);
+            setRepostCount(post.repostCount);
+            setIsReposted(!!post.viewer?.repost);
           },
         }
       );
@@ -126,7 +120,6 @@ export function ActionButtons({
     deleteRepostMutation,
     onRepost,
     isReposted,
-    currentRepostState,
   ]);
 
   const handleComment = useCallback(() => {
@@ -149,7 +142,7 @@ export function ActionButtons({
       <HapticTab
         icon={Repeat2}
         iconSize={isDetailView ? 22 : 20}
-        count={!isDetailView ? post.repostCount : 0}
+        count={!isDetailView ? repostCount : 0}
         isActive={isReposted}
         onPress={handleRepost}
         hapticType="medium"
@@ -157,7 +150,7 @@ export function ActionButtons({
       <HapticTab
         icon={Heart}
         iconSize={isDetailView ? 22 : 20}
-        count={!isDetailView ? post.likeCount : 0}
+        count={!isDetailView ? likeCount : 0}
         isActive={isLiked}
         onPress={handleLike}
         hapticType="success"
@@ -189,22 +182,5 @@ const styles = StyleSheet.create({
     borderTopWidth: StyleSheet.hairlineWidth,
     borderColor: "#e5e7eb",
     marginTop: 16,
-  },
-  actionButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 8,
-    marginLeft: -8,
-  },
-  actionCount: {
-    fontSize: 13,
-    // color: "#6b7280",
-    marginLeft: 6,
-  },
-  likedCount: {
-    color: "#ef4444",
-  },
-  repostedCount: {
-    color: "#10b981",
   },
 });

@@ -3,24 +3,31 @@ import React, {
   useState,
   useEffect,
   useRef,
+  forwardRef,
+  useImperativeHandle,
   useCallback,
+  useMemo,
 } from "react";
 import { View } from "../ui";
+import { ViewStyle } from "react-native";
+import { cn } from "@/lib/utils";
+
+type PagerViewRef = {
+  setPage: (page: number) => void;
+};
 
 interface WebPagerProps {
   initialPage: number;
   scrollEnabled: boolean;
-  onPageSelected: (index: number) => void;
+  onPageSelected: (e: unknown) => void;
   onPageScroll: () => void;
   // onPageScrollStateChanged: ()=> void,
-  orientation: "horizontal" | "vertical";
+  orientation: "horizontal" | "vertical" | "stack";
   pageMargin: number;
 }
 
-type PageScrollState = "idle" | "dragging" | "settling";
-
 // Minimal web mock for NativeSyntheticEvent
-function createNativeSyntheticEvent<T>(nativeEvent: T): any {
+function createNativeSyntheticEvent<T>(nativeEvent: T): unknown {
   return {
     nativeEvent,
     // Add minimal event fields if needed
@@ -40,64 +47,95 @@ function createNativeSyntheticEvent<T>(nativeEvent: T): any {
   };
 }
 
-export default function PagerView({
-  children,
-  initialPage = 0,
-  scrollEnabled = true,
-  onPageSelected,
-  onPageScroll,
-  // onPageScrollStateChanged,
-  orientation = "horizontal",
-  pageMargin = 0,
-}: PropsWithChildren<WebPagerProps>) {
-  const childs = React.Children.toArray(children);
-  const [page, setPage] = useState(initialPage);
-  const prevPageRef = useRef(page);
+const PagerView = forwardRef<PagerViewRef, PropsWithChildren<WebPagerProps>>(
+  (
+    {
+      children,
+      initialPage = 0,
+      onPageSelected,
+      orientation = "horizontal",
+      pageMargin = 0,
+    },
+    ref
+  ) => {
+    const childs = React.Children.toArray(children);
+    const [page, setPage] = useState(initialPage);
+    const prevPageRef = useRef(page);
+    const [visitedPages, setVisitedPages] = useState<Set<number>>(
+      new Set([initialPage])
+    );
 
-  // Handle initialPage prop changes
-  useEffect(() => {
-    setPage(initialPage);
-  }, [initialPage]);
+    useImperativeHandle(ref, () => ({
+      setPage,
+    }));
 
-  // Callbacks for page change
-  useEffect(() => {
-    if (prevPageRef.current !== page && onPageSelected) {
-      onPageSelected(createNativeSyntheticEvent({ position: page }));
-    }
-    prevPageRef.current = page;
-  }, [page, onPageSelected]);
+    // Handle initialPage prop changes
+    useEffect(() => {
+      setPage(initialPage);
+      setVisitedPages(new Set([initialPage]));
+    }, [initialPage]);
 
-  // Simulate onPageScrollStateChanged
-  // const setPagerState = useCallback(
-  //   (state: PageScrollState) => {
-  //     if (onPageScrollStateChanged) {
-  //       onPageScrollStateChanged(
-  //         createNativeSyntheticEvent({ pageScrollState: state })
-  //       );
-  //     }
-  //   },
-  //   [onPageScrollStateChanged]
-  // );
+    // Callbacks for page change
+    useEffect(() => {
+      if (prevPageRef.current !== page && onPageSelected) {
+        onPageSelected(createNativeSyntheticEvent({ position: page }));
+      }
+      prevPageRef.current = page;
+      setVisitedPages((prev) => {
+        if (prev.has(page)) return prev;
+        const next = new Set(prev);
+        next.add(page);
+        return next;
+      });
+    }, [page, onPageSelected]);
 
-  // useEffect(() => {
-  //   if (onPageScroll) {
-  //     onPageScroll(createNativeSyntheticEvent({ position: page, offset: 0 }));
-  //   }
-  // }, [page, onPageScroll]);
+    const isHorizontal = orientation === "horizontal";
+    const containerClass = isHorizontal
+      ? "relative w-full h-full flex flex-row"
+      : "relative w-full h-full flex flex-col";
 
-  const isHorizontal = orientation === "horizontal";
-  const containerClass = isHorizontal
-    ? "flex flex-row w-full h-full relative"
-    : "flex flex-col w-full h-full relative";
-  const pageStyle = isHorizontal
-    ? { marginRight: pageMargin, width: "100%", height: "100%" }
-    : { marginBottom: pageMargin, width: "100%", height: "100%" };
+    const pageStyle = useMemo(
+      () =>
+        isHorizontal
+          ? { marginRight: pageMargin, width: "100%", height: "100%" }
+          : { marginBottom: pageMargin, width: "100%", height: "100%" },
+      [isHorizontal, pageMargin]
+    );
 
-  return (
-    <View className={containerClass}>
-      <View className="flex-1 flex w-full">
-        {childs.length > 0 && <div style={pageStyle}>{childs[page]}</div>}
+    // Only the active page is visible, but all remain mounted
+    const renderScene = useCallback(() => {
+      return childs.map((child, index) => {
+        const isActive = index === page;
+        const isVisited = visitedPages.has(index);
+        return (
+          <View
+            key={index}
+            className={cn(
+              orientation === "stack"
+                ? "absolute w-full h-full top-0 left-0"
+                : "w-full"
+            )}
+            style={
+              {
+                display: isActive ? "flex" : "none",
+                ...pageStyle,
+              } as ViewStyle
+            }
+          >
+            {isActive || isVisited ? child : null}
+          </View>
+        );
+      });
+    }, [childs, page, pageStyle, orientation, visitedPages]);
+
+    return (
+      <View className={containerClass} style={{ position: "relative" }}>
+        {renderScene()}
       </View>
-    </View>
-  );
-}
+    );
+  }
+);
+
+PagerView.displayName = "PagerView";
+
+export default PagerView;

@@ -122,7 +122,7 @@ export default function HomeScreen() {
           onPageSelected={handlePageSelected}
           style={{ flex: 1 }}
           className="flex-1"
-          orientation="horizontal"
+          orientation="stack"
         >
           {pages.map((pageItem, index) => {
             return (

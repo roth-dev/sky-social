@@ -23,7 +23,7 @@ const NAVIGATION_ITEMS = [
   { key: "/search", label: "Search", icon: Search },
   { key: "/create", label: "New Post", icon: PlusSquare, requiresAuth: true },
   { key: "/video", label: "Video", icon: Video },
-  { key: "/account", label: "Account", icon: User, requiresAuth: true },
+  { key: "/account", label: "Account", icon: User },
 ];
 
 export function ResponsiveTabBar() {

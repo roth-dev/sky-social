@@ -36,5 +36,6 @@ export default [
         version: 'detect',
       },
     },
+    ignores: ["metro.config.js"],
   },
 ]; 

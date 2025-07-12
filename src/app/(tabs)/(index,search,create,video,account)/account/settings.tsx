@@ -6,7 +6,6 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
-  Platform,
   Modal,
 } from "react-native";
 import { Header } from "@/components/Header";
@@ -16,19 +15,16 @@ import { useTranslation } from "@/contexts/I18nContext";
 import { Avatar } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
 import {
-  Settings as SettingsIcon,
   ChevronRight,
   Moon,
   Sun,
   Monitor,
   Globe,
-  User,
   Shield,
   Bell,
   Info,
   LogOut,
   Check,
-  ArrowLeft,
 } from "lucide-react-native";
 import { router } from "expo-router";
 

@@ -1,16 +1,19 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Avatar } from "@/components/ui/Avatar";
 import { ATPost } from "@/types/atproto";
 import { Heart, MessageCircle, Repeat2, Share } from "lucide-react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { router } from "expo-router";
+import { useAuth } from "@/contexts/AuthContext";
+import { Formater } from "@/lib/format";
+import { HapticTab } from "@/components/ui/HapticTab";
 
 interface VideoFeedOverlayProps {
   post: ATPost;
   onLike: () => void;
   onRepost: () => void;
-  onComment: () => void;
   onShare: () => void;
   onUserPress: () => void;
 }
@@ -19,23 +22,29 @@ export function VideoFeedOverlay({
   post,
   onLike,
   onRepost,
-  onComment,
   onShare,
   onUserPress,
 }: VideoFeedOverlayProps) {
+  const { isAuthenticated } = useAuth();
   const isLiked = !!post.viewer?.like;
   const isReposted = !!post.viewer?.repost;
   const bottom = useBottomTabBarHeight();
 
-  const formatCount = (count: number) => {
-    if (count >= 1000000) {
-      return `${(count / 1000000).toFixed(1)}M`;
+  const handleComment = useCallback(() => {
+    if (!isAuthenticated) {
+      router.push("/login");
+      return;
     }
-    if (count >= 1000) {
-      return `${(count / 1000).toFixed(1)}K`;
-    }
-    return count.toString();
-  };
+    // Open composer modal with reply data
+    const replyData = encodeURIComponent(JSON.stringify(post));
+    router.push(
+      `/(modal)/composer?replyTo=${replyData}&parentUri=${encodeURIComponent(
+        post.uri
+      )}&parentCid=${encodeURIComponent(post.cid)}&rootUri=${encodeURIComponent(
+        post.uri
+      )}&rootCid=${encodeURIComponent(post.cid)}`
+    );
+  }, [isAuthenticated, post]);
 
   return (
     <View style={[styles.overlay, { bottom }]}>
@@ -60,48 +69,73 @@ export function VideoFeedOverlay({
 
         {/* Like Button */}
         <View style={styles.actionItem}>
-          <TouchableOpacity style={styles.actionButton} onPress={onLike}>
-            <Heart
-              size={32}
-              color={isLiked ? "#ff3040" : "#ffffff"}
-              fill={isLiked ? "#ff3040" : "none"}
-              strokeWidth={2}
-            />
-          </TouchableOpacity>
+          <HapticTab
+            leftIcon={Heart}
+            leftIconSize={32}
+            leftIconColor={isLiked ? "#ff3040" : "#ffffff"}
+            leftIconFill={isLiked ? "#ff3040" : "none"}
+            leftIconStrokeWidth={2}
+            onPress={onLike}
+            hapticType="success"
+            variant="ghost"
+            size="lg"
+            className="mb-2"
+          />
           <Text style={styles.actionCount}>
-            {formatCount(post.likeCount || 0)}
+            {Formater.formatNumberToKOrM(post.likeCount || 0)}
           </Text>
         </View>
 
         {/* Comment Button */}
         <View style={styles.actionItem}>
-          <TouchableOpacity style={styles.actionButton} onPress={onComment}>
-            <MessageCircle size={32} color="#ffffff" strokeWidth={2} />
-          </TouchableOpacity>
+          <HapticTab
+            leftIcon={MessageCircle}
+            leftIconSize={32}
+            leftIconColor="#ffffff"
+            leftIconStrokeWidth={2}
+            onPress={handleComment}
+            hapticType="light"
+            variant="ghost"
+            size="lg"
+            className="mb-2"
+          />
           <Text style={styles.actionCount}>
-            {formatCount(post.replyCount || 0)}
+            {Formater.formatNumberToKOrM(post.replyCount || 0)}
           </Text>
         </View>
 
         {/* Repost Button */}
         <View style={styles.actionItem}>
-          <TouchableOpacity style={styles.actionButton} onPress={onRepost}>
-            <Repeat2
-              size={32}
-              color={isReposted ? "#00ba7c" : "#ffffff"}
-              strokeWidth={2}
-            />
-          </TouchableOpacity>
+          <HapticTab
+            leftIcon={Repeat2}
+            leftIconSize={32}
+            leftIconColor={isReposted ? "#00ba7c" : "#ffffff"}
+            leftIconFill={isReposted ? "#00ba7c" : "none"}
+            leftIconStrokeWidth={2}
+            onPress={onRepost}
+            hapticType="medium"
+            variant="ghost"
+            size="lg"
+            className="mb-2"
+          />
           <Text style={styles.actionCount}>
-            {formatCount(post.repostCount || 0)}
+            {Formater.formatNumberToKOrM(post.repostCount || 0)}
           </Text>
         </View>
 
         {/* Share Button */}
         <View style={styles.actionItem}>
-          <TouchableOpacity style={styles.actionButton} onPress={onShare}>
-            <Share size={32} color="#ffffff" strokeWidth={2} />
-          </TouchableOpacity>
+          <HapticTab
+            leftIcon={Share}
+            leftIconSize={32}
+            leftIconColor="#ffffff"
+            leftIconStrokeWidth={2}
+            onPress={onShare}
+            hapticType="light"
+            variant="ghost"
+            size="lg"
+            className="mb-2"
+          />
         </View>
       </View>
 

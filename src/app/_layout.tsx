@@ -1,4 +1,4 @@
-import "react-native-reanimated";
+import "../global.css";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useFrameworkReady } from "@/hooks/useFrameworkReady";
@@ -8,7 +8,6 @@ import { I18nProvider } from "@/contexts/I18nContext";
 import { QueryProvider } from "@/contexts/QueryProvider";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Fragment } from "react";
-import "../global.css";
 import FontProvider from "@/contexts/FontProvider";
 import { isWeb } from "@/platform";
 

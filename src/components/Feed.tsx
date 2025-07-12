@@ -80,8 +80,8 @@ const Feed = React.memo(function Comp({
   // );
 
   const handleComment = (uri: string) => {
-    const safeUri = encodeURIComponent(uri);
-    router.push(`/post/${safeUri}`);
+    // This function is now handled directly in the Post component
+    // The Post component will open the composer modal for comments
   };
 
   const handleLoadMore = useCallback(() => {

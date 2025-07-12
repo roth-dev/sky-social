@@ -3,9 +3,9 @@ import { View, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import {
   Heart,
   MessageCircle,
+  MoreHorizontal,
   Repeat2,
   Share,
-  MoreHorizontal,
 } from "lucide-react-native";
 import { Avatar } from "./ui/Avatar";
 import { EmbedContainer } from "./embeds/EmbedContainer";
@@ -13,13 +13,14 @@ import { ATPost } from "@/types/atproto";
 import { router } from "expo-router";
 import { Platform, Linking } from "react-native";
 import { isVideoPost } from "@/utils/embedUtils";
-import { Text, RichText } from "./ui";
+import { Text, RichText, HapticTab } from "./ui";
 import { Colors } from "@/constants/colors";
 import { VideoEmbed } from "./embeds/VideoEmbed";
 import { RichText as RichTextAPI } from "@atproto/api";
 import { POST_PRIFIX } from "@/constants";
 import { Formater } from "@/lib/format";
 import { LightBox } from "./lightBox";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface PostProps {
   post: ATPost;
@@ -37,16 +38,14 @@ function Post({
   onLike,
   onRepost,
   onComment,
-  isFocused,
   isDetailView = false,
   isReply = false,
   shouldPlay = false,
 }: PostProps) {
+  const { isAuthenticated } = useAuth();
   const [lightBoxVisible, setLightBoxVisible] = useState(false);
   const [lightBoxIndex, setLightBoxIndex] = useState(0);
 
-  const isLiked = !!post.viewer?.like;
-  const isReposted = !!post.viewer?.repost;
   const hasVideo = isVideoPost(post);
 
   const handleLike = () => {
@@ -57,14 +56,28 @@ function Post({
     onRepost?.(post.uri, post.cid);
   };
 
-  const handleComment = () => {
+  const handleComment = useCallback(() => {
+    if (!isAuthenticated) {
+      router.push("/login");
+      return;
+    }
+
     if (isDetailView) {
       onComment?.(post.uri);
     } else {
-      // const safeUri = encodeURIComponent(post.uri);
-      // router.push(`/post/${safeUri}`);
+      // Open composer modal with reply data
+      const replyData = encodeURIComponent(JSON.stringify(post));
+      router.push(
+        `/(modal)/composer?replyTo=${replyData}&parentUri=${encodeURIComponent(
+          post.uri
+        )}&parentCid=${encodeURIComponent(
+          post.cid
+        )}&rootUri=${encodeURIComponent(post.uri)}&rootCid=${encodeURIComponent(
+          post.cid
+        )}`
+      );
     }
-  };
+  }, [isAuthenticated, isDetailView, onComment, post]);
 
   const handlePostPress = useCallback(() => {
     if (!isDetailView) {
@@ -76,16 +89,16 @@ function Post({
     }
   }, [isDetailView, post]);
 
-  const handleProfilePress = () => {
+  const handleProfilePress = useCallback(() => {
     router.push(`/profile/${post.author.handle}`);
-  };
+  }, [post]);
 
-  const handleImagePress = (images: any[], index: number) => {
+  const handleImagePress = useCallback((images: any[], index: number) => {
     setLightBoxIndex(index);
     setLightBoxVisible(true);
-  };
+  }, []);
 
-  const handleLinkPress = async (url: string) => {
+  const handleLinkPress = useCallback(async (url: string) => {
     try {
       // Validate URL format
       if (!isValidUrl(url)) {
@@ -122,7 +135,7 @@ function Post({
         ]
       );
     }
-  };
+  }, []);
 
   const copyToClipboard = async (text: string) => {
     try {
@@ -152,12 +165,12 @@ function Post({
     }
   };
 
-  const handleRecordPress = (uri: string) => {
+  const handleRecordPress = useCallback((uri: string) => {
     const safeUri = encodeURIComponent(uri);
     router.push(`/profile/post/${safeUri}`);
-  };
+  }, []);
 
-  const handleShare = async () => {
+  const handleShare = useCallback(async () => {
     try {
       const shareUrl = `https://bsky.app/profile/${
         post.author.handle
@@ -178,25 +191,28 @@ function Post({
       console.error("Failed to share post:", error);
       Alert.alert("Share Error", "Unable to share this post.");
     }
-  };
+  }, [post]);
 
-  const handleImageShare = async (imageUri: string, index: number) => {
-    try {
-      if (Platform.OS === "web") {
-        if (navigator.share) {
-          await navigator.share({
-            title: `Image from @${post.author.handle}`,
-            text: post.record.text,
-            url: imageUri,
-          });
-        } else {
-          await copyToClipboard(imageUri);
+  const handleImageShare = useCallback(
+    async (imageUri: string, index: number) => {
+      try {
+        if (Platform.OS === "web") {
+          if (navigator.share) {
+            await navigator.share({
+              title: `Image from @${post.author.handle}`,
+              text: post.record.text,
+              url: imageUri,
+            });
+          } else {
+            await copyToClipboard(imageUri);
+          }
         }
+      } catch (error) {
+        console.error("Failed to share image:", error);
       }
-    } catch (error) {
-      console.error("Failed to share image:", error);
-    }
-  };
+    },
+    [post]
+  );
 
   const handleImageDownload = async (imageUri: string, index: number) => {
     try {
@@ -255,16 +271,15 @@ function Post({
   }, [post.embed, post.author]);
 
   return (
-    <View
-      style={{
-        flex: 1,
-      }}
-    >
+    <>
       <TouchableOpacity
-        style={[containerStyle]}
+        style={containerStyle}
         onPress={handlePostPress}
         activeOpacity={isDetailView ? 1 : 0.95}
         disabled={isDetailView}
+        delayPressIn={200}
+        pressRetentionOffset={{ top: 20, left: 20, right: 20, bottom: 20 }}
+        hitSlop={{ top: 10, left: 10, right: 10, bottom: 10 }}
       >
         <View style={styles.header}>
           <TouchableOpacity onPress={handleProfilePress}>
@@ -369,45 +384,44 @@ function Post({
         )}
 
         <View style={[styles.actions, isDetailView && styles.detailActions]}>
-          <TouchableOpacity style={styles.actionButton} onPress={handleComment}>
-            <MessageCircle size={isDetailView ? 22 : 20} color="#6b7280" />
-            {!isDetailView && post.replyCount > 0 && (
-              <Text style={styles.actionCount}>
-                {Formater.formatNumberToKOrM(post.replyCount)}
-              </Text>
-            )}
-          </TouchableOpacity>
+          <HapticTab
+            icon={MessageCircle}
+            iconSize={isDetailView ? 22 : 20}
+            count={!isDetailView ? post.replyCount : 0}
+            onPress={handleComment}
+            hapticType="light"
+            className="px-2 -ml-2"
+          />
 
-          <TouchableOpacity style={styles.actionButton} onPress={handleRepost}>
-            <Repeat2
-              size={isDetailView ? 22 : 20}
-              color={isReposted ? "#10b981" : "#6b7280"}
-            />
-            {!isDetailView && post.repostCount > 0 && (
-              <Text
-                style={[styles.actionCount, isReposted && styles.repostedCount]}
-              >
-                {Formater.formatNumberToKOrM(post.repostCount)}
-              </Text>
-            )}
-          </TouchableOpacity>
+          <HapticTab
+            icon={Repeat2}
+            iconSize={isDetailView ? 22 : 20}
+            count={!isDetailView ? post.repostCount : 0}
+            isActive={false}
+            onPress={handleRepost}
+            hapticType="medium"
+            className="px-2 -ml-2"
+          />
 
-          <TouchableOpacity style={styles.actionButton} onPress={handleLike}>
-            <Heart
-              size={isDetailView ? 22 : 20}
-              color={isLiked ? "#ef4444" : "#6b7280"}
-              fill={isLiked ? "#ef4444" : "none"}
-            />
-            {!isDetailView && post.likeCount > 0 && (
-              <Text style={[styles.actionCount, isLiked && styles.likedCount]}>
-                {Formater.formatNumberToKOrM(post.likeCount)}
-              </Text>
-            )}
-          </TouchableOpacity>
+          <HapticTab
+            icon={Heart}
+            iconSize={isDetailView ? 22 : 20}
+            count={!isDetailView ? post.likeCount : 0}
+            isActive={false}
+            onPress={handleLike}
+            hapticType="success"
+            className="px-2 -ml-2"
+          />
 
-          <TouchableOpacity style={styles.actionButton} onPress={handleShare}>
-            <Share size={isDetailView ? 22 : 20} color="#6b7280" />
-          </TouchableOpacity>
+          <HapticTab
+            icon={Share}
+            iconSize={isDetailView ? 22 : 20}
+            iconColor="#6b7280"
+            onPress={handleShare}
+            hapticType="light"
+            variant="share"
+            className="px-2 -ml-2"
+          />
         </View>
       </TouchableOpacity>
 
@@ -422,7 +436,7 @@ function Post({
         onShare={handleImageShare}
         onDownload={handleImageDownload}
       />
-    </View>
+    </>
   );
 }
 

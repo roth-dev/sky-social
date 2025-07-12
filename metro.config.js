@@ -3,6 +3,7 @@ const { withNativeWind } = require('nativewind/metro');
 
 const config = getDefaultConfig(__dirname);
 
+config.resolver.unstable_enablePackageExports = true;
 // Ensure compatibility with React Native Web
 config.resolver.alias = {
   ...config.resolver.alias,

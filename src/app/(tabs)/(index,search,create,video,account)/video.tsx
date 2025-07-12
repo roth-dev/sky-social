@@ -21,7 +21,6 @@ interface VideoFeedItemProps {
   height: number;
   onLike: (uri: string, cid: string) => void;
   onRepost: (uri: string, cid: string) => void;
-  onComment: (uri: string) => void;
   onShare: (uri: string) => void;
   onUserPress: (handle: string) => void;
 }
@@ -32,7 +31,6 @@ function VideoFeedItem({
   height,
   onLike,
   onRepost,
-  onComment,
   onShare,
   onUserPress,
 }: VideoFeedItemProps) {
@@ -65,7 +63,6 @@ function VideoFeedItem({
         post={item.post}
         onLike={() => onLike(item.post.uri, item.post.cid)}
         onRepost={() => onRepost(item.post.uri, item.post.cid)}
-        onComment={() => onComment(item.post.uri)}
         onShare={() => onShare(item.post.uri)}
         onUserPress={() => onUserPress(item.post.author.handle)}
       />
@@ -129,11 +126,6 @@ export default function VideoScreen() {
     [isAuthenticated]
   );
 
-  const handleComment = useCallback((uri: string) => {
-    const safeUri = encodeURIComponent(uri);
-    router.push(`/post/${safeUri}`);
-  }, []);
-
   const handleShare = useCallback(async (uri: string) => {
     try {
       const shareUrl = `https://bsky.app/profile/${uri.split("/")[2]}/post/${uri
@@ -169,19 +161,11 @@ export default function VideoScreen() {
         isActive={item.post.embed?.cid === seenItem?.post.embed?.cid}
         onLike={handleLike}
         onRepost={handleRepost}
-        onComment={handleComment}
         onShare={handleShare}
         onUserPress={handleUserPress}
       />
     ),
-    [
-      seenItem,
-      handleLike,
-      handleRepost,
-      handleComment,
-      handleShare,
-      handleUserPress,
-    ]
+    [seenItem, handleLike, handleRepost, handleShare, handleUserPress]
   );
 
   const renderEmptyState = useCallback(() => {

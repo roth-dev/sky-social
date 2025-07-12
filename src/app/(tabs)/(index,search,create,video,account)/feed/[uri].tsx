@@ -11,11 +11,7 @@ import { useLocalSearchParams, router } from "expo-router";
 import { Header } from "@/components/Header";
 import { Avatar } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
-import {
-  EmptyState,
-  LoadingState,
-  ErrorState,
-} from "@/components/placeholders/EmptyState";
+import { LoadingState, ErrorState } from "@/components/placeholders/EmptyState";
 import {
   ArrowLeft,
   Heart,
@@ -24,7 +20,7 @@ import {
   ExternalLink,
   Share,
 } from "lucide-react-native";
-import { Platform, Linking } from "react-native";
+import { Platform } from "react-native";
 import { Image } from "expo-image";
 
 // Mock feed data - In a real app, this would come from the AT Protocol API

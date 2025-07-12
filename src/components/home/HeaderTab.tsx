@@ -3,10 +3,10 @@ import Animated, {
   useAnimatedStyle,
   withTiming,
 } from "react-native-reanimated";
-import { HStack, Text, VStack } from "../ui";
+import { HStack, Text, View, VStack } from "../ui";
 import { cn } from "@/lib/utils";
 import { Pressable } from "react-native";
-import { isMobileWeb, isNative } from "@/platform";
+import { isNative } from "@/platform";
 
 interface HeaderTabProps {
   indicatorIndex: SharedValue<number>;
@@ -40,7 +40,7 @@ export default function HeaderTab({
   return (
     <VStack
       darkColor="none"
-      className={cn("relative", isMobileWeb || isNative ? "mt-3" : "mt-4")}
+      className={cn(isNative ? "pb-2" : "py-4")}
       style={{ position: "relative" }}
     >
       <HStack darkColor="none" className="items-center justify-between">
@@ -69,14 +69,21 @@ export default function HeaderTab({
           style={[
             {
               position: "absolute",
-              height: 3,
-              backgroundColor: "#3b82f6",
-              borderRadius: 1.5,
-              bottom: -10,
+              alignItems: "center",
+              bottom: isNative ? -10 : 0,
             },
             indicatorStyle,
           ]}
-        />
+        >
+          <View
+            style={{
+              width: "45%",
+              height: 3,
+              borderRadius: 1.5,
+              backgroundColor: "#3b82f6",
+            }}
+          />
+        </Animated.View>
       )}
     </VStack>
   );

@@ -12,6 +12,7 @@ import { useSharedValue } from "react-native-reanimated";
 import type PagerViewType from "react-native-pager-view";
 import HeaderTab from "@/components/home/HeaderTab";
 import { useAuth } from "@/contexts/AuthContext";
+import { isWeb } from "@/platform";
 
 export default function HomeScreen() {
   const { isAuthenticated } = useAuth();
@@ -29,6 +30,7 @@ export default function HomeScreen() {
 
   const handlePageSelected = useCallback(
     (e: { nativeEvent: { position: number } }) => {
+      console.log(e.nativeEvent.position);
       setPage(e.nativeEvent.position);
       indicatorIndex.value = e.nativeEvent.position;
       setTimeout(() => scrollY.set(0), 100);
@@ -53,17 +55,24 @@ export default function HomeScreen() {
         title: "For You",
         feed: PUBLIC_FEED_DESCRIPTOR,
       },
-
-      {
-        title: "Following",
-        feed: "following",
-      },
+      ...(isAuthenticated
+        ? [
+            {
+              title: "Following",
+              feed: "following",
+            },
+          ]
+        : [
+            {
+              title: "Feeds",
+              feed: "",
+            },
+          ]),
     ],
-    []
+    [isAuthenticated]
   );
 
   const renderHeaderTabs = useCallback(() => {
-    if (!isAuthenticated) return undefined;
     return (
       <HeaderTab
         indicatorIndex={indicatorIndex}
@@ -74,14 +83,7 @@ export default function HomeScreen() {
         setTabLayouts={setTabLayouts}
       />
     );
-  }, [
-    indicatorIndex,
-    pages,
-    isAuthenticated,
-    handleTabPress,
-    page,
-    tabLayouts,
-  ]);
+  }, [indicatorIndex, pages, handleTabPress, page, tabLayouts]);
 
   return (
     <View className="flex-1 bg-white">
@@ -90,6 +92,7 @@ export default function HomeScreen() {
         onHeightChange={setHeaderHeight}
         renderHeader={renderHeaderTabs}
         collapsible
+        disbleTopHeader={isWeb}
         title="Sky Social"
         leftIcon={
           <UserCircle
@@ -116,10 +119,10 @@ export default function HomeScreen() {
         <PagerView
           ref={pagerRef}
           initialPage={0}
-          // No need for onPageScroll for indicator
           onPageSelected={handlePageSelected}
           style={{ flex: 1 }}
           className="flex-1"
+          orientation="horizontal"
         >
           {pages.map((pageItem, index) => {
             return (

@@ -116,7 +116,6 @@ export const Composer: FunctionComponent<ComposerProps> = ({
               );
 
               setVideo(compressedResult.uri);
-            } catch (error) {
             } finally {
               setIsVideoCompressing(false);
               setCompressionProgress(0);

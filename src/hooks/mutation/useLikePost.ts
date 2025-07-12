@@ -12,7 +12,7 @@ export function useLikePost() {
       }
       const result = await atprotoClient.likePost(uri, cid);
       if (!result.success) {
-        throw new Error((result as any).error || "Failed to like post");
+        throw new Error(result.error || "Failed to like post");
       }
       return result.data;
     },
@@ -33,7 +33,10 @@ export function useLikePost() {
                     post: {
                       ...item.post,
                       likeCount: (item.post.likeCount || 0) + 1,
-                      viewer: { ...item.post.viewer, like: "temp-like-uri" },
+                      viewer: {
+                        ...item.post.viewer,
+                        like: item.post.viewer?.like || "temp-like-uri",
+                      },
                     },
                   };
                 }
@@ -44,7 +47,37 @@ export function useLikePost() {
         }
       );
     },
-    onError: (_, { uri }) => {
+    onSuccess: (data, { uri }) => {
+      // Update the cache with the real like URI from the response
+      queryClient.setQueriesData(
+        { queryKey: queryKeys.timeline },
+        (oldData: any) => {
+          if (!oldData) return oldData;
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page: any) => ({
+              ...page,
+              feed: page.feed.map((item: ATFeedItem) => {
+                if (item.post.uri === uri) {
+                  return {
+                    ...item,
+                    post: {
+                      ...item.post,
+                      viewer: {
+                        ...item.post.viewer,
+                        like: data?.uri || "temp-like-uri",
+                      },
+                    },
+                  };
+                }
+                return item;
+              }),
+            })),
+          };
+        }
+      );
+    },
+    onError: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.timeline });
     },
     retry: (failureCount, error) => {

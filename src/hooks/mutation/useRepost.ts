@@ -47,6 +47,36 @@ export function useRepost() {
         }
       );
     },
+    onSuccess: (data, { uri }) => {
+      // Update the cache with the real repost URI from the response
+      queryClient.setQueriesData(
+        { queryKey: queryKeys.timeline },
+        (oldData: any) => {
+          if (!oldData) return oldData;
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page: any) => ({
+              ...page,
+              feed: page.feed.map((item: ATFeedItem) => {
+                if (item.post.uri === uri) {
+                  return {
+                    ...item,
+                    post: {
+                      ...item.post,
+                      viewer: {
+                        ...item.post.viewer,
+                        repost: data?.uri || "temp-repost-uri",
+                      },
+                    },
+                  };
+                }
+                return item;
+              }),
+            })),
+          };
+        }
+      );
+    },
     onError: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.timeline });
     },

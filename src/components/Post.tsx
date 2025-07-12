@@ -1,26 +1,20 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { View, TouchableOpacity, StyleSheet, Alert } from "react-native";
-import {
-  Heart,
-  MessageCircle,
-  MoreHorizontal,
-  Repeat2,
-  Share,
-} from "lucide-react-native";
+import { MoreHorizontal } from "lucide-react-native";
 import { Avatar } from "./ui/Avatar";
 import { EmbedContainer } from "./embeds/EmbedContainer";
 import { ATPost } from "@/types/atproto";
 import { router } from "expo-router";
 import { Platform, Linking } from "react-native";
 import { isVideoPost } from "@/utils/embedUtils";
-import { Text, RichText, HapticTab } from "./ui";
+import { Text, RichText } from "./ui";
 import { Colors } from "@/constants/colors";
 import { VideoEmbed } from "./embeds/VideoEmbed";
 import { RichText as RichTextAPI } from "@atproto/api";
 import { POST_PRIFIX } from "@/constants";
 import { Formater } from "@/lib/format";
 import { LightBox } from "./lightBox";
-import { useAuth } from "@/contexts/AuthContext";
+import { ActionButtons } from "./ActionButtons";
 
 interface PostProps {
   post: ATPost;
@@ -42,42 +36,10 @@ function Post({
   isReply = false,
   shouldPlay = false,
 }: PostProps) {
-  const { isAuthenticated } = useAuth();
   const [lightBoxVisible, setLightBoxVisible] = useState(false);
   const [lightBoxIndex, setLightBoxIndex] = useState(0);
 
   const hasVideo = isVideoPost(post);
-
-  const handleLike = () => {
-    onLike?.(post.uri, post.cid);
-  };
-
-  const handleRepost = () => {
-    onRepost?.(post.uri, post.cid);
-  };
-
-  const handleComment = useCallback(() => {
-    if (!isAuthenticated) {
-      router.push("/login");
-      return;
-    }
-
-    if (isDetailView) {
-      onComment?.(post.uri);
-    } else {
-      // Open composer modal with reply data
-      const replyData = encodeURIComponent(JSON.stringify(post));
-      router.push(
-        `/(modal)/composer?replyTo=${replyData}&parentUri=${encodeURIComponent(
-          post.uri
-        )}&parentCid=${encodeURIComponent(
-          post.cid
-        )}&rootUri=${encodeURIComponent(post.uri)}&rootCid=${encodeURIComponent(
-          post.cid
-        )}`
-      );
-    }
-  }, [isAuthenticated, isDetailView, onComment, post]);
 
   const handlePostPress = useCallback(() => {
     if (!isDetailView) {
@@ -137,6 +99,20 @@ function Post({
     }
   }, []);
 
+  const isValidUrl = (url: string): boolean => {
+    try {
+      const urlObj = new URL(url);
+      return ["http:", "https:"].includes(urlObj.protocol);
+    } catch {
+      return false;
+    }
+  };
+
+  const handleRecordPress = useCallback((uri: string) => {
+    const safeUri = encodeURIComponent(uri);
+    router.push(`/profile/post/${safeUri}`);
+  }, []);
+
   const copyToClipboard = async (text: string) => {
     try {
       if (
@@ -155,43 +131,6 @@ function Post({
       Alert.alert("URL", text);
     }
   };
-
-  const isValidUrl = (url: string): boolean => {
-    try {
-      const urlObj = new URL(url);
-      return ["http:", "https:"].includes(urlObj.protocol);
-    } catch {
-      return false;
-    }
-  };
-
-  const handleRecordPress = useCallback((uri: string) => {
-    const safeUri = encodeURIComponent(uri);
-    router.push(`/profile/post/${safeUri}`);
-  }, []);
-
-  const handleShare = useCallback(async () => {
-    try {
-      const shareUrl = `https://bsky.app/profile/${
-        post.author.handle
-      }/post/${post.uri.split("/").pop()}`;
-
-      if (Platform.OS === "web") {
-        if (navigator.share) {
-          await navigator.share({
-            title: `Post by @${post.author.handle}`,
-            text: post.record.text,
-            url: shareUrl,
-          });
-        } else {
-          await copyToClipboard(shareUrl);
-        }
-      }
-    } catch (error) {
-      console.error("Failed to share post:", error);
-      Alert.alert("Share Error", "Unable to share this post.");
-    }
-  }, [post]);
 
   const handleImageShare = useCallback(
     async (imageUri: string, index: number) => {
@@ -383,46 +322,13 @@ function Post({
           </View>
         )}
 
-        <View style={[styles.actions, isDetailView && styles.detailActions]}>
-          <HapticTab
-            icon={MessageCircle}
-            iconSize={isDetailView ? 22 : 20}
-            count={!isDetailView ? post.replyCount : 0}
-            onPress={handleComment}
-            hapticType="light"
-            className="px-2 -ml-2"
-          />
-
-          <HapticTab
-            icon={Repeat2}
-            iconSize={isDetailView ? 22 : 20}
-            count={!isDetailView ? post.repostCount : 0}
-            isActive={false}
-            onPress={handleRepost}
-            hapticType="medium"
-            className="px-2 -ml-2"
-          />
-
-          <HapticTab
-            icon={Heart}
-            iconSize={isDetailView ? 22 : 20}
-            count={!isDetailView ? post.likeCount : 0}
-            isActive={false}
-            onPress={handleLike}
-            hapticType="success"
-            className="px-2 -ml-2"
-          />
-
-          <HapticTab
-            icon={Share}
-            iconSize={isDetailView ? 22 : 20}
-            iconColor="#6b7280"
-            onPress={handleShare}
-            hapticType="light"
-            variant="share"
-            className="px-2 -ml-2"
-          />
-        </View>
+        <ActionButtons
+          post={post}
+          isDetailView={isDetailView}
+          onLike={onLike}
+          onRepost={onRepost}
+          onComment={onComment}
+        />
       </TouchableOpacity>
 
       {/* LightBox Modal */}
@@ -542,39 +448,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     // color: "#6b7280",
     marginTop: 2,
-  },
-  actions: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 12,
-    marginLeft: 52,
-    paddingRight: 40,
-  },
-  detailActions: {
-    marginLeft: 0,
-    paddingRight: 0,
-    justifyContent: "space-around",
-    paddingVertical: 12,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderColor: "#e5e7eb",
-    marginTop: 16,
-  },
-  actionButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 8,
-    marginLeft: -8,
-  },
-  actionCount: {
-    fontSize: 13,
-    // color: "#6b7280",
-    marginLeft: 6,
-  },
-  likedCount: {
-    color: "#ef4444",
-  },
-  repostedCount: {
-    color: "#10b981",
   },
 });
 

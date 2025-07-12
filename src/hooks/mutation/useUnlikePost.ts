@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { atprotoClient } from "@/lib/atproto";
 import { queryKeys, handleQueryError } from "@/lib/queries";
+import { ATFeedItem } from "@/types/atproto";
 
 export function useUnlikePost() {
   const queryClient = useQueryClient();
@@ -15,7 +16,42 @@ export function useUnlikePost() {
       }
       return (result as any).data;
     },
+    onMutate: async ({ likeUri }) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.timeline });
+      queryClient.setQueriesData(
+        { queryKey: queryKeys.timeline },
+        (oldData: any) => {
+          if (!oldData) return oldData;
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page: any) => ({
+              ...page,
+              feed: page.feed.map((item: ATFeedItem) => {
+                if (item.post.viewer?.like === likeUri) {
+                  return {
+                    ...item,
+                    post: {
+                      ...item.post,
+                      likeCount: Math.max((item.post.likeCount || 0) - 1, 0),
+                      viewer: {
+                        ...item.post.viewer,
+                        like: undefined,
+                      },
+                    },
+                  };
+                }
+                return item;
+              }),
+            })),
+          };
+        }
+      );
+    },
     onSuccess: () => {
+      // The optimistic update should be sufficient, but we can invalidate to ensure consistency
+      queryClient.invalidateQueries({ queryKey: queryKeys.timeline });
+    },
+    onError: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.timeline });
     },
     retry: (failureCount, error) => {

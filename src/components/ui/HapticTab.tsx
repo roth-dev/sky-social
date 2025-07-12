@@ -4,6 +4,7 @@ import * as Haptics from "expo-haptics";
 import { LucideIcon } from "lucide-react-native";
 import { cn } from "@/lib/utils";
 import { cva, VariantProps } from "class-variance-authority";
+import { Formater } from "@/lib/format";
 
 const hapticTabVariants = cva(
   "flex-row items-center justify-center rounded-lg transition-colors",
@@ -140,6 +141,13 @@ export const HapticTab = forwardRef<
     const finalIconColor = iconColor || (isActive ? "#ef4444" : "#6b7280");
     const finalIconFill = isActive ? "#ef4444" : "none";
 
+    // Special handling for repost icon (green when active)
+    const isRepostIcon =
+      Icon?.displayName === "Repeat2" || Icon?.name === "Repeat2";
+    const repostIconColor =
+      isRepostIcon && isActive ? "#10b981" : finalIconColor;
+    const repostIconFill = isRepostIcon && isActive ? "#10b981" : finalIconFill;
+
     return (
       <Pressable
         ref={ref}
@@ -155,8 +163,8 @@ export const HapticTab = forwardRef<
         {Icon && (
           <Icon
             size={finalIconSize}
-            color={finalIconColor}
-            fill={finalIconFill}
+            color={isRepostIcon ? repostIconColor : finalIconColor}
+            fill={isRepostIcon ? repostIconFill : finalIconFill}
           />
         )}
         {LeftIcon && (
@@ -173,8 +181,17 @@ export const HapticTab = forwardRef<
             className={cn((Icon || LeftIcon) && "ml-2", RightIcon && "mr-2")}
           >
             {count !== undefined && count > 0 && (
-              <Text className="text-sm text-gray-500 ml-1">
-                {count > 999 ? `${(count / 1000).toFixed(1)}k` : count}
+              <Text
+                className={cn(
+                  "text-sm ml-1",
+                  isActive
+                    ? isRepostIcon
+                      ? "text-green-500"
+                      : "text-red-500"
+                    : "text-gray-500"
+                )}
+              >
+                {Formater.formatNumberToKOrM(count)}
               </Text>
             )}
             {children}

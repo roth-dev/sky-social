@@ -1,13 +1,7 @@
-import { useTimeline } from "@/hooks/query/useTimeline";
-import { useLikePost } from "@/hooks/mutation/useLikePost";
-import { useUnlikePost } from "@/hooks/mutation/useUnlikePost";
-import { useRepost } from "@/hooks/mutation/useRepost";
-import { useDeleteRepost } from "@/hooks/mutation/useDeleteRepost";
 import { useAuth } from "@/contexts/AuthContext";
-import { router } from "expo-router";
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { ATFeedItem } from "@/types/atproto";
-import { isIOS, isAndroid, isNative, isWeb } from "@/platform";
+import { isIOS, isNative } from "@/platform";
 import { Text, View } from "./ui";
 import { EmptyState, ErrorState } from "./placeholders/EmptyState";
 import { FeedPlaceholder } from "./placeholders/FeedPlaceholder";
@@ -32,57 +26,7 @@ const Feed = React.memo(function Comp({
   const { isAuthenticated } = useAuth();
   const tabBarHeight = useBottomTabBarHeight();
 
-  // Unified query for all feed types
   const feedQuery = useFeeds(feed);
-
-  // const likePostMutation = useLikePost();
-  // const unlikePostMutation = useUnlikePost();
-  // const repostMutation = useRepost();
-  // const deleteRepostMutation = useDeleteRepost();
-
-  // const handleLike = useCallback(
-  //   async (uri: string, cid: string, isLiked: boolean, likeUri?: string) => {
-  //     if (!isAuthenticated) {
-  //       // For unauthenticated users, show a prompt to sign in
-  //       router.push("/profile");
-  //       return;
-  //     }
-
-  //     if (isLiked && likeUri) {
-  //       unlikePostMutation.mutate({ likeUri });
-  //     } else {
-  //       likePostMutation.mutate({ uri, cid });
-  //     }
-  //   },
-  //   [unlikePostMutation, likePostMutation, isAuthenticated]
-  // );
-
-  // const handleRepost = useCallback(
-  //   async (
-  //     uri: string,
-  //     cid: string,
-  //     isReposted: boolean,
-  //     repostUri?: string
-  //   ) => {
-  //     if (!isAuthenticated) {
-  //       // For unauthenticated users, show a prompt to sign in
-  //       router.push("/profile");
-  //       return;
-  //     }
-
-  //     if (isReposted && repostUri) {
-  //       deleteRepostMutation.mutate({ repostUri });
-  //     } else {
-  //       repostMutation.mutate({ uri, cid });
-  //     }
-  //   },
-  //   [isAuthenticated, deleteRepostMutation, repostMutation]
-  // );
-
-  const handleComment = (uri: string) => {
-    // This function is now handled directly in the Post component
-    // The Post component will open the composer modal for comments
-  };
 
   const handleLoadMore = useCallback(() => {
     if (
@@ -95,7 +39,8 @@ const Feed = React.memo(function Comp({
   }, [feedQuery]);
 
   const allPosts = useMemo(() => {
-    return feedQuery.data?.pages.flatMap((page) => page?.feed) || [];
+    const pages = feedQuery.data?.pages;
+    return pages?.flatMap((page) => page?.feed) || [];
   }, [feedQuery.data]);
 
   const [visiblePostUris, setVisiblePostUris] = useState<Set<string>>(
@@ -123,18 +68,6 @@ const Feed = React.memo(function Comp({
         shouldPlay={
           !isScrolling && visiblePostUris.has(item.post.uri) && isFocused
         }
-        // onLike={(uri, cid) =>
-        //   handleLike(uri, cid, !!item.post.viewer?.like, item.post.viewer?.like)
-        // }
-        // onRepost={(uri, cid) =>
-        //   handleRepost(
-        //     uri,
-        //     cid,
-        //     !!item.post.viewer?.repost,
-        //     item.post.viewer?.repost
-        //   )
-        // }
-        // onComment={handleComment}
       />
     ),
     [visiblePostUris, isScrolling, isFocused]
@@ -213,6 +146,7 @@ const Feed = React.memo(function Comp({
   return (
     <List
       data={allPosts}
+      extraData={allPosts}
       renderItem={renderItem}
       keyExtractor={(item, index) => `${item.post.uri}-${index}`}
       headerOffset={headerHeight}

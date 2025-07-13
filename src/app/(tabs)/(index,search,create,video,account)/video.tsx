@@ -11,6 +11,7 @@ import { List, ListRef } from "@/components/list";
 import { VideoPlayer } from "@/components/video/VideoPlayer";
 import { VideoFeedOverlay } from "@/components/video/VideoFeedOverlay";
 import { FeedViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
+import { isMobileWeb } from "@/platform";
 
 const { height: screenHeight } = Dimensions.get("window");
 
@@ -231,6 +232,7 @@ export default function VideoScreen() {
         onItemSeen={onItemSeen}
         onEndReachedThreshold={0.1}
         removeClippedSubviews={true}
+        useScrollDetector={isMobileWeb}
         maxToRenderPerBatch={4}
         windowSize={6}
         initialNumToRender={3}

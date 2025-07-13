@@ -268,20 +268,4 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2,
   },
-  musicInfo: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    marginTop: 4,
-  },
-  musicText: {
-    color: "#ffffff",
-    fontSize: 13,
-    fontWeight: "500",
-    opacity: 0.9,
-    flex: 1,
-    textShadowColor: "rgba(0, 0, 0, 0.5)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
-  },
 });

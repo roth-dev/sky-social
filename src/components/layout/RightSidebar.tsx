@@ -156,7 +156,7 @@ function SuggestedPeopleSection() {
           size="lg"
           className="text-gray-900 dark:text-white mb-4"
         >
-          Who to follow
+          Suggested people
         </Text>
         <VStack className="space-y-3">
           {Array.from({ length: 3 }).map((_, index) => (
@@ -212,7 +212,7 @@ function SuggestedPeopleSection() {
           size="lg"
           className="text-gray-900 dark:text-white"
         >
-          Who to follow
+          Suggested people
         </Text>
         <TouchableOpacity onPress={() => router.push("/search/people")}>
           <Text size="sm" className="text-blue-500 hover:text-blue-600">
@@ -222,7 +222,7 @@ function SuggestedPeopleSection() {
       </HStack>
 
       <VStack className="space-y-1">
-        {users.slice(0, 5).map((user) => (
+        {users.slice(0, 10).map((user) => (
           <SuggestedUser
             key={user.did}
             user={user}
@@ -248,7 +248,7 @@ function SuggestedPeopleSection() {
 
 export default function RightSidebar() {
   return (
-    <View className="flex-[0.7] lg:flex hidden px-4">
+    <View className="flex-1 lg:flex hidden px-4">
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <SearchBox />
         <SuggestedPeopleSection />

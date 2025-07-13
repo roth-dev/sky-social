@@ -1,9 +1,8 @@
+import React, { memo } from "react";
 import { Colors } from "@/constants/colors";
 import { useSettings } from "@/contexts/SettingsContext";
 import { isAndroid } from "@/platform";
 import { useScrollStore } from "@/store/scrollStore";
-import { mergeStyle } from "@/utils/style";
-import React, { memo } from "react";
 import { FlatList, RefreshControl, ViewToken } from "react-native";
 import Animated, {
   FlatListPropsWithLayout,
@@ -12,7 +11,7 @@ import Animated, {
 
 export type ListRef = React.ForwardedRef<FlatList<unknown>>;
 
-export type ListProps<ItemT = any> = Omit<
+export type ListProps<ItemT = unknown> = Omit<
   FlatListPropsWithLayout<ItemT>,
   | "contentOffset" // Pass headerOffset instead.
   | "progressViewOffset" // Can't be an animated value
@@ -101,9 +100,6 @@ let List = React.forwardRef<ListRef, ListProps>(
 
     let contentOffset;
     if (headerOffset != null) {
-      style = mergeStyle(style, {
-        paddingTop: headerOffset,
-      });
       contentOffset = { x: 0, y: headerOffset * -1 };
     }
 
@@ -130,6 +126,7 @@ let List = React.forwardRef<ListRef, ListProps>(
         contentOffset={contentOffset}
         refreshControl={refreshControl}
         scrollEventThrottle={1}
+        style={style}
         // @ts-expect-error Animated.FlatList ref type is wrong -sfn
         ref={ref}
       />

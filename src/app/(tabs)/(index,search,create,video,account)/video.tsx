@@ -11,7 +11,7 @@ import { List, ListRef } from "@/components/list";
 import { VideoPlayer } from "@/components/video/VideoPlayer";
 import { VideoFeedOverlay } from "@/components/video/VideoFeedOverlay";
 import { FeedViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
-import { isMobileWeb } from "@/platform";
+import { isMobileWeb, isWeb } from "@/platform";
 
 const { height: screenHeight } = Dimensions.get("window");
 
@@ -57,7 +57,7 @@ function VideoFeedItem({
         contentFit="contain"
         containerStyle={{
           borderRadius: 0,
-          height: undefined,
+          height: isWeb ? "100%" : undefined,
         }}
       />
       <VideoFeedOverlay

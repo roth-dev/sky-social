@@ -47,7 +47,10 @@ export default function VideoContainer({
     >
       {children}
       {loading && (
-        <View className="w-full h-full absolute items-center justify-center">
+        <View
+          darkColor="secondary"
+          className="w-full h-full absolute items-center justify-center"
+        >
           <Loading size="lg" />
         </View>
       )}

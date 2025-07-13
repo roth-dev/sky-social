@@ -14,7 +14,9 @@ export const VideoPlayer = memo(function Comp({
   muted = true,
   autoPlay,
   shouldPlay,
+  controls = false,
   contentFit = "cover",
+  containerStyle,
 }: VideoPlayerProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
@@ -47,11 +49,13 @@ export const VideoPlayer = memo(function Comp({
     <VideoContainer
       loading={isLoading}
       aspectRatio={aspectRatio}
-      containerStyle={{
-        height: "100%",
-        borderRadius: 0,
-        backgroundColor: Colors.black,
-      }}
+      containerStyle={[
+        {
+          borderRadius: 0,
+          backgroundColor: Colors.black,
+        },
+        containerStyle,
+      ]}
       isDetailView={isDetailView}
     >
       <ReactPlayer
@@ -61,7 +65,7 @@ export const VideoPlayer = memo(function Comp({
         height="100%"
         loop
         muted={muted}
-        controls={false}
+        controls={controls}
         playsInline
         style={{ objectFit }}
         onReady={() => setIsLoading(false)}

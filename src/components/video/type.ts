@@ -9,6 +9,7 @@ export interface VideoPlayerProps {
   autoPlay?: boolean;
   muted?: boolean;
   shouldPlay?: boolean;
+  controls?: boolean;
   contentFit?: VideoContentFit;
   containerStyle?: StyleProp<ViewStyle>;
 }

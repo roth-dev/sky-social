@@ -98,9 +98,8 @@ export function AuthProvider({ children }: PropsWithChildren) {
         return { success: true };
       }
       return { success: false, error: result.error };
-    } catch (error: any) {
-      console.error("Login error:", error);
-      return { success: false, error: error.message };
+    } catch {
+      return { success: false };
     } finally {
       setLoading(false);
     }

@@ -125,7 +125,7 @@ export function Header({
       className={cn(isNative && "pb-3", "justify-end")}
     >
       {!disbleTopHeader && (
-        <View className="flex-row items-center justify-between px-4 py-2 web:dark:bg-[#111827]">
+        <View className="flex-row items-center justify-between px-4 py-3 web:dark:bg-[#111827]">
           <Pressable
             className="w-10 h-10 items-center justify-center"
             onPress={handleLeftIconPress}

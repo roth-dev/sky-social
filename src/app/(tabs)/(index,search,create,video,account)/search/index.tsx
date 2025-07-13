@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Alert, Platform } from "react-native";
+import { Alert } from "react-native";
 import { SearchHeader } from "@/components/search/SearchHeader";
 import { SearchFilters } from "@/components/search/SearchFilters";
 import { SearchResults } from "@/components/search/SearchResults";
@@ -15,15 +15,17 @@ import {
   SearchState,
 } from "@/types/search";
 import { useAuth } from "@/contexts/AuthContext";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { View } from "@/components/ui";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSearchActors, useSearchPosts } from "@/hooks/query";
 
 export default function SearchScreen() {
+  const { q } = useLocalSearchParams<{ q: string }>();
+
   const { isAuthenticated } = useAuth();
   const [searchState, setSearchState] = useState<SearchState>({
-    query: "",
+    query: q,
     filters: {
       type: "users",
       sortBy: "relevance",
@@ -41,7 +43,7 @@ export default function SearchScreen() {
   const searchPostsQuery = useSearchPosts(debouncedQuery);
 
   // Discovery queries - pass authentication status
-  const suggestedFollowsQuery = useSuggestedFollows(isAuthenticated);
+  const suggestedFollowsQuery = useSuggestedFollows();
   const popularFeedsQuery = usePopularFeeds();
 
   // Post interaction mutations

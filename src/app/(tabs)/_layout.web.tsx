@@ -2,6 +2,7 @@ import { Tabs } from "expo-router";
 import { ResponsiveTabBar } from "@/components/layout/ResponsiveTabBar";
 import WebSidebar from "@/components/layout/WebSidebar";
 import { View } from "@/components/ui";
+import RightSidebar from "@/components/layout/RightSidebar";
 
 export default function TabLayout() {
   return (
@@ -24,7 +25,8 @@ export default function TabLayout() {
           <Tabs.Screen name="(account)" />
         </Tabs>
       </View>
-
+      <RightSidebar />
+      <View className="flex-[0.4] hidden lg:flex" />
       {/* Mobile Tab Bar */}
       <ResponsiveTabBar />
     </View>

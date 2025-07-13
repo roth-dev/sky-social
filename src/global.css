@@ -35,7 +35,7 @@
   
   .sidebar-desktop {
     @apply hidden lg:flex lg:flex-col lg:fixed lg:left-0 lg:top-0 lg:bottom-0;
-    @apply lg:w-64 lg:bg-white lg:border-r lg:border-gray-200;
+    @apply lg:w-72 lg:bg-white lg:border-r lg:border-gray-200;
     @apply lg:z-40;
   }
   
@@ -44,14 +44,14 @@
   }
   
   .main-content-desktop {
-    @apply lg:ml-64 lg:pb-0;
+    @apply lg:ml-72 lg:pb-0;
     /* Set max width similar to mobile viewing */
     @apply lg:flex lg:justify-center;
   }
 
   .main-content-desktop > * {
     @apply lg:border-r dark:lg:border-gray-700  lg:border-gray-200;
-    @apply lg:w-full lg:max-w-lg;
+    @apply lg:w-full lg:max-w-full
   }
 
   /* Dark mode component styles */
@@ -62,6 +62,7 @@
   .dark .sidebar-desktop {
     @apply lg:bg-gray-900 lg:border-gray-700;
   }
+ 
 }
 
 /* Responsive utilities */
@@ -105,7 +106,6 @@
   
   /* Override the main content positioning for desktop */
   .main-content-desktop {
-    margin-left: 256px; /* 64 * 4 = 256px for lg:w-64 */
     max-width: 672px; /* 2xl = 42rem = 672px */
     margin-right: auto;
     padding-bottom: 0;

@@ -11,11 +11,11 @@ export function useFollowProfile() {
       }
       const result = await atprotoClient.followProfile(did);
       if (!result.success) {
-        throw new Error((result as any).error || "Failed to follow profile");
+        throw new Error(result.error || "Failed to follow profile");
       }
       return result.data;
     },
-    onSuccess: (_, { did }) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["profile"] });
       queryClient.invalidateQueries({ queryKey: queryKeys.suggestedFollows });
     },

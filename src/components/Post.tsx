@@ -15,6 +15,7 @@ import { POST_PRIFIX } from "@/constants";
 import { Formater } from "@/lib/format";
 import { LightBox } from "./lightBox";
 import { ActionButtons } from "./ActionButtons";
+import { useSettings } from "@/contexts/SettingsContext";
 
 interface PostProps {
   post: ATPost;
@@ -36,6 +37,7 @@ function Post({
   isReply = false,
   shouldPlay = false,
 }: PostProps) {
+  const { colorScheme } = useSettings();
   const [lightBoxVisible, setLightBoxVisible] = useState(false);
   const [lightBoxIndex, setLightBoxIndex] = useState(0);
 
@@ -212,7 +214,12 @@ function Post({
   return (
     <>
       <TouchableOpacity
-        style={containerStyle}
+        style={[
+          containerStyle,
+          {
+            borderBottomColor: Colors.border[colorScheme],
+          },
+        ]}
         onPress={handlePostPress}
         activeOpacity={isDetailView ? 1 : 0.95}
         disabled={isDetailView}
@@ -351,7 +358,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: Colors.border.dark,
   },
   replyContainer: {
     paddingLeft: 32,
@@ -375,22 +381,18 @@ const styles = StyleSheet.create({
   displayName: {
     fontSize: 15,
     fontWeight: "600",
-    // color: "#111827",
     maxWidth: 120,
   },
   handle: {
     fontSize: 15,
-    // color: "#6b7280",
     marginLeft: 4,
   },
   time: {
     fontSize: 15,
-    // color: "#6b7280",
     marginLeft: 4,
   },
   detailTime: {
     fontSize: 14,
-    // color: "#6b7280",
     marginTop: 2,
   },
   moreButton: {
@@ -406,13 +408,11 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 15,
     lineHeight: 20,
-    // color: "#111827",
     marginBottom: 8,
   },
   detailText: {
     fontSize: 18,
     lineHeight: 26,
-    // color: "#111827",
     marginBottom: 16,
   },
   debugIndicator: {
@@ -425,7 +425,6 @@ const styles = StyleSheet.create({
   },
   debugText: {
     fontSize: 12,
-    // color: "#92400e",
     fontWeight: "500",
   },
   detailStats: {
@@ -446,7 +445,6 @@ const styles = StyleSheet.create({
   },
   statLabel: {
     fontSize: 12,
-    // color: "#6b7280",
     marginTop: 2,
   },
 });

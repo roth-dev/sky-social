@@ -50,7 +50,7 @@
   }
 
   .main-content-desktop > * {
-    @apply lg:border-r lg:border-gray-700;
+    @apply lg:border-r dark:lg:border-gray-700  lg:border-gray-200;
     @apply lg:w-full lg:max-w-lg;
   }
 

@@ -19,7 +19,7 @@ import { cn } from "@/lib/utils";
 const NAVIGATION_ITEMS = [
   { key: "/", label: "Home", icon: Home },
   { key: "/search", label: "Search", icon: Search },
-  { key: "/create", label: "New Post", icon: PlusSquare, requiresAuth: true },
+  // { key: "/create", label: "New Post", icon: PlusSquare, requiresAuth: true },
   {
     key: "/video",
     label: "Video",
@@ -81,7 +81,7 @@ export default function WebSidebar() {
             <TouchableOpacity
               key={item.key}
               className={cn(
-                "flex-row items-center py-3 px-4 rounded-full gap-4 hover:bg-gray-800",
+                "flex-row items-center py-3 px-4 rounded-full gap-4 dark:hover:bg-gray-800 hover:bg-gray-100",
                 isActive && "bg-blue-50 dark:bg-[#1f2937]"
               )}
               onPress={() => handleNavigation(item.key, item.requiresAuth)}

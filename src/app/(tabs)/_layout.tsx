@@ -94,7 +94,7 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="(create)"
-        listeners={(e) => {
+        listeners={() => {
           return {
             tabPress: (e) => {
               e.preventDefault();

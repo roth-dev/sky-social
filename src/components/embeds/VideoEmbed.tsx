@@ -3,6 +3,7 @@ import { StyleSheet } from "react-native";
 import { EmbedVideo } from "@/types/embed";
 import { VideoPlayer } from "@/components/video/VideoPlayer";
 import { Text, View } from "../ui";
+import { isWeb } from "@/platform";
 
 interface VideoEmbedProps {
   video?: EmbedVideo;
@@ -22,9 +23,8 @@ export function VideoEmbed({
   // Handle different video URL formats
   const videoUrl = useMemo(() => {
     if (video?.playlist) {
-      return;
+      return video?.playlist;
     }
-    // Fallback to other possible video URL properties
     if (typeof video === "string") {
       return video;
     }
@@ -34,7 +34,7 @@ export function VideoEmbed({
     }
   }, [video]);
 
-  if (!video || !videoUrl) return <></>;
+  if (!videoUrl) return <></>;
 
   return (
     <View
@@ -43,15 +43,16 @@ export function VideoEmbed({
     >
       <VideoPlayer
         uri={videoUrl}
-        thumbnail={video.thumbnail}
-        aspectRatio={video.aspectRatio}
+        thumbnail={video?.thumbnail}
+        aspectRatio={video?.aspectRatio}
         isDetailView={isDetailView}
         autoPlay={autoPlay}
         muted={muted}
         shouldPlay={shouldPlay}
+        controls={isWeb}
       />
 
-      {!!video.alt && (
+      {!!video?.alt && (
         <View className="py-3 px-2" darkColor="secondary">
           <Text size="sm" numberOfLines={2} className="opacity-50">
             {video.alt}

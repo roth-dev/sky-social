@@ -25,7 +25,7 @@ export default function SearchScreen() {
 
   const { isAuthenticated } = useAuth();
   const [searchState, setSearchState] = useState<SearchState>({
-    query: q,
+    query: q ?? "",
     filters: {
       type: "users",
       sortBy: "relevance",

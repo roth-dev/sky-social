@@ -1,12 +1,12 @@
 import React from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, ViewStyle } from "react-native";
 import { PostPlaceholder } from "./PostPlaceholder";
 import { View } from "../ui";
 import { useSettings } from "@/contexts/SettingsContext";
 import { Colors } from "@/constants/colors";
 
 interface ReplyPlaceholderProps {
-  style?: any;
+  style?: ViewStyle;
 }
 
 export function ReplyPlaceholder({ style }: ReplyPlaceholderProps) {

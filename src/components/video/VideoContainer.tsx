@@ -1,16 +1,15 @@
 import { PropsWithChildren, useMemo } from "react";
 import { View } from "../ui";
-import { Dimensions, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { VideoPlayerProps } from "./type";
 import Loading from "../ui/Loading";
+import { useResponsiveWidth } from "@/hooks/useResponsiveWidth";
 
 type Props = PropsWithChildren<
   Pick<VideoPlayerProps, "containerStyle" | "aspectRatio" | "isDetailView">
 > & {
   loading?: boolean;
 };
-
-const { width: screenWidth } = Dimensions.get("window");
 
 export default function VideoContainer({
   children,
@@ -19,9 +18,11 @@ export default function VideoContainer({
   aspectRatio,
   loading,
 }: Props) {
+  const maxVideoWidth = useResponsiveWidth();
+
   // Calculate video dimensions
   const dimensions = useMemo(() => {
-    const maxWidth = screenWidth - 32;
+    const maxWidth = maxVideoWidth;
     const defaultAspectRatio = 16 / 9;
     const videoAspectRatio = aspectRatio
       ? aspectRatio.width / aspectRatio.height
@@ -38,7 +39,7 @@ export default function VideoContainer({
     }
 
     return { width, height };
-  }, [aspectRatio, isDetailView]);
+  }, [aspectRatio, isDetailView, maxVideoWidth]);
 
   return (
     <View

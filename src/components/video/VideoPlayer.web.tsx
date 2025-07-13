@@ -5,6 +5,7 @@ import VideoContainer from "./VideoContainer";
 import { VideoPlayerProps } from "./type";
 import VideoError from "./VideoError";
 import { useLightBoxOpen } from "@/store/lightBox";
+import { Colors } from "@/constants/colors";
 
 export const VideoPlayer = memo(function Comp({
   uri,
@@ -46,7 +47,11 @@ export const VideoPlayer = memo(function Comp({
     <VideoContainer
       loading={isLoading}
       aspectRatio={aspectRatio}
-      containerStyle={{ height: "100%", borderRadius: 0 }}
+      containerStyle={{
+        height: "100%",
+        borderRadius: 0,
+        backgroundColor: Colors.black,
+      }}
       isDetailView={isDetailView}
     >
       <ReactPlayer

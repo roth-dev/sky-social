@@ -30,7 +30,6 @@ export default function HomeScreen() {
 
   const handlePageSelected = useCallback(
     (e: { nativeEvent: { position: number } }) => {
-      console.log(e.nativeEvent.position);
       setPage(e.nativeEvent.position);
       indicatorIndex.value = e.nativeEvent.position;
       setTimeout(() => scrollY.set(0), 100);
@@ -122,7 +121,7 @@ export default function HomeScreen() {
           onPageSelected={handlePageSelected}
           style={{ flex: 1 }}
           className="flex-1"
-          orientation="stack"
+          orientation={isWeb ? "stack" : "vertical"}
         >
           {pages.map((pageItem, index) => {
             return (

@@ -1,24 +1,18 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, ViewStyle } from "react-native";
 import { Placeholder } from "@/components/ui/Placeholder";
 import { Play } from "lucide-react-native";
 
 interface VideoPlaceholderProps {
   aspectRatio?: { width: number; height: number };
   isDetailView?: boolean;
-  style?: any;
+  style?: ViewStyle;
 }
 
 export function VideoPlaceholder({
-  aspectRatio,
   isDetailView = false,
   style,
 }: VideoPlaceholderProps) {
-  const defaultAspectRatio = 16 / 9;
-  const ratio = aspectRatio
-    ? aspectRatio.width / aspectRatio.height
-    : defaultAspectRatio;
-
   const height = isDetailView ? 300 : 200;
 
   return (

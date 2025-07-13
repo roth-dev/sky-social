@@ -2,7 +2,6 @@ import React from "react";
 import { StyleSheet } from "react-native";
 import { PostPlaceholder } from "./PostPlaceholder";
 import { ReplyPlaceholder } from "./ReplyPlaceholder";
-import { Placeholder } from "@/components/ui/Placeholder";
 import { View, Text } from "../ui";
 import { useSettings } from "@/contexts/SettingsContext";
 import { Colors } from "@/constants/colors";

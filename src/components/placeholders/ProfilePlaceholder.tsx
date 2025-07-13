@@ -1,15 +1,14 @@
 import React from "react";
-import { View, StyleSheet, Dimensions } from "react-native";
+import { View, StyleSheet, ViewStyle } from "react-native";
 import {
   Placeholder,
   SkeletonText,
   SkeletonAvatar,
 } from "@/components/ui/Placeholder";
-
-const { width } = Dimensions.get("window");
+import { useResponsiveWidth } from "@/hooks/useResponsiveWidth";
 
 interface ProfilePlaceholderProps {
-  style?: any;
+  style?: ViewStyle;
 }
 
 export function ProfilePlaceholder({ style }: ProfilePlaceholderProps) {
@@ -76,21 +75,23 @@ export function ProfilePlaceholder({ style }: ProfilePlaceholderProps) {
 
 interface ProfileTabPlaceholderProps {
   type?: "posts" | "media" | "liked";
-  style?: any;
+  style?: ViewStyle;
 }
 
 export function ProfileTabPlaceholder({
   type = "posts",
   style,
 }: ProfileTabPlaceholderProps) {
+  const maxWidth = useResponsiveWidth();
+
   if (type === "media") {
     return (
       <View style={[styles.mediaContainer, style]}>
         {Array.from({ length: 9 }).map((_, index) => (
           <Placeholder
             key={index}
-            width={(width - 48) / 3}
-            height={(width - 48) / 3}
+            width={(maxWidth - 48) / 3}
+            height={(maxWidth - 48) / 3}
             style={styles.mediaItem}
           />
         ))}

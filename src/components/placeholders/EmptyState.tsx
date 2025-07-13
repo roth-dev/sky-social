@@ -1,5 +1,11 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ViewStyle,
+} from "react-native";
 import {
   MessageCircle,
   Users,
@@ -24,7 +30,7 @@ interface EmptyStateProps {
     | "offline";
   title?: string;
   description?: string;
-  style?: any;
+  style?: ViewStyle;
 }
 
 export function EmptyState({
@@ -120,7 +126,7 @@ export function EmptyState({
 
 interface LoadingStateProps {
   message?: string;
-  style?: any;
+  style?: ViewStyle;
 }
 
 export function LoadingState({
@@ -139,7 +145,7 @@ interface ErrorStateProps {
   title?: string;
   description?: string;
   onRetry?: () => void;
-  style?: any;
+  style?: ViewStyle;
 }
 
 export function ErrorState({

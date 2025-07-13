@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, ScrollView } from "react-native";
+import { StyleSheet, ScrollView, ViewStyle } from "react-native";
 import { PostPlaceholder } from "./PostPlaceholder";
 import { View } from "../ui";
 
@@ -7,7 +7,7 @@ interface FeedPlaceholderProps {
   count?: number;
   showVariety?: boolean;
   includeVideos?: boolean;
-  style?: any;
+  style?: ViewStyle;
 }
 
 export function FeedPlaceholder({
@@ -43,7 +43,7 @@ export function FeedPlaceholder({
 
 interface TimelinePlaceholderProps {
   includeVideos?: boolean;
-  style?: any;
+  style?: ViewStyle;
 }
 
 export function TimelinePlaceholder({

@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, ViewStyle } from "react-native";
 import {
   Placeholder,
   SkeletonText,
@@ -14,7 +14,7 @@ interface PostPlaceholderProps {
   showEmbed?: boolean;
   showVideo?: boolean;
   isDetailView?: boolean;
-  style?: any;
+  style?: ViewStyle;
 }
 
 export function PostPlaceholder({

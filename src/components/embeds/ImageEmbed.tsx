@@ -1,13 +1,8 @@
 import React, { useCallback } from "react";
-import {
-  View,
-  TouchableOpacity,
-  StyleSheet,
-  Dimensions,
-  Text,
-} from "react-native";
+import { View, TouchableOpacity, StyleSheet, Text } from "react-native";
 import { EmbedImage } from "@/types/embed";
 import { Image } from "expo-image";
+import { useResponsiveWidth } from "@/hooks/useResponsiveWidth";
 
 interface ImageEmbedProps {
   images: EmbedImage[];
@@ -15,14 +10,13 @@ interface ImageEmbedProps {
   onImagePress?: (images: EmbedImage[], index: number) => void;
 }
 
-const { width: screenWidth } = Dimensions.get("window");
-const MAX_IMAGE_WIDTH = screenWidth - 32; // Account for padding
-
 export function ImageEmbed({
   images,
   isDetailView = false,
   onImagePress,
 }: ImageEmbedProps) {
+  const maxImageWidth = useResponsiveWidth();
+
   const calculateImageDimensions = useCallback(
     (image: EmbedImage, index: number, total: number) => {
       const aspectRatio = image.aspectRatio
@@ -34,30 +28,30 @@ export function ImageEmbed({
 
       if (total === 1) {
         // Single image - use full width with aspect ratio
-        width = MAX_IMAGE_WIDTH;
+        width = maxImageWidth;
         height = Math.min(width / aspectRatio, isDetailView ? 500 : 400);
       } else if (total === 2) {
         // Two images - side by side
-        width = (MAX_IMAGE_WIDTH - 4) / 2;
+        width = (maxImageWidth - 4) / 2;
         height = isDetailView ? 250 : 200;
       } else if (total === 3) {
         // Three images - first full width, others split
         if (index === 0) {
-          width = MAX_IMAGE_WIDTH;
+          width = maxImageWidth;
           height = isDetailView ? 250 : 200;
         } else {
-          width = (MAX_IMAGE_WIDTH - 4) / 2;
+          width = (maxImageWidth - 4) / 2;
           height = isDetailView ? 200 : 150;
         }
       } else {
         // Four or more images - 2x2 grid
-        width = (MAX_IMAGE_WIDTH - 4) / 2;
+        width = (maxImageWidth - 4) / 2;
         height = isDetailView ? 200 : 150;
       }
 
       return { width, height };
     },
-    [isDetailView]
+    [isDetailView, maxImageWidth]
   );
 
   const handleImagePress = (index: number) => {

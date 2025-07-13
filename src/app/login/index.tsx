@@ -13,7 +13,6 @@ import { Text, View, VStack } from "@/components/ui";
 
 export default function LoginScreen() {
   const { login } = useAuth();
-
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -37,12 +36,12 @@ export default function LoginScreen() {
       } else {
         setError(result.error || "Login failed");
       }
-    } catch (error) {
+    } catch {
       setError("An unexpected error occurred");
     } finally {
       setLoading(false);
     }
-  }, [identifier, password]);
+  }, [identifier, login, password]);
 
   return (
     <KeyboardAvoidingView
@@ -108,9 +107,10 @@ export default function LoginScreen() {
 
 const styles = StyleSheet.create({
   logo: {
-    width: 120,
-    height: 120,
+    width: 100,
+    height: 100,
     marginBottom: 16,
+    borderRadius: 20,
   },
   loginTitle: {
     fontSize: 28,

@@ -10,6 +10,7 @@ import {
 import { ATPost } from "@/types/atproto";
 import { Heart, MessageCircle, Repeat2, Share } from "lucide-react-native";
 import { View, StyleSheet } from "react-native";
+import { router } from "expo-router";
 
 interface ActionButtonsProps {
   post: ATPost;
@@ -41,6 +42,7 @@ export function ActionButtons({
 
   const handleLike = useCallback(() => {
     if (!isAuthenticated) {
+      router.push("/login");
       return;
     }
     setIsLiked((prev) => !prev);
@@ -83,6 +85,7 @@ export function ActionButtons({
 
   const handleRepost = useCallback(() => {
     if (!isAuthenticated) {
+      router.push("/login");
       return;
     }
     setIsReposted((prev) => !prev);
@@ -123,8 +126,12 @@ export function ActionButtons({
   ]);
 
   const handleComment = useCallback(() => {
-    onComment?.(post.uri, post.cid);
-  }, [post.uri, post.cid, onComment]);
+    if (!isAuthenticated) {
+      router.push("/login");
+    } else {
+      onComment?.(post.uri, post.cid);
+    }
+  }, [post.uri, post.cid, isAuthenticated, onComment]);
 
   const handleShare = useCallback(() => {
     onShare?.(post.uri, post.cid);

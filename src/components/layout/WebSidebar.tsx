@@ -80,9 +80,10 @@ export default function WebSidebar() {
           return (
             <TouchableOpacity
               key={item.key}
-              className={`flex-row items-center py-3 px-4 rounded-full gap-4 ${
-                isActive ? "bg-blue-50 dark:bg-[#1f2937]" : ""
-              }`}
+              className={cn(
+                "flex-row items-center py-3 px-4 rounded-full gap-4 hover:bg-gray-800",
+                isActive && "bg-blue-50 dark:bg-[#1f2937]"
+              )}
               onPress={() => handleNavigation(item.key, item.requiresAuth)}
             >
               <IconComponent

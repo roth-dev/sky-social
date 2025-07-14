@@ -2,6 +2,8 @@ import { AtpAgent, AppBskyFeedDefs } from "@atproto/api";
 import { storage, AuthSession } from "./storage";
 import { POST_PRIFIX, PUBLIC_SERVICE_URL, SERVICE_URL } from "@/constants";
 import { isNative } from "@/platform";
+import { getErrorMessage } from "@/utils/errorUtils";
+import { logger } from "@/utils/logger";
 
 type ActorDid = string;
 export type AuthorFilter =
@@ -72,31 +74,33 @@ export class ATProtoClient {
     operation: () => Promise<T>,
     context: string
   ): Promise<T> {
-    let lastError: any;
+    let lastError: unknown;
 
     for (let attempt = 0; attempt <= this.maxRetries; attempt++) {
       try {
         const result = await operation();
         // Reset retry count on success
         return result;
-      } catch (error: any) {
+      } catch (error: unknown) {
         lastError = error;
-        console.warn(
-          `${context} attempt ${attempt + 1} failed:`,
-          error.message
-        );
+        const errMsg = (error as Error)?.message || String(error);
+        console.warn(`${context} attempt ${attempt + 1} failed:`, errMsg);
 
         // Don't retry on authentication errors
-        if (error.status === 401 || error.message?.includes("authentication")) {
+        if (
+          (error as { status?: number; message?: string }).status === 401 ||
+          (error as { message?: string }).message?.includes("authentication")
+        ) {
           throw error;
         }
 
         // Don't retry on client errors (4xx except 401, 408, 429)
         if (
-          error.status >= 400 &&
-          error.status < 500 &&
-          error.status !== 408 &&
-          error.status !== 429
+          (error as { status?: number }).status !== undefined &&
+          (error as { status: number }).status >= 400 &&
+          (error as { status: number }).status < 500 &&
+          (error as { status: number }).status !== 408 &&
+          (error as { status: number }).status !== 429
         ) {
           throw error;
         }
@@ -117,6 +121,7 @@ export class ATProtoClient {
   }
 
   async initializeFromStorage(): Promise<boolean> {
+    logger.log("initializeFromStorage");
     try {
       const session = await storage.getAuthSession();
       if (session) {
@@ -141,7 +146,7 @@ export class ATProtoClient {
         this.setAgent(false); // Use PUBLIC_SERVICE_URL for unauthenticated web
       }
       return false;
-    } catch (error) {
+    } catch {
       // Clear invalid session data
       await storage.clearAuthSession();
       this.setAgent(false); // Use PUBLIC_SERVICE_URL for unauthenticated web
@@ -150,6 +155,7 @@ export class ATProtoClient {
   }
 
   async login(identifier: string, password: string) {
+    logger.log("login", { identifier });
     try {
       this.setAgent(true); // Switch to SERVICE_URL for login
       const response = await this.retryWithBackoff(
@@ -181,18 +187,19 @@ export class ATProtoClient {
       // If login fails, revert to unauthenticated agent for web
       this.setAgent(false);
       return { success: false, error: "Login failed" };
-    } catch (error: any) {
+    } catch (error: unknown) {
       // If login fails, revert to unauthenticated agent for web
       this.setAgent(false);
       console.error("Login failed:", error);
       return {
         success: false,
-        error: this.getErrorMessage(error),
+        error: getErrorMessage(error),
       };
     }
   }
 
   async refreshSession(): Promise<boolean> {
+    logger.log("refreshSession");
     try {
       if (!this.currentSession) {
         return false;
@@ -227,6 +234,7 @@ export class ATProtoClient {
 
   // Get public timeline for both authenticated and unauthenticated users
   async getTimeline(limit = 30, cursor?: string) {
+    logger.log("getTimeline", { limit, cursor });
     try {
       // Try multiple public feeds for unauthenticated users
 
@@ -266,7 +274,7 @@ export class ATProtoClient {
             "Get Authenticated Timeline"
           );
           return { success: true, data: response.data };
-        } catch (authError: any) {
+        } catch (authError) {
           console.error("Failed to get authenticated timeline:", authError);
         }
       }
@@ -281,7 +289,7 @@ export class ATProtoClient {
             cursor: undefined,
           },
         };
-      } catch (popularError: any) {
+      } catch (popularError: unknown) {
         console.error("Failed to get popular posts:", popularError);
       }
 
@@ -309,6 +317,7 @@ export class ATProtoClient {
 
   // Get the authenticated user's timeline (following feed)
   async getFollowingFeed(limit = 30, cursor?: string) {
+    logger.log("getFollowingFeed", { limit, cursor });
     try {
       const response = await this.retryWithBackoff(
         () => this.agent.getTimeline({ limit, cursor }),
@@ -319,7 +328,7 @@ export class ATProtoClient {
       console.error("Failed to get following feed:", error);
       return {
         success: false,
-        error: this.getErrorMessage(error),
+        error: getErrorMessage(error),
       };
     }
   }
@@ -366,13 +375,14 @@ export class ATProtoClient {
     return allPosts
       .sort(
         (a, b) =>
-          new Date(b.post.record.createdAt).getTime() -
-          new Date(a.post.record.createdAt).getTime()
+          new Date(String(b.post.record.createdAt)).getTime() -
+          new Date(String(a.post.record.createdAt)).getTime()
       )
       .slice(0, limit);
   }
 
   async getProfile(actor: string) {
+    logger.log("getProfile", { actor });
     try {
       // Validate actor parameter
       if (!actor || typeof actor !== "string" || actor.trim().length === 0) {
@@ -391,12 +401,13 @@ export class ATProtoClient {
       console.error("Failed to get profile:", error);
       return {
         success: false,
-        error: this.getErrorMessage(error),
+        error: getErrorMessage(error),
       };
     }
   }
 
   async getAuthorFeed(actor: string, limit = 30, cursor?: string) {
+    logger.log("getAuthorFeed", { actor, limit, cursor });
     try {
       // Validate actor parameter
       if (!actor || typeof actor !== "string" || actor.trim().length === 0) {
@@ -415,12 +426,13 @@ export class ATProtoClient {
       console.error("Failed to get author feed:", error);
       return {
         success: false,
-        error: this.getErrorMessage(error),
+        error: getErrorMessage(error),
       };
     }
   }
 
   async getActorLikes(actor: string, limit = 30, cursor?: string) {
+    logger.log("getActorLikes", { actor, limit, cursor });
     try {
       // Validate actor parameter
       if (!actor || typeof actor !== "string" || actor.trim().length === 0) {
@@ -448,11 +460,12 @@ export class ATProtoClient {
       console.error("Failed to get actor likes:", error);
 
       // Handle specific cases where likes might not be available
+      const err = error as { status?: number; message?: string };
       if (
-        error.status === 400 ||
-        error.message?.includes("Invalid request") ||
-        error.message?.includes("not found") ||
-        error.message?.includes("not available")
+        err.status === 400 ||
+        err.message?.includes("Invalid request") ||
+        err.message?.includes("not found") ||
+        err.message?.includes("not available")
       ) {
         return {
           success: true,
@@ -462,12 +475,13 @@ export class ATProtoClient {
 
       return {
         success: false,
-        error: this.getErrorMessage(error),
+        error: getErrorMessage(error),
       };
     }
   }
 
   async getPostThread(uri: string, depth = 6, parentHeight = 80) {
+    logger.log("getPostThread", { uri, depth, parentHeight });
     try {
       // Validate URI parameter
       if (!uri || typeof uri !== "string" || uri.trim().length === 0) {
@@ -482,20 +496,21 @@ export class ATProtoClient {
 
       return { success: true, data: response.data };
     } catch (error: unknown) {
-      const err = error as any;
+      const err = error as { message?: string };
       if (err && err.message) {
         console.error("Failed to get post thread:", err.message);
       } else {
-        console.error("Failed to get post thread:", err);
+        console.error("Failed to get post thread:", error);
       }
       return {
         success: false,
-        error: this.getErrorMessage(err),
+        error: getErrorMessage(error),
       };
     }
   }
 
   async searchActors(query: string, limit = 25, cursor?: string) {
+    logger.log("searchActors", { query, limit, cursor });
     try {
       // Validate query parameter
       if (!query || typeof query !== "string" || query.trim().length === 0) {
@@ -519,12 +534,13 @@ export class ATProtoClient {
       console.error("Failed to search actors:", error);
       return {
         success: false,
-        error: this.getErrorMessage(error),
+        error: getErrorMessage(error),
       };
     }
   }
 
   async searchPosts(query: string, limit = 25, cursor?: string) {
+    logger.log("searchPosts", { query, limit, cursor });
     try {
       // Validate query parameter
       if (!query || typeof query !== "string" || query.trim().length === 0) {
@@ -548,12 +564,13 @@ export class ATProtoClient {
       console.error("Failed to search posts:", error);
       return {
         success: false,
-        error: this.getErrorMessage(error),
+        error: getErrorMessage(error),
       };
     }
   }
 
   async getPopularFeedGenerators(limit = 50, cursor?: string) {
+    logger.log("getPopularFeedGenerators", { limit, cursor });
     try {
       const response = await this.retryWithBackoff(
         () =>
@@ -569,12 +586,17 @@ export class ATProtoClient {
       console.error("Failed to get popular feed generators:", error);
       return {
         success: false,
-        error: this.getErrorMessage(error),
+        error: getErrorMessage(error),
       };
     }
   }
 
-  async getSuggestedFollows(actor?: string) {
+  async getSuggestedFollows(): Promise<{
+    success: boolean;
+    data?: unknown;
+    error?: string;
+  }> {
+    logger.log("getSuggestedFollows");
     try {
       const response = await this.retryWithBackoff(
         () => this.agent.getSuggestions({ limit: 50 }),
@@ -586,12 +608,13 @@ export class ATProtoClient {
       console.error("Failed to get suggested follows:", error);
       return {
         success: false,
-        error: this.getErrorMessage(error),
+        error: getErrorMessage(error),
       };
     }
   }
 
   async followProfile(did: string) {
+    logger.log("followProfile", { did });
     if (!this.isAuthenticated) {
       throw new Error("Not authenticated");
     }
@@ -611,12 +634,13 @@ export class ATProtoClient {
       console.error("Failed to follow profile:", error);
       return {
         success: false,
-        error: this.getErrorMessage(error),
+        error: getErrorMessage(error),
       };
     }
   }
 
   async unfollowProfile(followUri: string) {
+    logger.log("unfollowProfile", { followUri });
     if (!this.isAuthenticated) {
       throw new Error("Not authenticated");
     }
@@ -640,12 +664,13 @@ export class ATProtoClient {
       console.error("Failed to unfollow profile:", error);
       return {
         success: false,
-        error: this.getErrorMessage(error),
+        error: getErrorMessage(error),
       };
     }
   }
 
-  async createPost(text: string, images?: any[]) {
+  async createPost(text: string, images?: unknown[]) {
+    logger.log("createPost", { text, images });
     if (!this.isAuthenticated) {
       throw new Error("Not authenticated");
     }
@@ -655,7 +680,7 @@ export class ATProtoClient {
         throw new Error("Post text cannot be empty");
       }
 
-      const record: any = {
+      const record: { text: string; createdAt: string } = {
         text: text.trim(),
         createdAt: new Date().toISOString(),
       };
@@ -675,7 +700,7 @@ export class ATProtoClient {
       console.error("Failed to create post:", error);
       return {
         success: false,
-        error: this.getErrorMessage(error),
+        error: getErrorMessage(error),
       };
     }
   }
@@ -687,6 +712,7 @@ export class ATProtoClient {
     rootUri: string,
     rootCid: string
   ) {
+    logger.log("createReply", { text, parentUri, parentCid, rootUri, rootCid });
     if (!this.isAuthenticated) {
       throw new Error("Not authenticated");
     }
@@ -700,7 +726,7 @@ export class ATProtoClient {
         throw new Error("Invalid reply parameters");
       }
 
-      const record: any = {
+      const record = {
         text: text.trim(),
         createdAt: new Date().toISOString(),
         reply: {
@@ -725,12 +751,13 @@ export class ATProtoClient {
       console.error("Failed to create reply:", error);
       return {
         success: false,
-        error: this.getErrorMessage(error),
+        error: getErrorMessage(error),
       };
     }
   }
 
   async likePost(uri: string, cid: string) {
+    logger.log("likePost", { uri, cid });
     if (!this.isAuthenticated) {
       throw new Error("Not authenticated");
     }
@@ -750,12 +777,13 @@ export class ATProtoClient {
       console.error("Failed to like post:", error);
       return {
         success: false,
-        error: this.getErrorMessage(error),
+        error: getErrorMessage(error),
       };
     }
   }
 
   async unlikePost(likeUri: string) {
+    logger.log("unlikePost", { likeUri });
     if (!this.isAuthenticated) {
       throw new Error("Not authenticated");
     }
@@ -775,12 +803,13 @@ export class ATProtoClient {
       console.error("Failed to unlike post:", error);
       return {
         success: false,
-        error: this.getErrorMessage(error),
+        error: getErrorMessage(error),
       };
     }
   }
 
   async repost(uri: string, cid: string) {
+    logger.log("repost", { uri, cid });
     if (!this.isAuthenticated) {
       throw new Error("Not authenticated");
     }
@@ -800,12 +829,13 @@ export class ATProtoClient {
       console.error("Failed to repost:", error);
       return {
         success: false,
-        error: this.getErrorMessage(error),
+        error: getErrorMessage(error),
       };
     }
   }
 
   async deleteRepost(repostUri: string) {
+    logger.log("deleteRepost", { repostUri });
     if (!this.isAuthenticated) {
       throw new Error("Not authenticated");
     }
@@ -825,7 +855,7 @@ export class ATProtoClient {
       console.error("Failed to delete repost:", error);
       return {
         success: false,
-        error: this.getErrorMessage(error),
+        error: getErrorMessage(error),
       };
     }
   }
@@ -838,6 +868,7 @@ export class ATProtoClient {
     limit = 30,
     cursor?: string
   ) {
+    logger.log("getFeedByDescriptor", { descriptor, limit, cursor });
     try {
       if (descriptor === "following") {
         // Authenticated timeline
@@ -852,7 +883,7 @@ export class ATProtoClient {
               actor: did,
               limit,
               cursor,
-              filter: filter as any,
+              filter: filter,
             }),
           "Get Author Feed"
         );
@@ -896,69 +927,9 @@ export class ATProtoClient {
     } catch (error: unknown) {
       return {
         success: false,
-        error: this.getErrorMessage(error),
+        error: getErrorMessage(error),
       };
     }
-  }
-
-  private getErrorMessage(error: unknown): string {
-    const err = error as any;
-    // Handle specific AT Protocol errors
-    if (err.status) {
-      switch (err.status) {
-        case 400:
-          return "Invalid request. Please check your input and try again.";
-        case 401:
-          return "Authentication failed. Please log in again.";
-        case 403:
-          return "Access denied. You don't have permission to perform this action.";
-        case 404:
-          return "Content not found. It may have been deleted or moved.";
-        case 408:
-          return "Request timeout. Please check your connection and try again.";
-        case 429:
-          return "Too many requests. Please wait a moment and try again.";
-        case 500:
-          return "Server error. The service is temporarily unavailable.";
-        case 502:
-        case 503:
-        case 504:
-          return "Service temporarily unavailable. Please try again in a few moments.";
-        default:
-          if (err.status >= 500) {
-            return "Server error. Please try again later.";
-          }
-          break;
-      }
-    }
-
-    // Handle specific error messages
-    if (err.message) {
-      if (err.message.includes("UpstreamFailure")) {
-        return "Service temporarily unavailable. Please try again in a few moments.";
-      }
-      if (err.message.includes("network")) {
-        return "Network error. Please check your internet connection.";
-      }
-      if (err.message.includes("timeout")) {
-        return "Request timed out. Please try again.";
-      }
-      if (err.message.includes("authentication")) {
-        return "Authentication error. Please log in again.";
-      }
-      if (
-        err.message.includes("Profile not found") ||
-        err.message.includes("Actor not found")
-      ) {
-        return "Profile not found. The user may not exist or may have changed their handle.";
-      }
-      if (err.message.includes("Invalid request")) {
-        return "Invalid request. Please check your input and try again.";
-      }
-    }
-
-    // Fallback to original error message or generic message
-    return err.message || "An unexpected error occurred. Please try again.";
   }
 
   getIsAuthenticated() {
@@ -970,6 +941,7 @@ export class ATProtoClient {
   }
 
   async logout() {
+    logger.log("logout");
     this.isAuthenticated = false;
     this.currentSession = null;
 
@@ -977,7 +949,7 @@ export class ATProtoClient {
     await storage.clearAll();
 
     // Clear agent session
-    this.agent.session = undefined;
+    this.agent.session = null;
 
     // On web, switch back to PUBLIC_SERVICE_URL after logout
     this.setAgent(false);

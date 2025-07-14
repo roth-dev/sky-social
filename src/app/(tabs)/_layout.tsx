@@ -11,6 +11,7 @@ import {
   Video,
 } from "lucide-react-native";
 import { useMemo } from "react";
+import { Platform } from "react-native";
 import Animated, {
   useAnimatedStyle,
   withTiming,
@@ -60,15 +61,20 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarBackground: () => (
-          <TabBarBackground isHomeTab={isHomeTab} isVideoTab={isVideoTab} />
-        ),
+        tabBarBackground: () =>
+          Platform.select({
+            ios: (
+              <TabBarBackground isHomeTab={isHomeTab} isVideoTab={isVideoTab} />
+            ),
+            android: undefined,
+          }),
         headerShown: false,
         tabBarHideOnKeyboard: true,
         tabBarStyle: {
           paddingTop: isIOS ? 10 : 5,
           borderTopColor: Colors.border[colorScheme],
           position: "absolute",
+          backgroundColor: Colors.background.primary[colorScheme],
         },
         tabBarActiveTintColor: isVideoTab
           ? Colors.inverted.dark

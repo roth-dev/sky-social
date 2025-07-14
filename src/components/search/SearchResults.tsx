@@ -1,28 +1,25 @@
 import React from "react";
-import { FlatList, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { UserSearchResult } from "./UserSearchResult";
 import { PostSearchResult } from "./PostSearchResult";
 import { FeedSearchResult } from "./FeedSearchResult";
 import { EmptyState, LoadingState } from "@/components/placeholders/EmptyState";
-import { SearchFilters, SearchResultType } from "@/types/search";
-import { SearchActor, FeedGenerator } from "@/types/search";
+import { SearchResultType, SearchActor, FeedGenerator } from "@/types/search";
 import { ATPost } from "@/types/atproto";
 import { Text, View } from "../ui";
 import { List } from "../list";
 
 interface SearchResultsProps {
   type: SearchResultType;
-  data: any[];
+  data: unknown[];
   loading: boolean;
   loadingMore: boolean;
   hasSearched: boolean;
   query: string;
   onLoadMore: () => void;
-  onRefresh: () => void;
-  onLike?: (uri: string, cid: string) => void;
-  onRepost?: (uri: string, cid: string) => void;
-  onComment?: (uri: string) => void;
 }
+
+type SearchResultItem = SearchActor | ATPost | FeedGenerator;
 
 export function SearchResults({
   type,
@@ -32,33 +29,41 @@ export function SearchResults({
   hasSearched,
   query,
   onLoadMore,
-  onRefresh,
-  onLike,
-  onRepost,
-  onComment,
 }: SearchResultsProps) {
-  const renderUserItem = ({ item }: { item: SearchActor }) => (
-    <UserSearchResult user={item} />
+  // Wrappers to fix typing for List
+  const renderItemWrapper = React.useCallback(
+    (info: { item: unknown }) => {
+      if (type === "users") {
+        return <UserSearchResult user={info.item as SearchActor} />;
+      } else if (type === "posts") {
+        return <PostSearchResult post={info.item as ATPost} />;
+      } else if (type === "feeds") {
+        return <FeedSearchResult feed={info.item as FeedGenerator} />;
+      }
+      return null;
+    },
+    [type]
   );
 
-  const renderPostItem = ({ item }: { item: ATPost }) => (
-    <PostSearchResult
-      post={item}
-      onLike={onLike}
-      onRepost={onRepost}
-      onComment={onComment}
-    />
-  );
+  const getKeyExtractor = (item: unknown, index: number) => {
+    const typedItem = item as SearchResultItem;
+    switch (type) {
+      case "users":
+        return (typedItem as SearchActor).did || `user-${index}`;
+      case "posts":
+        return (typedItem as ATPost).uri || `post-${index}`;
+      case "feeds":
+        return (typedItem as FeedGenerator).uri || `feed-${index}`;
+      default:
+        return `item-${index}`;
+    }
+  };
 
-  const renderFeedItem = ({ item }: { item: FeedGenerator }) => (
-    <FeedSearchResult
-      feed={item}
-      onSubscribe={() => {
-        // TODO: Implement feed subscription
-        console.log("Subscribe to feed:", item.uri);
-      }}
-    />
-  );
+  const handleLoadMore = () => {
+    if (!loadingMore && !loading && data.length > 0) {
+      onLoadMore();
+    }
+  };
 
   const renderLoadingFooter = () => {
     if (!loadingMore) return null;
@@ -142,42 +147,10 @@ export function SearchResults({
     }
   };
 
-  const getRenderItem = () => {
-    switch (type) {
-      case "users":
-        return renderUserItem;
-      case "posts":
-        return renderPostItem;
-      case "feeds":
-        return renderFeedItem;
-      default:
-        return renderUserItem;
-    }
-  };
-
-  const getKeyExtractor = (item: any, index: number) => {
-    switch (type) {
-      case "users":
-        return item.did || `user-${index}`;
-      case "posts":
-        return item.uri || `post-${index}`;
-      case "feeds":
-        return item.uri || `feed-${index}`;
-      default:
-        return `item-${index}`;
-    }
-  };
-
-  const handleLoadMore = () => {
-    if (!loadingMore && !loading && data.length > 0) {
-      onLoadMore();
-    }
-  };
-
   return (
     <List
       data={data}
-      renderItem={getRenderItem()}
+      renderItem={renderItemWrapper}
       keyExtractor={getKeyExtractor}
       style={styles.container}
       contentContainerStyle={

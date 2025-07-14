@@ -297,13 +297,13 @@ function Post({
           )}
 
           {/* Video indicator for debugging */}
-          {!!hasVideo && post.embed && (
+          {/* {!!hasVideo && post.embed && (
             <VideoEmbed
               isDetailView={isDetailView}
               video={post.embed}
               shouldPlay={shouldPlay}
             />
-          )}
+          )} */}
         </View>
 
         {isDetailView && (

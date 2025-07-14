@@ -22,7 +22,7 @@ export function SearchHeader({
 }: SearchHeaderProps) {
   const { colorScheme } = useSettings();
   return (
-    <View className="m-3">
+    <View className="p-3 pt-0">
       <HStack
         className="px-3 rounded-lg items-center"
         style={[{ backgroundColor: Colors.background.secondary[colorScheme] }]}

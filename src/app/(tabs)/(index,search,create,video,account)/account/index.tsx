@@ -1,4 +1,3 @@
-import { Text } from "@/components/ui";
 import { useAuth } from "@/contexts/AuthContext";
 import UserProfile from "@/components/profile/UserProfile";
 import { router, Stack } from "expo-router";

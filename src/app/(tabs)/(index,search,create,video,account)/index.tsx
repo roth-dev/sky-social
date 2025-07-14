@@ -13,6 +13,7 @@ import type PagerViewType from "react-native-pager-view";
 import HeaderTab from "@/components/home/HeaderTab";
 import { useAuth } from "@/contexts/AuthContext";
 import { isWeb } from "@/platform";
+import { router } from "expo-router";
 
 export default function HomeScreen() {
   const { isAuthenticated } = useAuth();
@@ -38,17 +39,23 @@ export default function HomeScreen() {
   );
 
   const handleTabPress = useCallback(
-    (idx: number) => {
-      setPage(idx);
-      indicatorIndex.value = idx;
-      if (pagerRef.current) {
-        pagerRef.current.setPage(idx);
-      }
+    (index: number) => {
+      if (!isAuthenticated && index === 1)
+        if (!isAuthenticated) {
+          router.push("/feeds");
+        } else {
+          setPage(index);
+          indicatorIndex.value = index;
+
+          if (pagerRef.current) {
+            pagerRef.current.setPage(index);
+          }
+        }
     },
-    [indicatorIndex]
+    [indicatorIndex, isAuthenticated]
   );
 
-  const pages: { title: string; feed: FeedDescriptor }[] = useMemo(
+  const pages: { title: string; feed: FeedDescriptor | string }[] = useMemo(
     () => [
       {
         title: "For You",

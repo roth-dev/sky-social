@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 import { cva, VariantProps } from "class-variance-authority";
 
 const buttonVariants = cva(
-  "flex-row items-center justify-center transition-colors",
+  "flex flex-row items-center justify-center transition-colors",
   {
     variants: {
       variant: {
@@ -64,11 +64,11 @@ const textVariants = cva("font-semibold", {
   },
 });
 
-interface ButtonProps
+export interface ButtonProps
   extends React.ComponentPropsWithoutRef<typeof TouchableOpacity>,
     VariantProps<typeof buttonVariants> {
   title?: string;
-  onPress: () => void;
+  onPress?: () => void;
   disabled?: boolean;
   style?: ViewStyle;
   textStyle?: TextStyle;

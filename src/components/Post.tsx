@@ -16,6 +16,9 @@ import { Formater } from "@/lib/format";
 import { LightBox } from "./lightBox";
 import { ActionButtons } from "./ActionButtons";
 import { useSettings } from "@/contexts/SettingsContext";
+import { DropDownMenu, Trigger } from "./dropdown";
+import { Globe, Copy } from "lucide-react-native";
+import { DropDownMenuAction } from "./dropdown/type";
 
 interface PostProps {
   post: ATPost;
@@ -40,7 +43,6 @@ function Post({
   const { colorScheme } = useSettings();
   const [lightBoxVisible, setLightBoxVisible] = useState(false);
   const [lightBoxIndex, setLightBoxIndex] = useState(0);
-
   const hasVideo = isVideoPost(post);
 
   const handlePostPress = useCallback(() => {
@@ -211,6 +213,31 @@ function Post({
     }));
   }, [post.embed, post.author]);
 
+  // Action menu handlers
+  const handleTranslate = () => {
+    Alert.alert("Translate", "Translate action triggered (implement logic)");
+  };
+  const handleCopyPostText = () => {
+    copyToClipboard(post.record.text);
+  };
+
+  const postMenuActions: DropDownMenuAction[] = [
+    {
+      label: "Translate",
+      onPress: handleTranslate,
+      web: {
+        icon: <Globe size={16} />,
+      },
+    },
+    {
+      label: "Copy post text",
+      onPress: handleCopyPostText,
+      web: {
+        icon: <Copy size={16} />,
+      },
+    },
+  ];
+
   return (
     <>
       <TouchableOpacity
@@ -260,10 +287,11 @@ function Post({
               </Text>
             )}
           </View>
-
-          <TouchableOpacity style={styles.moreButton}>
-            <MoreHorizontal size={20} color="#6b7280" />
-          </TouchableOpacity>
+          <DropDownMenu actions={postMenuActions}>
+            <Trigger variant="ghost">
+              <MoreHorizontal size={20} color="#6b7280" />
+            </Trigger>
+          </DropDownMenu>
         </View>
 
         <View style={[styles.content, isDetailView && styles.detailContent]}>
@@ -297,13 +325,13 @@ function Post({
           )}
 
           {/* Video indicator for debugging */}
-          {/* {!!hasVideo && post.embed && (
+          {!!hasVideo && post.embed && (
             <VideoEmbed
               isDetailView={isDetailView}
               video={post.embed}
               shouldPlay={shouldPlay}
             />
-          )} */}
+          )}
         </View>
 
         {isDetailView && (

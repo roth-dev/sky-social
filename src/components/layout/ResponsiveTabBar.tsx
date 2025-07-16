@@ -19,11 +19,11 @@ import Animated, {
 import useScrollDirection from "@/hooks/useScrollDirection";
 
 const NAVIGATION_ITEMS = [
-  { key: "/", label: "Home", icon: Home },
+  { key: "/", label: "Home", icon: Home, requiresAuth: false },
   { key: "/search", label: "Search", icon: Search },
   // { key: "/create", label: "New Post", icon: PlusSquare, requiresAuth: true },
-  { key: "/video", label: "Video", icon: Video },
-  { key: "/account", label: "Account", icon: User },
+  { key: "/video", label: "Video", icon: Video, requiresAuth: false },
+  { key: "/account", label: "Account", icon: User, requiresAuth: false },
 ];
 
 export function ResponsiveTabBar() {

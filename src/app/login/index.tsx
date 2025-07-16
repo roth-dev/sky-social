@@ -4,19 +4,24 @@ import {
   ScrollView,
   Platform,
   KeyboardAvoidingView,
+  Linking,
 } from "react-native";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { useAuth } from "@/contexts/AuthContext";
 import { Image } from "expo-image";
 import { Text, View, VStack } from "@/components/ui";
-
+import { Colors } from "@/constants/colors";
+import { useSettings } from "@/contexts/SettingsContext";
+import { DropDownMenu, Trigger } from "@/components/dropdown";
+import { ChevronDown } from "lucide-react-native";
 export default function LoginScreen() {
   const { login } = useAuth();
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const { colorScheme } = useSettings();
 
   const handleLogin = useCallback(async () => {
     if (!identifier.trim() || !password.trim()) {
@@ -43,18 +48,25 @@ export default function LoginScreen() {
     }
   }, [identifier, login, password]);
 
+  const onOpenUrl = useCallback(() => {
+    Linking.openURL("https://bsky.app");
+  }, []);
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      className="flex-1"
+      style={{
+        flex: 1,
+        backgroundColor: Colors.background.primary[colorScheme],
+      }}
     >
       <View className="flex-1">
         <ScrollView
           keyboardShouldPersistTaps="handled"
           contentContainerClassName="flex-1 justify-center"
         >
-          <View className="justify-center border-gray-500 rounded-md  md:w-96 md:border md:p-4 self-center mx-4">
-            <VStack className="items-center mb-4">
+          <View className="justify-center border-gray-500 rounded-md  md:w-96 md:border md:p-4 mx-10 web:self-center">
+            <VStack className="items-center mb-10">
               <Image
                 source={require("../../../assets/images/icon.png")}
                 style={styles.logo}
@@ -63,7 +75,11 @@ export default function LoginScreen() {
               <Text size="xl" font="bold">
                 Welcome to Sky
               </Text>
-              <Text font="normal" className="text-gray-500">
+              <Text
+                font="normal"
+                style={styles.signupText}
+                className="text-gray-500"
+              >
                 Connect with the decentralized social web
               </Text>
             </VStack>
@@ -76,7 +92,7 @@ export default function LoginScreen() {
                 onChangeText={setIdentifier}
                 autoCapitalize="none"
                 autoCorrect={false}
-                className="dark:text-white"
+                className="dark:text-white dark:border-white"
               />
 
               <Input
@@ -86,7 +102,7 @@ export default function LoginScreen() {
                 onChangeText={setPassword}
                 secureTextEntry
                 error={error}
-                className="dark:text-white"
+                className="dark:text-white dark:border-white"
               />
               <Button
                 title={loading ? "Signing in..." : "Sign In"}
@@ -94,9 +110,40 @@ export default function LoginScreen() {
                 disabled={loading}
               />
 
-              <Text style={styles.signupText}>
-                Don't have a Bluesky account? Create one at bsky.app
+              <Text size="sm" style={styles.signupText}>
+                Don&apos;t have a Bluesky account? Create one at{"\n"}
+                <Text
+                  font="semiBold"
+                  className="text-blue-500 dark:text-blue-500"
+                  onPress={onOpenUrl}
+                >
+                  bsky.app
+                </Text>
               </Text>
+
+              <View>
+                <DropDownMenu
+                  actions={[
+                    {
+                      label: "English",
+                      onPress() {},
+                    },
+                    {
+                      label: "Khmer",
+                      onPress() {},
+                    },
+                  ]}
+                >
+                  <Trigger
+                    rightIcon={ChevronDown}
+                    variant="ghost"
+                    rightIconColor={Colors.inverted[colorScheme]}
+                    title="English"
+                    onPress={() => {}}
+                    size="small"
+                  />
+                </DropDownMenu>
+              </View>
             </VStack>
           </View>
         </ScrollView>
@@ -129,7 +176,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#6b7280",
     textAlign: "center",
-    marginTop: 16,
     lineHeight: 20,
   },
 });

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useMemo } from "react";
 import {
   MenuView,
   type MenuAction as RNMenuAction,
@@ -13,22 +13,29 @@ import { DropDownMenuProps } from "./type";
 
 const DropDownMenu = React.forwardRef<MenuComponentRef, DropDownMenuProps>(
   ({ actions, children, ...menuViewProps }, ref) => {
-    // Map your MenuAction to RNMenuAction
-    const rnActions: RNMenuAction[] = (actions || []).map((action, idx) => ({
-      id: String(idx),
-      title: action.label,
-      attributes: {
-        disabled: action.disabled,
-      },
-      ...action.native,
-    }));
+    // Map DropdownMenu to RNMenuAction
+    const rnActions: RNMenuAction[] = useMemo(
+      () =>
+        (actions || []).map((action, idx) => ({
+          id: String(idx),
+          title: action.label,
+          attributes: {
+            disabled: action.disabled,
+          },
+          ...action.native,
+        })),
+      [actions]
+    );
 
-    const handlePressAction = ({ nativeEvent }: NativeActionEvent) => {
-      const idx = Number(nativeEvent.event);
-      if (actions && actions[idx] && !actions[idx].disabled) {
-        actions[idx].onPress();
-      }
-    };
+    const handlePressAction = useCallback(
+      ({ nativeEvent }: NativeActionEvent) => {
+        const idx = Number(nativeEvent.event);
+        if (actions && actions[idx] && !actions[idx].disabled) {
+          actions[idx].onPress();
+        }
+      },
+      [actions]
+    );
 
     return (
       <MenuView
@@ -46,11 +53,7 @@ const DropDownMenu = React.forwardRef<MenuComponentRef, DropDownMenuProps>(
 DropDownMenu.displayName = "DropDownMenu";
 
 const Trigger = React.forwardRef<View, PropsWithChildren<ButtonProps>>(
-  ({ children, ...props }, ref) => (
-    <Button ref={ref} {...props}>
-      {children}
-    </Button>
-  )
+  (props, ref) => <Button ref={ref} {...props} />
 );
 Trigger.displayName = "DropDownMenu.Trigger";
 

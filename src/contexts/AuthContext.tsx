@@ -31,46 +31,37 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const [user, setUser] = useState<ATProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    initializeAuth();
-  }, []);
-
   const initializeAuth = useCallback(async () => {
     try {
       setLoading(true);
-
-      // Try to restore session from storage
       const sessionRestored = await atprotoClient.initializeFromStorage();
-
       if (sessionRestored) {
         setIsAuthenticated(true);
 
-        // Try to get cached user profile
         const cachedProfile = await storage.getUserProfile();
         if (cachedProfile) {
           setUser(cachedProfile);
         }
-
-        // Refresh user profile in background
         await refreshUserProfile();
       }
-    } catch (error) {
-      console.error("Failed to initialize auth:", error);
-      // Clear any corrupted data
+    } catch {
       await storage.clearAll();
     } finally {
       setLoading(false);
     }
   }, []);
 
+  useEffect(() => {
+    initializeAuth();
+  }, [initializeAuth]);
+
   const refreshUserProfile = async () => {
     try {
       const session = atprotoClient.getCurrentSession();
       if (session) {
         const profileResult = await atprotoClient.getProfile(session.handle);
-        if (profileResult.success) {
-          setUser(profileResult.data);
-          // Cache the updated profile
+        if (profileResult.success && profileResult.data) {
+          setUser(profileResult.data as ATProfile);
           await storage.saveUserProfile(profileResult.data);
         }
       }
@@ -79,20 +70,17 @@ export function AuthProvider({ children }: PropsWithChildren) {
     }
   };
 
-  const login = async (identifier: string, password: string) => {
+  const login = useCallback(async (identifier: string, password: string) => {
     try {
-      setLoading(true);
-
       const result = await atprotoClient.login(identifier, password);
       if (result.success) {
         setIsAuthenticated(true);
-
         // Get user profile
         const profileResult = await atprotoClient.getProfile(identifier);
-        if (profileResult.success) {
-          setUser(profileResult.data);
+        if (profileResult.success && profileResult.data) {
+          setUser(profileResult.data as ATProfile);
           // Cache the profile
-          await storage.saveUserProfile(profileResult.data);
+          await storage.saveUserProfile(profileResult.data as ATProfile);
         }
 
         return { success: true };
@@ -103,9 +91,9 @@ export function AuthProvider({ children }: PropsWithChildren) {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     try {
       setLoading(true);
       await atprotoClient.logout();
@@ -116,11 +104,11 @@ export function AuthProvider({ children }: PropsWithChildren) {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const refreshUser = async () => {
+  const refreshUser = useCallback(async () => {
     await refreshUserProfile();
-  };
+  }, []);
 
   if (loading) {
     return (

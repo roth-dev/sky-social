@@ -10,6 +10,8 @@ import { useSettings } from "@/contexts/SettingsContext";
 import { useSuggestedFollows } from "@/hooks/query";
 import { useFollowProfile } from "@/hooks/mutation";
 import { Colors } from "@/constants/colors";
+import { t } from "@lingui/core/macro";
+import { Trans } from "@lingui/react/macro";
 
 interface SuggestedUserProps {
   user: {
@@ -156,7 +158,7 @@ function SuggestedPeopleSection() {
           size="lg"
           className="text-gray-900 dark:text-white mb-4"
         >
-          Suggested people
+          <Trans>Suggested people</Trans>
         </Text>
         <VStack className="space-y-3">
           {Array.from({ length: 3 }).map((_, index) => (
@@ -185,16 +187,16 @@ function SuggestedPeopleSection() {
           size="lg"
           className="text-gray-900 dark:text-white mb-2"
         >
-          Suggested people
+          <Trans>Suggested people</Trans>
         </Text>
         <Text size="sm" className="text-gray-500">
           {!isAuthenticated
-            ? "Sign in to see personalized suggestions"
-            : "No suggestions available at the moment"}
+            ? t`Sign in to see personalized suggestions`
+            : t`No suggestions available at the moment`}
         </Text>
         {!isAuthenticated && (
           <Button
-            title="Sign in"
+            title={t`Sign in`}
             variant="primary"
             onPress={() => router.push("/login")}
             className="mt-4"
@@ -212,11 +214,11 @@ function SuggestedPeopleSection() {
           size="lg"
           className="text-gray-900 dark:text-white"
         >
-          Suggested people
+          <Trans>Suggested people</Trans>
         </Text>
         <TouchableOpacity onPress={() => router.push("/search/people")}>
           <Text size="sm" className="text-blue-500 hover:text-blue-600">
-            See all
+            <Trans>See all</Trans>
           </Text>
         </TouchableOpacity>
       </HStack>
@@ -237,7 +239,7 @@ function SuggestedPeopleSection() {
               size="sm"
               className="text-blue-600 dark:text-blue-400 text-center"
             >
-              Sign in to follow people and see more suggestions
+              <Trans>Sign in to follow people and see more suggestions</Trans>
             </Text>
           </VStack>
         )}

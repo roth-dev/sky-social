@@ -8,6 +8,7 @@ import { SearchResultType, SearchActor, FeedGenerator } from "@/types/search";
 import { ATPost } from "@/types/atproto";
 import { Text, View } from "../ui";
 import { List } from "../list";
+import { t } from "@lingui/core/macro";
 
 interface SearchResultsProps {
   type: SearchResultType;
@@ -80,7 +81,7 @@ export function SearchResults({
     if (loading) {
       return (
         <LoadingState
-          message={`Searching for ${type}...`}
+          message={t`Searching for ${type}...`}
           style={styles.emptyState}
         />
       );
@@ -90,8 +91,8 @@ export function SearchResults({
       return (
         <EmptyState
           type="search"
-          title="Start searching"
-          description="Enter a search term to find people, posts, and feeds on Bluesky."
+          title={t`Start searching`}
+          description={t`Enter a search term to find people, posts, and feeds on Bluesky.`}
           style={styles.emptyState}
         />
       );
@@ -101,8 +102,8 @@ export function SearchResults({
       return (
         <EmptyState
           type="search"
-          title="Enter a search term"
-          description="Type something to search for people, posts, and feeds."
+          title={t`Enter a search term`}
+          description={t`Type something to search for people, posts, and feeds.`}
           style={styles.emptyState}
         />
       );
@@ -126,23 +127,23 @@ export function SearchResults({
     switch (searchType) {
       case "users":
         return {
-          title: "No people found",
-          description: `No users found for "${searchQuery}". Try searching with a different term or handle.`,
+          title: t`No people found`,
+          description: t`No users found for "${searchQuery}". Try searching with a different term or handle.`,
         };
       case "posts":
         return {
-          title: "No posts found",
-          description: `No posts found for "${searchQuery}". Try searching with different keywords.`,
+          title: t`No posts found`,
+          description: t`No posts found for "${searchQuery}". Try searching with different keywords.`,
         };
       case "feeds":
         return {
-          title: "No feeds found",
-          description: `No custom feeds found for "${searchQuery}". Try browsing popular feeds instead.`,
+          title: t`No feeds found`,
+          description: t`No custom feeds found for "${searchQuery}". Try browsing popular feeds instead.`,
         };
       default:
         return {
-          title: "No results found",
-          description: `No results found for "${searchQuery}". Try a different search term.`,
+          title: t`No results found`,
+          description: t`No results found for "${searchQuery}". Try a different search term.`,
         };
     }
   };

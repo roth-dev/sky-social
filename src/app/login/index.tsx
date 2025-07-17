@@ -28,7 +28,7 @@ export default function LoginScreen() {
 
   const handleLogin = useCallback(async () => {
     if (!identifier.trim() || !password.trim()) {
-      setError("Please fill in all fields");
+      setError(t`Please fill in all fields`);
       return;
     }
 
@@ -42,10 +42,10 @@ export default function LoginScreen() {
         setIdentifier("");
         setPassword("");
       } else {
-        setError(result.error || "Login failed");
+        setError(result.error || t`Login failed`);
       }
     } catch {
-      setError("An unexpected error occurred");
+      setError(t`An unexpected error occurred`);
     } finally {
       setLoading(false);
     }
@@ -90,7 +90,7 @@ export default function LoginScreen() {
             <VStack className="gap-4">
               <Input
                 label={t`Username or Email`}
-                placeholder="your.handle or email@example.com"
+                placeholder={t`your.handle or email@example.com`}
                 value={identifier}
                 onChangeText={setIdentifier}
                 autoCapitalize="none"
@@ -100,7 +100,7 @@ export default function LoginScreen() {
 
               <Input
                 label={t`Password`}
-                placeholder="Enter your password"
+                placeholder={t`Enter your password`}
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry
@@ -108,7 +108,7 @@ export default function LoginScreen() {
                 className="dark:text-white dark:border-white"
               />
               <Button
-                title={loading ? "Signing in..." : t`Sign In`}
+                title={loading ? t`Signing in...` : t`Sign In`}
                 onPress={handleLogin}
                 disabled={loading}
               />
@@ -129,11 +129,11 @@ export default function LoginScreen() {
                 <DropDownMenu
                   actions={[
                     {
-                      label: "English",
+                      label: t`English`,
                       onPress() {},
                     },
                     {
-                      label: "Khmer",
+                      label: t`Khmer`,
                       onPress() {},
                     },
                   ]}
@@ -142,7 +142,7 @@ export default function LoginScreen() {
                     rightIcon={ChevronDown}
                     variant="ghost"
                     rightIconColor={Colors.inverted[colorScheme]}
-                    title="English"
+                    title={t`English`}
                     onPress={() => {}}
                     size="small"
                   />

@@ -13,6 +13,10 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#: src/components/profile/ProfileHeader.tsx:141
+msgid "..."
+msgstr "..."
+
 #. placeholder {0}: lang.nameKey
 #. placeholder {0}: theme.nameKey
 #. placeholder {0}: section.titleKey
@@ -22,6 +26,15 @@ msgstr ""
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:421
 msgid "{0}"
 msgstr "{0}"
+
+#. placeholder {0}: Math.floor(diffInHours / 24)
+#: src/components/Post.tsx:197
+msgid "{0}d"
+msgstr "{0}d"
+
+#: src/components/Post.tsx:196
+msgid "{diffInHours}h"
+msgstr "{diffInHours}h"
 
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:159
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:164
@@ -33,6 +46,14 @@ msgstr "About"
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:132
 msgid "Account"
 msgstr "Account"
+
+#: src/components/profile/UserProfile.tsx:63
+msgid "Additional options coming soon!"
+msgstr "Additional options coming soon!"
+
+#: src/app/login/index.tsx:48
+msgid "An unexpected error occurred"
+msgstr "An unexpected error occurred"
 
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:107
 msgid "Appearance"
@@ -47,15 +68,50 @@ msgstr "Are you sure you want to sign out?"
 #~ msgid "cancel"
 #~ msgstr "cancel"
 
+#: src/components/Post.tsx:91
+#: src/components/Post.tsx:102
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:56
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:252
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:337
 msgid "Cancel"
 msgstr "Cancel"
 
+#: src/components/Post.tsx:87
+msgid "Cannot Open Link"
+msgstr "Cannot Open Link"
+
+#: src/components/placeholders/EmptyState.tsx:107
+msgid "Check your internet connection and try again."
+msgstr "Check your internet connection and try again."
+
+#: src/components/profile/UserProfile.tsx:59
+msgid "Coming Soon"
+msgstr "Coming Soon"
+
 #: src/app/login/index.tsx:86
 msgid "Connect with the decentralized social web"
 msgstr "Connect with the decentralized social web"
+
+#: src/components/placeholders/EmptyState.tsx:183
+msgid "Connection Problem"
+msgstr "Connection Problem"
+
+#: src/components/placeholders/EmptyState.tsx:114
+msgid "Content will appear here when available."
+msgstr "Content will appear here when available."
+
+#: src/components/Post.tsx:130
+msgid "Copied"
+msgstr "Copied"
+
+#: src/components/Post.tsx:235
+msgid "Copy post text"
+msgstr "Copy post text"
+
+#: src/components/Post.tsx:90
+#: src/components/Post.tsx:101
+msgid "Copy URL"
+msgstr "Copy URL"
 
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:274
 #~ msgid "dark"
@@ -65,18 +121,102 @@ msgstr "Connect with the decentralized social web"
 msgid "Dark"
 msgstr "Dark"
 
+#: src/components/search/TrendingSection.tsx:96
+msgid "Discover"
+msgstr "Discover"
+
+#: src/components/search/TrendingSection.tsx:174
+msgid "Discover posts"
+msgstr "Discover posts"
+
+#: src/components/Feed.tsx:99
+msgid "Discover posts from the decentralized social web. Sign in to interact with posts and see your personalized timeline."
+msgstr "Discover posts from the decentralized social web. Sign in to interact with posts and see your personalized timeline."
+
 #: src/app/login/index.tsx:117
 msgid "Don't have a Bluesky account? Create one at"
 msgstr "Don't have a Bluesky account? Create one at"
 
+#: src/components/profile/ProfileHeader.tsx:124
+msgid "Edit Profile"
+msgstr "Edit Profile"
+
+#: src/app/login/index.tsx:132
+#: src/app/login/index.tsx:145
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:76
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:200
 msgid "English"
 msgstr "English"
 
+#: src/components/search/SearchResults.tsx:106
+msgid "Enter a search term"
+msgstr "Enter a search term"
+
+#: src/components/search/SearchResults.tsx:96
+msgid "Enter a search term to find people, posts, and feeds on Bluesky."
+msgstr "Enter a search term to find people, posts, and feeds on Bluesky."
+
+#: src/app/login/index.tsx:103
+msgid "Enter your password"
+msgstr "Enter your password"
+
+#: src/components/composer/Composer.tsx:206
+msgid "Error"
+msgstr "Error"
+
+#: src/components/search/TrendingSection.tsx:184
+msgid "Explore feeds"
+msgstr "Explore feeds"
+
+#: src/components/composer/Composer.tsx:206
+msgid "Failed to create post"
+msgstr "Failed to create post"
+
+#: src/app/(tabs)/(index,search,create,video,account)/index.tsx:75
+msgid "Feeds"
+msgstr "Feeds"
+
+#: src/components/search/TrendingSection.tsx:187
+msgid "Find custom feeds created by the community"
+msgstr "Find custom feeds created by the community"
+
+#: src/components/search/TrendingSection.tsx:100
+msgid "Find interesting people and feeds to follow"
+msgstr "Find interesting people and feeds to follow"
+
+#: src/components/search/TrendingSection.tsx:166
+msgid "Find people"
+msgstr "Find people"
+
+#: src/components/profile/ProfileHeader.tsx:144
+msgid "Follow"
+msgstr "Follow"
+
+#: src/components/Feed.tsx:98
+msgid "Follow people to see their posts in your timeline. Discover new accounts in the search tab!"
+msgstr "Follow people to see their posts in your timeline. Discover new accounts in the search tab!"
+
+#: src/components/profile/ProfileHeader.tsx:143
+#: src/app/(tabs)/(index,search,create,video,account)/index.tsx:69
+msgid "Following"
+msgstr "Following"
+
+#: src/app/(tabs)/(index,search,create,video,account)/index.tsx:63
+msgid "For You"
+msgstr "For You"
+
 #~ msgid "Hello"
 #~ msgstr "Hello"
 
+#: src/components/Post.tsx:74
+msgid "Invalid URL"
+msgstr "Invalid URL"
+
+#: src/components/layout/WebSidebar.tsx:142
+msgid "Join the conversation"
+msgstr "Join the conversation"
+
+#: src/app/login/index.tsx:136
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:76
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:201
 msgid "Khmer"
@@ -96,6 +236,22 @@ msgstr "Language"
 msgid "Light"
 msgstr "Light"
 
+#: src/components/profile/UserProfile.tsx:50
+msgid "Liked"
+msgstr "Liked"
+
+#: src/components/Post.tsx:98
+msgid "Link Error"
+msgstr "Link Error"
+
+#: src/components/placeholders/EmptyState.tsx:136
+msgid "Loading..."
+msgstr "Loading..."
+
+#: src/app/login/index.tsx:45
+msgid "Login failed"
+msgstr "Login failed"
+
 #: src/app/(tabs)/(index,search,create,video,account)/setting.tsx:55
 #: src/app/(tabs)/(index,search,create,video,account)/setting.tsx:58
 #: src/app/(tabs)/(index,search,create,video,account)/account/settings.tsx:55
@@ -109,33 +265,212 @@ msgstr "Light"
 msgid "Logout"
 msgstr "Logout"
 
+#: src/components/profile/UserProfile.tsx:38
+msgid "Media"
+msgstr "Media"
+
+#: src/components/profile/UserProfile.tsx:63
+msgid "More Options"
+msgstr "More Options"
+
+#: src/components/search/SearchResults.tsx:142
+msgid "No custom feeds found for \"{searchQuery}\". Try browsing popular feeds instead."
+msgstr "No custom feeds found for \"{searchQuery}\". Try browsing popular feeds instead."
+
+#: src/components/search/SearchResults.tsx:141
+msgid "No feeds found"
+msgstr "No feeds found"
+
+#: src/components/placeholders/EmptyState.tsx:65
+msgid "No followers yet"
+msgstr "No followers yet"
+
+#: src/components/placeholders/EmptyState.tsx:81
+msgid "No liked posts yet"
+msgstr "No liked posts yet"
+
+#: src/components/placeholders/EmptyState.tsx:89
+msgid "No media yet"
+msgstr "No media yet"
+
+#: src/components/search/SearchResults.tsx:131
+msgid "No people found"
+msgstr "No people found"
+
+#: src/components/search/SearchResults.tsx:136
+msgid "No posts found"
+msgstr "No posts found"
+
+#: src/components/search/SearchResults.tsx:137
+msgid "No posts found for \"{searchQuery}\". Try searching with different keywords."
+msgstr "No posts found for \"{searchQuery}\". Try searching with different keywords."
+
+#: src/components/placeholders/EmptyState.tsx:57
+msgid "No posts yet"
+msgstr "No posts yet"
+
+#: src/components/search/SearchResults.tsx:146
+#: src/components/placeholders/EmptyState.tsx:97
+msgid "No results found"
+msgstr "No results found"
+
+#: src/components/search/SearchResults.tsx:147
+msgid "No results found for \"{searchQuery}\". Try a different search term."
+msgstr "No results found for \"{searchQuery}\". Try a different search term."
+
+#: src/components/layout/RightSidebar.tsx:195
+msgid "No suggestions available at the moment"
+msgstr "No suggestions available at the moment"
+
+#: src/components/search/SearchResults.tsx:132
+msgid "No users found for \"{searchQuery}\". Try searching with a different term or handle."
+msgstr "No users found for \"{searchQuery}\". Try searching with a different term or handle."
+
+#: src/components/placeholders/EmptyState.tsx:73
+msgid "Not following anyone yet"
+msgstr "Not following anyone yet"
+
+#: src/components/placeholders/EmptyState.tsx:112
+msgid "Nothing here yet"
+msgstr "Nothing here yet"
+
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:148
 msgid "Notifications"
 msgstr "Notifications"
+
+#: src/components/Post.tsx:195
+msgid "now"
+msgstr "now"
 
 #: src/app/login/index.tsx:102
 msgid "Password"
 msgstr "Password"
 
+#: src/components/placeholders/EmptyState.tsx:193
+msgid "Please check your internet connection and try again."
+msgstr "Please check your internet connection and try again."
+
+#: src/app/login/index.tsx:31
+msgid "Please fill in all fields"
+msgstr "Please fill in all fields"
+
+#: src/components/Feed.tsx:114
+msgid "Please sign in to view your personalized feed and interact with posts."
+msgstr "Please sign in to view your personalized feed and interact with posts."
+
+#: src/components/search/TrendingSection.tsx:138
+msgid "Popular Feeds"
+msgstr "Popular Feeds"
+
+#: src/components/profile/UserProfile.tsx:33
+msgid "Posts"
+msgstr "Posts"
+
+#: src/components/layout/WebSidebar.tsx:158
+msgid "Powered by AT Protocol"
+msgstr "Powered by AT Protocol"
+
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:137
 msgid "Privacy"
 msgstr "Privacy"
+
+#: src/components/profile/UserProfile.tsx:59
+msgid "Profile editing will be available soon!"
+msgstr "Profile editing will be available soon!"
+
+#. placeholder {0}: replyTo.post.author.handle
+#: src/components/composer/Composer.tsx:245
+msgid "Replying to @{0}"
+msgstr "Replying to @{0}"
+
+#: src/components/video/VideoError.tsx:35
+msgid "Retry"
+msgstr "Retry"
 
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:274
 msgid "Sark"
 msgstr "Sark"
 
+#: src/components/search/TrendingSection.tsx:169
+msgid "Search by handle (@username) or display name"
+msgstr "Search by handle (@username) or display name"
+
+#: src/components/search/TrendingSection.tsx:161
+msgid "Search Tips"
+msgstr "Search Tips"
+
+#: src/components/search/SearchResults.tsx:85
+msgid "Searching for {type}..."
+msgstr "Searching for {type}..."
+
+#: src/components/search/TrendingSection.tsx:116
+#: src/components/search/TrendingSection.tsx:143
+#: src/components/layout/RightSidebar.tsx:221
+msgid "See all"
+msgstr "See all"
+
+#: src/components/placeholders/EmptyState.tsx:186
+msgid "Service Unavailable"
+msgstr "Service Unavailable"
+
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:348
 msgid "Settings"
 msgstr ""
 
+#: src/components/layout/RightSidebar.tsx:199
+msgid "Sign in"
+msgstr "Sign in"
+
+#: src/components/layout/WebSidebar.tsx:145
 #: src/app/login/index.tsx:111
 msgid "Sign In"
 msgstr "Sign In"
 
+#: src/components/Feed.tsx:111
+msgid "Sign in required"
+msgstr "Sign in required"
+
+#: src/components/layout/RightSidebar.tsx:242
+msgid "Sign in to follow people and see more suggestions"
+msgstr "Sign in to follow people and see more suggestions"
+
+#: src/components/layout/RightSidebar.tsx:194
+msgid "Sign in to see personalized suggestions"
+msgstr "Sign in to see personalized suggestions"
+
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:466
 msgid "Signin"
 msgstr "Signin"
+
+#: src/app/login/index.tsx:111
+msgid "Signing in..."
+msgstr "Signing in..."
+
+#: src/components/placeholders/EmptyState.tsx:155
+msgid "Something went wrong"
+msgstr "Something went wrong"
+
+#: src/components/Feed.tsx:141
+msgid "Something went wrong while loading the timeline. Please try again."
+msgstr "Something went wrong while loading the timeline. Please try again."
+
+#: src/components/profile/UserProfile.tsx:74
+msgid "Something went wrong while loading your profile."
+msgstr "Something went wrong while loading your profile."
+
+#: src/components/search/SearchResults.tsx:95
+msgid "Start searching"
+msgstr "Start searching"
+
+#: src/components/layout/RightSidebar.tsx:161
+#: src/components/layout/RightSidebar.tsx:190
+#: src/components/layout/RightSidebar.tsx:217
+msgid "Suggested people"
+msgstr "Suggested people"
+
+#: src/components/search/TrendingSection.tsx:111
+msgid "Suggested People"
+msgstr "Suggested People"
 
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:279
 #~ msgid "system"
@@ -146,15 +481,130 @@ msgstr "Signin"
 msgid "System"
 msgstr "System"
 
+#: src/components/placeholders/EmptyState.tsx:196
+msgid "The service is temporarily unavailable. Please try again in a few moments."
+msgstr "The service is temporarily unavailable. Please try again in a few moments."
+
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:120
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:298
 msgid "Theme"
 msgstr "Theme"
 
+#: src/components/Post.tsx:75
+msgid "This link appears to be invalid or malformed."
+msgstr "This link appears to be invalid or malformed."
+
+#: src/components/Post.tsx:88
+msgid "This link cannot be opened on your device. Would you like to copy the URL?"
+msgstr "This link cannot be opened on your device. Would you like to copy the URL?"
+
+#: src/components/Post.tsx:220
+#: src/components/Post.tsx:228
+msgid "Translate"
+msgstr "Translate"
+
+#: src/components/Post.tsx:220
+msgid "Translate action triggered (implement logic)"
+msgstr "Translate action triggered (implement logic)"
+
+#: src/components/placeholders/EmptyState.tsx:210
+msgid "Try Again"
+msgstr "Try Again"
+
+#: src/components/placeholders/EmptyState.tsx:100
+msgid "Try searching for something else or check your spelling."
+msgstr "Try searching for something else or check your spelling."
+
+#: src/components/search/SearchResults.tsx:107
+msgid "Type something to search for people, posts, and feeds."
+msgstr "Type something to search for people, posts, and feeds."
+
+#: src/components/profile/UserProfile.tsx:71
+msgid "Unable to load profile"
+msgstr "Unable to load profile"
+
+#: src/components/Feed.tsx:138
+msgid "Unable to load timeline"
+msgstr "Unable to load timeline"
+
+#: src/components/video/VideoError.tsx:32
+msgid "Unable to load video"
+msgstr "Unable to load video"
+
+#: src/components/Post.tsx:99
+msgid "Unable to open this link. Would you like to copy the URL instead?"
+msgstr "Unable to open this link. Would you like to copy the URL instead?"
+
+#: src/components/Post.tsx:133
+#: src/components/Post.tsx:137
+msgid "URL"
+msgstr "URL"
+
+#: src/components/Post.tsx:130
+msgid "URL copied to clipboard"
+msgstr "URL copied to clipboard"
+
+#: src/components/search/TrendingSection.tsx:177
+msgid "Use keywords to find posts about topics you're interested in"
+msgstr "Use keywords to find posts about topics you're interested in"
+
 #: src/app/login/index.tsx:92
 msgid "Username or Email"
 msgstr "Username or Email"
 
+#: src/components/profile/UserProfile.tsx:43
+msgid "Videos"
+msgstr "Videos"
+
+#: src/components/placeholders/EmptyState.tsx:156
+msgid "We encountered an error while loading this content."
+msgstr "We encountered an error while loading this content."
+
 #: src/app/login/index.tsx:79
 msgid "Welcome to Sky"
 msgstr "Welcome to Sky"
+
+#: src/components/Feed.tsx:95
+#: src/components/placeholders/EmptyState.tsx:49
+msgid "Welcome to Sky Social!"
+msgstr "Welcome to Sky Social!"
+
+#: src/components/composer/Composer.tsx:274
+msgid "What's on your mind?"
+msgstr "What's on your mind?"
+
+#: src/components/placeholders/EmptyState.tsx:68
+msgid "When people follow this account, they will appear here."
+msgstr "When people follow this account, they will appear here."
+
+#: src/components/placeholders/EmptyState.tsx:76
+msgid "When this user follows people, they will appear here."
+msgstr "When this user follows people, they will appear here."
+
+#: src/components/placeholders/EmptyState.tsx:84
+msgid "When this user likes posts, they will appear here."
+msgstr "When this user likes posts, they will appear here."
+
+#: src/components/placeholders/EmptyState.tsx:60
+msgid "When this user posts something, it will appear here."
+msgstr "When this user posts something, it will appear here."
+
+#: src/components/placeholders/EmptyState.tsx:92
+msgid "When this user shares photos and videos, they will appear here."
+msgstr "When this user shares photos and videos, they will appear here."
+
+#: src/components/composer/Composer.tsx:274
+msgid "Write your reply..."
+msgstr "Write your reply..."
+
+#: src/components/placeholders/EmptyState.tsx:105
+msgid "You're offline"
+msgstr "You're offline"
+
+#: src/components/placeholders/EmptyState.tsx:52
+msgid "Your timeline will appear here once you follow some people and they start posting."
+msgstr "Your timeline will appear here once you follow some people and they start posting."
+
+#: src/app/login/index.tsx:93
+msgid "your.handle or email@example.com"
+msgstr "your.handle or email@example.com"

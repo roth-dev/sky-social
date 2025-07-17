@@ -5,6 +5,7 @@ import { SearchActor, FeedGenerator } from "@/types/search";
 import { TrendingUp, Users, Rss } from "lucide-react-native";
 import { router } from "expo-router";
 import { Text, View } from "../ui";
+import { Trans } from "@lingui/react/macro";
 
 interface TrendingSectionProps {
   suggestedUsers?: SearchActor[];
@@ -90,10 +91,12 @@ export function TrendingSection({
       <View style={styles.header}>
         <View style={styles.headerContent}>
           <TrendingUp size={24} color="#3b82f6" />
-          <Text style={styles.headerTitle}>Discover</Text>
+          <Text style={styles.headerTitle}>
+            <Trans>Discover</Trans>
+          </Text>
         </View>
         <Text style={styles.headerSubtitle}>
-          Find interesting people and feeds to follow
+          <Trans>Find interesting people and feeds to follow</Trans>
         </Text>
       </View>
 
@@ -103,10 +106,14 @@ export function TrendingSection({
           <View style={styles.sectionHeader}>
             <View style={styles.sectionTitleContainer}>
               <Users size={20} color="#111827" />
-              <Text style={styles.sectionTitle}>Suggested People</Text>
+              <Text style={styles.sectionTitle}>
+                <Trans>Suggested People</Trans>
+              </Text>
             </View>
             <TouchableOpacity onPress={handleSeeAllUsers}>
-              <Text style={styles.seeAllText}>See all</Text>
+              <Text style={styles.seeAllText}>
+                <Trans>See all</Trans>
+              </Text>
             </TouchableOpacity>
           </View>
 
@@ -126,10 +133,14 @@ export function TrendingSection({
           <View style={styles.sectionHeader}>
             <View style={styles.sectionTitleContainer}>
               <Rss size={20} color="#111827" />
-              <Text style={styles.sectionTitle}>Popular Feeds</Text>
+              <Text style={styles.sectionTitle}>
+                <Trans>Popular Feeds</Trans>
+              </Text>
             </View>
             <TouchableOpacity onPress={handleSeeAllFeeds}>
-              <Text style={styles.seeAllText}>See all</Text>
+              <Text style={styles.seeAllText}>
+                <Trans>See all</Trans>
+              </Text>
             </TouchableOpacity>
           </View>
 
@@ -145,24 +156,34 @@ export function TrendingSection({
 
       {/* Search Tips */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Search Tips</Text>
+        <Text style={styles.sectionTitle}>
+          <Trans>Search Tips</Trans>
+        </Text>
         <View style={styles.tipsContainer}>
           <View style={styles.tip}>
-            <Text style={styles.tipTitle}>Find people</Text>
+            <Text style={styles.tipTitle}>
+              <Trans>Find people</Trans>
+            </Text>
             <Text style={styles.tipDescription}>
-              Search by handle (@username) or display name
+              <Trans>Search by handle (@username) or display name</Trans>
             </Text>
           </View>
           <View style={styles.tip}>
-            <Text style={styles.tipTitle}>Discover posts</Text>
+            <Text style={styles.tipTitle}>
+              <Trans>Discover posts</Trans>
+            </Text>
             <Text style={styles.tipDescription}>
-              Use keywords to find posts about topics you're interested in
+              <Trans>
+                Use keywords to find posts about topics you're interested in
+              </Trans>
             </Text>
           </View>
           <View style={styles.tip}>
-            <Text style={styles.tipTitle}>Explore feeds</Text>
+            <Text style={styles.tipTitle}>
+              <Trans>Explore feeds</Trans>
+            </Text>
             <Text style={styles.tipDescription}>
-              Find custom feeds created by the community
+              <Trans>Find custom feeds created by the community</Trans>
             </Text>
           </View>
         </View>

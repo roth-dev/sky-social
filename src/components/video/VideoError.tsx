@@ -1,6 +1,8 @@
 import { Colors } from "@/constants/colors";
 import { Text, View } from "../ui";
 import { Button } from "../ui/Button";
+import { t } from "@lingui/core/macro";
+import { Trans } from "@lingui/react/macro";
 
 interface Props {
   onRetry: () => void;
@@ -27,10 +29,10 @@ export default function VideoError({ onRetry }: Props) {
         }}
       >
         <Text style={{ fontSize: 16, color: "#6b7280", textAlign: "center" }}>
-          Unable to load video
+          <Trans>Unable to load video</Trans>
         </Text>
         <Button
-          title="Retry"
+          title={t`Retry`}
           onPress={onRetry}
           style={{
             paddingHorizontal: 16,

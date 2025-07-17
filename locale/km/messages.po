@@ -13,6 +13,10 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#: src/components/profile/ProfileHeader.tsx:141
+msgid "..."
+msgstr ""
+
 #. placeholder {0}: lang.nameKey
 #. placeholder {0}: theme.nameKey
 #. placeholder {0}: section.titleKey
@@ -21,6 +25,15 @@ msgstr ""
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:394
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:421
 msgid "{0}"
+msgstr ""
+
+#. placeholder {0}: Math.floor(diffInHours / 24)
+#: src/components/Post.tsx:197
+msgid "{0}d"
+msgstr ""
+
+#: src/components/Post.tsx:196
+msgid "{diffInHours}h"
 msgstr ""
 
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:159
@@ -33,6 +46,14 @@ msgstr "អំពី"
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:132
 msgid "Account"
 msgstr "គនណី"
+
+#: src/components/profile/UserProfile.tsx:63
+msgid "Additional options coming soon!"
+msgstr ""
+
+#: src/app/login/index.tsx:48
+msgid "An unexpected error occurred"
+msgstr ""
 
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:107
 msgid "Appearance"
@@ -47,15 +68,50 @@ msgstr "តើ​អ្នក​ប្រាកដ​ជា​ចង់​ចេ
 #~ msgid "cancel"
 #~ msgstr ""
 
+#: src/components/Post.tsx:91
+#: src/components/Post.tsx:102
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:56
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:252
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:337
 msgid "Cancel"
 msgstr "បោះបង់"
 
+#: src/components/Post.tsx:87
+msgid "Cannot Open Link"
+msgstr "មិនអាចបើកតំណបានទេ"
+
+#: src/components/placeholders/EmptyState.tsx:107
+msgid "Check your internet connection and try again."
+msgstr "ពិនិត្យការតភ្ជាប់អ៊ីនធឺណិតរបស់អ្នក ហើយព្យាយាមម្តងទៀត"
+
+#: src/components/profile/UserProfile.tsx:59
+msgid "Coming Soon"
+msgstr ""
+
 #: src/app/login/index.tsx:86
 msgid "Connect with the decentralized social web"
 msgstr "ភ្ជាប់ជាមួយបណ្តាញសង្គមដែលមានលក្ខណៈ decentralized"
+
+#: src/components/placeholders/EmptyState.tsx:183
+msgid "Connection Problem"
+msgstr "បញ្ហានៃការតភ្ជាប់"
+
+#: src/components/placeholders/EmptyState.tsx:114
+msgid "Content will appear here when available."
+msgstr "ខ្លឹមសារនឹងបង្ហាញនៅទីនេះនៅពេលមាន"
+
+#: src/components/Post.tsx:130
+msgid "Copied"
+msgstr "បានចម្លង"
+
+#: src/components/Post.tsx:235
+msgid "Copy post text"
+msgstr "ចម្លងអត្ថបទ"
+
+#: src/components/Post.tsx:90
+#: src/components/Post.tsx:101
+msgid "Copy URL"
+msgstr "ចម្លង URL"
 
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:274
 #~ msgid "dark"
@@ -65,18 +121,102 @@ msgstr "ភ្ជាប់ជាមួយបណ្តាញសង្គមដែ
 msgid "Dark"
 msgstr "ងងឹត"
 
+#: src/components/search/TrendingSection.tsx:96
+msgid "Discover"
+msgstr "ស្វែងរក"
+
+#: src/components/search/TrendingSection.tsx:174
+msgid "Discover posts"
+msgstr "ស្វែងរក posts"
+
+#: src/components/Feed.tsx:99
+msgid "Discover posts from the decentralized social web. Sign in to interact with posts and see your personalized timeline."
+msgstr "ស្វែងរកការបង្ហោះពីគេហទំព័រសង្គម Decentralized។ ចូល​ដើម្បី​ធ្វើ​អន្តរកម្ម​ជាមួយ​ការ​បង្ហោះ និង​មើល timeline​ ផ្ទាល់ខ្លួន​របស់​អ្នក។"
+
 #: src/app/login/index.tsx:117
 msgid "Don't have a Bluesky account? Create one at"
 msgstr "មិនទាន់មានគណនី Bluesky? បង្កើតនៅលើ"
 
+#: src/components/profile/ProfileHeader.tsx:124
+msgid "Edit Profile"
+msgstr "កែសម្រួលប្រវត្តិរូប"
+
+#: src/app/login/index.tsx:132
+#: src/app/login/index.tsx:145
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:76
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:200
 msgid "English"
 msgstr "English"
 
+#: src/components/search/SearchResults.tsx:106
+msgid "Enter a search term"
+msgstr "បញ្ចូលពាក្យស្វែងរក"
+
+#: src/components/search/SearchResults.tsx:96
+msgid "Enter a search term to find people, posts, and feeds on Bluesky."
+msgstr "បញ្ចូលពាក្យស្វែងរកដើម្បីស្វែងរកមនុស្ស posts និងមតិព័ត៌មាននៅលើ Bluesky"
+
+#: src/app/login/index.tsx:103
+msgid "Enter your password"
+msgstr "បញ្ចូលពាក្យសម្ងាត់របស់អ្នក"
+
+#: src/components/composer/Composer.tsx:206
+msgid "Error"
+msgstr "កំហុស"
+
+#: src/components/search/TrendingSection.tsx:184
+msgid "Explore feeds"
+msgstr "រុករកព័ត៌មាន"
+
+#: src/components/composer/Composer.tsx:206
+msgid "Failed to create post"
+msgstr "បរាជ័យក្នុងការបង្កើតសារបង្ហោះ"
+
+#: src/app/(tabs)/(index,search,create,video,account)/index.tsx:75
+msgid "Feeds"
+msgstr "ហ្វីត"
+
+#: src/components/search/TrendingSection.tsx:187
+msgid "Find custom feeds created by the community"
+msgstr "ស្វែងរកព័ត៌មានផ្ទាល់ខ្លួនដែលបង្កើតឡើងដោយសហគមន៍"
+
+#: src/components/search/TrendingSection.tsx:100
+msgid "Find interesting people and feeds to follow"
+msgstr "ស្វែងរកមនុស្សគួរឱ្យចាប់អារម្មណ៍ និងព័ត៌មានដើម្បីតាមដាន"
+
+#: src/components/search/TrendingSection.tsx:166
+msgid "Find people"
+msgstr "ស្វែងរកអ្នកប្រើប្រាស់ផ្សេងទៀត"
+
+#: src/components/profile/ProfileHeader.tsx:144
+msgid "Follow"
+msgstr "តាម"
+
+#: src/components/Feed.tsx:98
+msgid "Follow people to see their posts in your timeline. Discover new accounts in the search tab!"
+msgstr "តាមដានអ្នកប្រើប្រាស់ផ្សេងទៀតដើម្បីមើលការបង្ហោះរបស់ពួកគេនៅក្នុង timeline របស់អ្នក។ ស្វែងរកគណនីថ្មីនៅក្នុងផ្ទាំងស្វែងរក"
+
+#: src/components/profile/ProfileHeader.tsx:143
+#: src/app/(tabs)/(index,search,create,video,account)/index.tsx:69
+msgid "Following"
+msgstr "កំពុងតាម"
+
+#: src/app/(tabs)/(index,search,create,video,account)/index.tsx:63
+msgid "For You"
+msgstr "សម្រាប់អ្នក"
+
 #~ msgid "Hello"
 #~ msgstr "សួស្តី"
 
+#: src/components/Post.tsx:74
+msgid "Invalid URL"
+msgstr "URL មិនត្រឹមត្រូវ"
+
+#: src/components/layout/WebSidebar.tsx:142
+msgid "Join the conversation"
+msgstr "ចូលរួមការសន្ទនា"
+
+#: src/app/login/index.tsx:136
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:76
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:201
 msgid "Khmer"
@@ -96,6 +236,22 @@ msgstr "ភាសា"
 msgid "Light"
 msgstr "ពន្លឺ"
 
+#: src/components/profile/UserProfile.tsx:50
+msgid "Liked"
+msgstr "ចូលចិត្ត"
+
+#: src/components/Post.tsx:98
+msgid "Link Error"
+msgstr "កំហុសតំណ"
+
+#: src/components/placeholders/EmptyState.tsx:136
+msgid "Loading..."
+msgstr "កំពុងផ្ទុក..."
+
+#: src/app/login/index.tsx:45
+msgid "Login failed"
+msgstr "ការចូលបានបរាជ័យ"
+
 #: src/app/(tabs)/(index,search,create,video,account)/setting.tsx:55
 #: src/app/(tabs)/(index,search,create,video,account)/setting.tsx:58
 #: src/app/(tabs)/(index,search,create,video,account)/account/settings.tsx:55
@@ -109,33 +265,212 @@ msgstr "ពន្លឺ"
 msgid "Logout"
 msgstr "ចេញ"
 
+#: src/components/profile/UserProfile.tsx:38
+msgid "Media"
+msgstr "ប្រព័ន្ធផ្សព្វផ្សាយ"
+
+#: src/components/profile/UserProfile.tsx:63
+msgid "More Options"
+msgstr "ជម្រើសច្រើនទៀត"
+
+#: src/components/search/SearchResults.tsx:142
+msgid "No custom feeds found for \"{searchQuery}\". Try browsing popular feeds instead."
+msgstr ""
+
+#: src/components/search/SearchResults.tsx:141
+msgid "No feeds found"
+msgstr "រកមិនឃើញមតិព័ត៌មានទេ"
+
+#: src/components/placeholders/EmptyState.tsx:65
+msgid "No followers yet"
+msgstr "មិនទាន់មានអ្នកតាមដាននៅឡើយទេ"
+
+#: src/components/placeholders/EmptyState.tsx:81
+msgid "No liked posts yet"
+msgstr "មិន​ទាន់​មាន posts ​ដែល​ចូលចិត្ត​នៅ​ឡើយ​ទេ"
+
+#: src/components/placeholders/EmptyState.tsx:89
+msgid "No media yet"
+msgstr "មិនទាន់មានប្រព័ន្ធផ្សព្វផ្សាយនៅឡើយទេ"
+
+#: src/components/search/SearchResults.tsx:131
+msgid "No people found"
+msgstr "រកមិនឃើញអ្នកប្រើប្រាស់ទេ"
+
+#: src/components/search/SearchResults.tsx:136
+msgid "No posts found"
+msgstr ""
+
+#: src/components/search/SearchResults.tsx:137
+msgid "No posts found for \"{searchQuery}\". Try searching with different keywords."
+msgstr ""
+
+#: src/components/placeholders/EmptyState.tsx:57
+msgid "No posts yet"
+msgstr ""
+
+#: src/components/search/SearchResults.tsx:146
+#: src/components/placeholders/EmptyState.tsx:97
+msgid "No results found"
+msgstr ""
+
+#: src/components/search/SearchResults.tsx:147
+msgid "No results found for \"{searchQuery}\". Try a different search term."
+msgstr ""
+
+#: src/components/layout/RightSidebar.tsx:195
+msgid "No suggestions available at the moment"
+msgstr ""
+
+#: src/components/search/SearchResults.tsx:132
+msgid "No users found for \"{searchQuery}\". Try searching with a different term or handle."
+msgstr ""
+
+#: src/components/placeholders/EmptyState.tsx:73
+msgid "Not following anyone yet"
+msgstr ""
+
+#: src/components/placeholders/EmptyState.tsx:112
+msgid "Nothing here yet"
+msgstr ""
+
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:148
 msgid "Notifications"
 msgstr "ការជូនដំណឹង"
+
+#: src/components/Post.tsx:195
+msgid "now"
+msgstr ""
 
 #: src/app/login/index.tsx:102
 msgid "Password"
 msgstr "ពាក្យសម្ងាត់"
 
+#: src/components/placeholders/EmptyState.tsx:193
+msgid "Please check your internet connection and try again."
+msgstr ""
+
+#: src/app/login/index.tsx:31
+msgid "Please fill in all fields"
+msgstr ""
+
+#: src/components/Feed.tsx:114
+msgid "Please sign in to view your personalized feed and interact with posts."
+msgstr ""
+
+#: src/components/search/TrendingSection.tsx:138
+msgid "Popular Feeds"
+msgstr ""
+
+#: src/components/profile/UserProfile.tsx:33
+msgid "Posts"
+msgstr ""
+
+#: src/components/layout/WebSidebar.tsx:158
+msgid "Powered by AT Protocol"
+msgstr ""
+
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:137
 msgid "Privacy"
 msgstr "ឯកជនភាព"
 
+#: src/components/profile/UserProfile.tsx:59
+msgid "Profile editing will be available soon!"
+msgstr ""
+
+#. placeholder {0}: replyTo.post.author.handle
+#: src/components/composer/Composer.tsx:245
+msgid "Replying to @{0}"
+msgstr ""
+
+#: src/components/video/VideoError.tsx:35
+msgid "Retry"
+msgstr ""
+
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:274
 msgid "Sark"
+msgstr ""
+
+#: src/components/search/TrendingSection.tsx:169
+msgid "Search by handle (@username) or display name"
+msgstr ""
+
+#: src/components/search/TrendingSection.tsx:161
+msgid "Search Tips"
+msgstr ""
+
+#: src/components/search/SearchResults.tsx:85
+msgid "Searching for {type}..."
+msgstr ""
+
+#: src/components/search/TrendingSection.tsx:116
+#: src/components/search/TrendingSection.tsx:143
+#: src/components/layout/RightSidebar.tsx:221
+msgid "See all"
+msgstr ""
+
+#: src/components/placeholders/EmptyState.tsx:186
+msgid "Service Unavailable"
 msgstr ""
 
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:348
 msgid "Settings"
 msgstr "ការកំណត់"
 
+#: src/components/layout/RightSidebar.tsx:199
+msgid "Sign in"
+msgstr ""
+
+#: src/components/layout/WebSidebar.tsx:145
 #: src/app/login/index.tsx:111
 msgid "Sign In"
 msgstr "ចូលគណនី"
 
+#: src/components/Feed.tsx:111
+msgid "Sign in required"
+msgstr ""
+
+#: src/components/layout/RightSidebar.tsx:242
+msgid "Sign in to follow people and see more suggestions"
+msgstr ""
+
+#: src/components/layout/RightSidebar.tsx:194
+msgid "Sign in to see personalized suggestions"
+msgstr ""
+
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:466
 msgid "Signin"
 msgstr "ចូលគណនី"
+
+#: src/app/login/index.tsx:111
+msgid "Signing in..."
+msgstr ""
+
+#: src/components/placeholders/EmptyState.tsx:155
+msgid "Something went wrong"
+msgstr ""
+
+#: src/components/Feed.tsx:141
+msgid "Something went wrong while loading the timeline. Please try again."
+msgstr ""
+
+#: src/components/profile/UserProfile.tsx:74
+msgid "Something went wrong while loading your profile."
+msgstr ""
+
+#: src/components/search/SearchResults.tsx:95
+msgid "Start searching"
+msgstr ""
+
+#: src/components/layout/RightSidebar.tsx:161
+#: src/components/layout/RightSidebar.tsx:190
+#: src/components/layout/RightSidebar.tsx:217
+msgid "Suggested people"
+msgstr ""
+
+#: src/components/search/TrendingSection.tsx:111
+msgid "Suggested People"
+msgstr ""
 
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:279
 #~ msgid "system"
@@ -146,18 +481,133 @@ msgstr "ចូលគណនី"
 msgid "System"
 msgstr "ប្រព័ន្ធ"
 
+#: src/components/placeholders/EmptyState.tsx:196
+msgid "The service is temporarily unavailable. Please try again in a few moments."
+msgstr ""
+
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:120
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:298
 msgid "Theme"
 msgstr "ពណ៌"
 
+#: src/components/Post.tsx:75
+msgid "This link appears to be invalid or malformed."
+msgstr ""
+
+#: src/components/Post.tsx:88
+msgid "This link cannot be opened on your device. Would you like to copy the URL?"
+msgstr ""
+
+#: src/components/Post.tsx:220
+#: src/components/Post.tsx:228
+msgid "Translate"
+msgstr ""
+
+#: src/components/Post.tsx:220
+msgid "Translate action triggered (implement logic)"
+msgstr ""
+
+#: src/components/placeholders/EmptyState.tsx:210
+msgid "Try Again"
+msgstr ""
+
+#: src/components/placeholders/EmptyState.tsx:100
+msgid "Try searching for something else or check your spelling."
+msgstr ""
+
+#: src/components/search/SearchResults.tsx:107
+msgid "Type something to search for people, posts, and feeds."
+msgstr ""
+
+#: src/components/profile/UserProfile.tsx:71
+msgid "Unable to load profile"
+msgstr ""
+
+#: src/components/Feed.tsx:138
+msgid "Unable to load timeline"
+msgstr ""
+
+#: src/components/video/VideoError.tsx:32
+msgid "Unable to load video"
+msgstr ""
+
+#: src/components/Post.tsx:99
+msgid "Unable to open this link. Would you like to copy the URL instead?"
+msgstr ""
+
+#: src/components/Post.tsx:133
+#: src/components/Post.tsx:137
+msgid "URL"
+msgstr ""
+
+#: src/components/Post.tsx:130
+msgid "URL copied to clipboard"
+msgstr ""
+
+#: src/components/search/TrendingSection.tsx:177
+msgid "Use keywords to find posts about topics you're interested in"
+msgstr ""
+
 #: src/app/login/index.tsx:92
 msgid "Username or Email"
 msgstr "ឈ្មោះអ្នកប្រើប្រាស់ ឬ អីម៉ែល"
 
+#: src/components/profile/UserProfile.tsx:43
+msgid "Videos"
+msgstr ""
+
+#: src/components/placeholders/EmptyState.tsx:156
+msgid "We encountered an error while loading this content."
+msgstr ""
+
 #: src/app/login/index.tsx:79
 msgid "Welcome to Sky"
 msgstr "ស្វាគមន័ មកកាន់ Sky"
+
+#: src/components/Feed.tsx:95
+#: src/components/placeholders/EmptyState.tsx:49
+msgid "Welcome to Sky Social!"
+msgstr ""
+
+#: src/components/composer/Composer.tsx:274
+msgid "What's on your mind?"
+msgstr ""
+
+#: src/components/placeholders/EmptyState.tsx:68
+msgid "When people follow this account, they will appear here."
+msgstr ""
+
+#: src/components/placeholders/EmptyState.tsx:76
+msgid "When this user follows people, they will appear here."
+msgstr ""
+
+#: src/components/placeholders/EmptyState.tsx:84
+msgid "When this user likes posts, they will appear here."
+msgstr ""
+
+#: src/components/placeholders/EmptyState.tsx:60
+msgid "When this user posts something, it will appear here."
+msgstr ""
+
+#: src/components/placeholders/EmptyState.tsx:92
+msgid "When this user shares photos and videos, they will appear here."
+msgstr ""
+
+#: src/components/composer/Composer.tsx:274
+msgid "Write your reply..."
+msgstr ""
+
+#: src/components/placeholders/EmptyState.tsx:105
+msgid "You're offline"
+msgstr ""
+
+#: src/components/placeholders/EmptyState.tsx:52
+msgid "Your timeline will appear here once you follow some people and they start posting."
+msgstr ""
+
+#: src/app/login/index.tsx:93
+msgid "your.handle or email@example.com"
+msgstr ""
 
 #~ msgid "ការកំណត់"
 #~ msgstr ""

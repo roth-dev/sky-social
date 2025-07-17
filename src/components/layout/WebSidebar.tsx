@@ -15,6 +15,8 @@ import {
 } from "lucide-react-native";
 import { Text, View } from "../ui";
 import { cn } from "@/lib/utils";
+import { t } from "@lingui/core/macro";
+import { Trans } from "@lingui/react/macro";
 
 const NAVIGATION_ITEMS = [
   { key: "/", label: "Home", icon: Home },
@@ -137,10 +139,10 @@ export default function WebSidebar() {
         ) : (
           <View className="space-y-3">
             <Text className="text-base text-gray-700 text-center">
-              Join the conversation
+              <Trans>Join the conversation</Trans>
             </Text>
             <Button
-              title="Sign In"
+              title={t`Sign In`}
               onPress={handleLogin}
               variant="primary"
               size="medium"
@@ -152,7 +154,9 @@ export default function WebSidebar() {
 
       {/* Footer */}
       <View className="pt-4 items-center">
-        <Text className="text-xs text-gray-400">Powered by AT Protocol</Text>
+        <Text className="text-xs text-gray-400">
+          <Trans>Powered by AT Protocol</Trans>
+        </Text>
       </View>
     </View>
   );

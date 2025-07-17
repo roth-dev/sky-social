@@ -22,6 +22,8 @@ import { ComposerToolbar } from "./ComposerToolbar";
 import { ComposerImagePreview } from "./ComposerImagePreview";
 import { ComposerVideoPreview } from "./ComposerVideoPreview";
 import { ComposerAltModal } from "./ComposerAltModal";
+import { t } from "@lingui/core/macro";
+import { Trans } from "@lingui/react/macro";
 
 interface ComposerProps {
   onClose: () => void;
@@ -201,7 +203,7 @@ export const Composer: FunctionComponent<ComposerProps> = ({
       setVideo(null);
       onCloseRef.current();
     } catch (e) {
-      Alert.alert("Error", "Failed to create post");
+      Alert.alert(t`Error`, t`Failed to create post`);
     } finally {
       setIsPosting(false);
     }
@@ -240,7 +242,7 @@ export const Composer: FunctionComponent<ComposerProps> = ({
         {replyTo && (
           <VStack className="px-3 pt-3 pb-2 border-b border-gray-200">
             <Text size="sm" className="text-gray-500 mb-2">
-              Replying to @{replyTo.post.author.handle}
+              <Trans>Replying to @{replyTo.post.author.handle}</Trans>
             </Text>
             <VStack className="pl-3 border-l-2 border-gray-300">
               <HStack className="items-center mb-1">
@@ -269,7 +271,7 @@ export const Composer: FunctionComponent<ComposerProps> = ({
             ref={inputRef}
             className="flex-1 ml-3 text-lg text-black dark:text-white min-h-[80px]"
             placeholder={
-              replyTo ? "Write your reply..." : "What's on your mind?"
+              replyTo ? t`Write your reply...` : t`What's on your mind?`
             }
             placeholderTextColor="#888"
             value={text}

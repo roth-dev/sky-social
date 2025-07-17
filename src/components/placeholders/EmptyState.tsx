@@ -17,6 +17,8 @@ import {
   TriangleAlert as AlertTriangle,
 } from "lucide-react-native";
 import Loading from "../ui/Loading";
+import { t } from "@lingui/core/macro";
+import { Trans } from "@lingui/react/macro";
 
 interface EmptyStateProps {
   type:
@@ -44,71 +46,72 @@ export function EmptyState({
       case "timeline":
         return {
           icon: <MessageCircle size={48} color="#9ca3af" />,
-          title: title || "Welcome to Sky Social!",
+          title: title || t`Welcome to Sky Social!`,
           description:
             description ||
-            "Your timeline will appear here once you follow some people and they start posting.",
+            t`Your timeline will appear here once you follow some people and they start posting.`,
         };
       case "posts":
         return {
           icon: <MessageCircle size={48} color="#9ca3af" />,
-          title: title || "No posts yet",
+          title: title || t`No posts yet`,
           description:
             description ||
-            "When this user posts something, it will appear here.",
+            t`When this user posts something, it will appear here.`,
         };
       case "followers":
         return {
           icon: <Users size={48} color="#9ca3af" />,
-          title: title || "No followers yet",
+          title: title || t`No followers yet`,
           description:
             description ||
-            "When people follow this account, they will appear here.",
+            t`When people follow this account, they will appear here.`,
         };
       case "following":
         return {
           icon: <Users size={48} color="#9ca3af" />,
-          title: title || "Not following anyone yet",
+          title: title || t`Not following anyone yet`,
           description:
             description ||
-            "When this user follows people, they will appear here.",
+            t`When this user follows people, they will appear here.`,
         };
       case "likes":
         return {
           icon: <Heart size={48} color="#9ca3af" />,
-          title: title || "No liked posts yet",
+          title: title || t`No liked posts yet`,
           description:
-            description || "When this user likes posts, they will appear here.",
+            description ||
+            t`When this user likes posts, they will appear here.`,
         };
       case "media":
         return {
           icon: <ImageIcon size={48} color="#9ca3af" />,
-          title: title || "No media yet",
+          title: title || t`No media yet`,
           description:
             description ||
-            "When this user shares photos and videos, they will appear here.",
+            t`When this user shares photos and videos, they will appear here.`,
         };
       case "search":
         return {
           icon: <Search size={48} color="#9ca3af" />,
-          title: title || "No results found",
+          title: title || t`No results found`,
           description:
             description ||
-            "Try searching for something else or check your spelling.",
+            t`Try searching for something else or check your spelling.`,
         };
       case "offline":
         return {
           icon: <Wifi size={48} color="#9ca3af" />,
-          title: title || "You're offline",
+          title: title || t`You're offline`,
           description:
-            description || "Check your internet connection and try again.",
+            description || t`Check your internet connection and try again.`,
         };
       default:
         return {
           icon: <MessageCircle size={48} color="#9ca3af" />,
-          title: title || "Nothing here yet",
+          title: title || t`Nothing here yet`,
           description:
-            description || "Content will appear here when available.",
+            description || t`Content will appear here when available.`,
         };
     }
   };
@@ -130,7 +133,7 @@ interface LoadingStateProps {
 }
 
 export function LoadingState({
-  message = "Loading...",
+  message = t`Loading...`,
   style,
 }: LoadingStateProps) {
   return (
@@ -149,8 +152,8 @@ interface ErrorStateProps {
 }
 
 export function ErrorState({
-  title = "Something went wrong",
-  description = "We encountered an error while loading this content.",
+  title = t`Something went wrong`,
+  description = t`We encountered an error while loading this content.`,
   onRetry,
   style,
 }: ErrorStateProps) {
@@ -177,20 +180,20 @@ export function ErrorState({
 
   const getErrorTitle = () => {
     if (isNetworkError) {
-      return "Connection Problem";
+      return t`Connection Problem`;
     }
     if (isServerError) {
-      return "Service Unavailable";
+      return t`Service Unavailable`;
     }
     return title;
   };
 
   const getErrorDescription = () => {
     if (isNetworkError) {
-      return "Please check your internet connection and try again.";
+      return t`Please check your internet connection and try again.`;
     }
     if (isServerError) {
-      return "The service is temporarily unavailable. Please try again in a few moments.";
+      return t`The service is temporarily unavailable. Please try again in a few moments.`;
     }
     return description;
   };
@@ -203,7 +206,9 @@ export function ErrorState({
       {onRetry && (
         <TouchableOpacity style={styles.retryButton} onPress={onRetry}>
           <RefreshCw size={16} color="#ffffff" style={{ marginRight: 8 }} />
-          <Text style={styles.retryText}>Try Again</Text>
+          <Text style={styles.retryText}>
+            <Trans>Try Again</Trans>
+          </Text>
         </TouchableOpacity>
       )}
     </View>

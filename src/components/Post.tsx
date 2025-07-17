@@ -19,6 +19,7 @@ import { useSettings } from "@/contexts/SettingsContext";
 import { DropDownMenu, Trigger } from "./dropdown";
 import { Globe, Copy } from "lucide-react-native";
 import { DropDownMenuAction } from "./dropdown/type";
+import { t } from "@lingui/core/macro";
 
 interface PostProps {
   post: ATPost;
@@ -69,8 +70,8 @@ function Post({
       // Validate URL format
       if (!isValidUrl(url)) {
         Alert.alert(
-          "Invalid URL",
-          "This link appears to be invalid or malformed."
+          t`Invalid URL`,
+          t`This link appears to be invalid or malformed.`
         );
         return;
       }
@@ -82,22 +83,22 @@ function Post({
         await Linking.openURL(url);
       } else {
         Alert.alert(
-          "Cannot Open Link",
-          "This link cannot be opened on your device. Would you like to copy the URL?",
+          t`Cannot Open Link`,
+          t`This link cannot be opened on your device. Would you like to copy the URL?`,
           [
-            { text: "Copy URL", onPress: () => copyToClipboard(url) },
-            { text: "Cancel", style: "cancel" },
+            { text: t`Copy URL`, onPress: () => copyToClipboard(url) },
+            { text: t`Cancel`, style: "cancel" },
           ]
         );
       }
     } catch (error) {
       console.error("Failed to open URL:", error);
       Alert.alert(
-        "Link Error",
-        "Unable to open this link. Would you like to copy the URL instead?",
+        t`Link Error`,
+        t`Unable to open this link. Would you like to copy the URL instead?`,
         [
-          { text: "Copy URL", onPress: () => copyToClipboard(url) },
-          { text: "Cancel", style: "cancel" },
+          { text: t`Copy URL`, onPress: () => copyToClipboard(url) },
+          { text: t`Cancel`, style: "cancel" },
         ]
       );
     }
@@ -125,14 +126,14 @@ function Post({
         navigator.clipboard
       ) {
         await navigator.clipboard.writeText(text);
-        Alert.alert("Copied", "URL copied to clipboard");
+        Alert.alert(t`Copied`, t`URL copied to clipboard`);
       } else {
         // Fallback for environments without clipboard API
-        Alert.alert("URL", text);
+        Alert.alert(t`URL`, text);
       }
     } catch (error) {
       console.error("Failed to copy to clipboard:", error);
-      Alert.alert("URL", text);
+      Alert.alert(t`URL`, text);
     }
   };
 
@@ -190,9 +191,9 @@ function Post({
         });
       }
 
-      if (diffInHours < 1) return "now";
-      if (diffInHours < 24) return `${diffInHours}h`;
-      return `${Math.floor(diffInHours / 24)}d`;
+      if (diffInHours < 1) return t`now`;
+      if (diffInHours < 24) return t`${diffInHours}h`;
+      return t`${Math.floor(diffInHours / 24)}d`;
     },
     [isDetailView]
   );
@@ -215,7 +216,7 @@ function Post({
 
   // Action menu handlers
   const handleTranslate = () => {
-    Alert.alert("Translate", "Translate action triggered (implement logic)");
+    Alert.alert(t`Translate`, t`Translate action triggered (implement logic)`);
   };
   const handleCopyPostText = () => {
     copyToClipboard(post.record.text);
@@ -223,14 +224,14 @@ function Post({
 
   const postMenuActions: DropDownMenuAction[] = [
     {
-      label: "Translate",
+      label: t`Translate`,
       onPress: handleTranslate,
       web: {
         icon: <Globe size={16} />,
       },
     },
     {
-      label: "Copy post text",
+      label: t`Copy post text`,
       onPress: handleCopyPostText,
       web: {
         icon: <Copy size={16} />,

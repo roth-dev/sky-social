@@ -11,6 +11,7 @@ import UserLikeSection from "../sections/Likes";
 import Loading from "../ui/Loading";
 import UserVideoSection from "../sections/Videos";
 import { useProfile } from "@/hooks/query";
+import { t } from "@lingui/core/macro";
 
 interface Props {
   handle: string;
@@ -29,37 +30,37 @@ const UserProfile = ({ handle }: Props) => {
     return [
       {
         key: "posts",
-        name: "Posts",
+        name: t`Posts`,
         component: () => <UserPostSection handle={handle} />,
       },
       {
         key: "media",
-        name: "Media",
+        name: t`Media`,
         component: () => <UserMediaSection handle={handle} />,
       },
       {
         key: "videos",
-        name: "Videos",
+        name: t`Videos`,
         component: () => <UserVideoSection handle={handle} />,
       },
       ...(isOwner
         ? [
             {
               key: "liked",
-              name: "Liked",
+              name: t`Liked`,
               component: () => <UserLikeSection handle={handle} />,
             },
           ]
         : []),
     ];
-  }, [handle]);
+  }, [handle, isOwner]);
 
   const handleEditProfile = () => {
-    Alert.alert("Coming Soon", "Profile editing will be available soon!");
+    Alert.alert(t`Coming Soon`, t`Profile editing will be available soon!`);
   };
 
   const handleMorePress = () => {
-    Alert.alert("More Options", "Additional options coming soon!");
+    Alert.alert(t`More Options`, t`Additional options coming soon!`);
   };
 
   // Show error state
@@ -67,10 +68,10 @@ const UserProfile = ({ handle }: Props) => {
     return (
       <View style={styles.container}>
         <ErrorState
-          title="Unable to load profile"
+          title={t`Unable to load profile`}
           description={
             profileQuery.error?.message ||
-            "Something went wrong while loading your profile."
+            t`Something went wrong while loading your profile.`
           }
           onRetry={() => profileQuery.refetch()}
         />

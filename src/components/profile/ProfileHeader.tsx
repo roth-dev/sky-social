@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React from "react";
 import { StyleSheet, TouchableOpacity, Dimensions } from "react-native";
 import { Avatar } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
@@ -13,6 +13,7 @@ import { Image } from "expo-image";
 import { Text, View } from "../ui";
 import { Colors } from "@/constants/colors";
 import { useSettings } from "@/contexts/SettingsContext";
+import { t } from "@lingui/core/macro";
 
 interface ProfileHeaderProps {
   user: ATProfile;
@@ -119,7 +120,7 @@ export function ProfileHeader({
 
             {isOwnProfile ? (
               <Button
-                title="Edit Profile"
+                title={t`Edit Profile`}
                 variant="outline"
                 size="medium"
                 onPress={onEditProfile}
@@ -135,7 +136,11 @@ export function ProfileHeader({
                 </TouchableOpacity>
                 <Button
                   title={
-                    followLoading ? "..." : isFollowing ? "Following" : "Follow"
+                    followLoading
+                      ? t`...`
+                      : isFollowing
+                      ? t`Following`
+                      : t`Follow`
                   }
                   variant={isFollowing ? "outline" : "primary"}
                   size="medium"

@@ -12,6 +12,8 @@ import Loading from "./ui/Loading";
 import { isVideoPost } from "@/utils/embedUtils";
 import { FeedDescriptor } from "@/lib/atproto";
 import { useFeeds } from "@/hooks/query/useFeeds";
+import { t } from "@lingui/core/macro";
+import { Trans } from "@lingui/react/macro";
 
 interface FeedProps {
   isFocused?: boolean;
@@ -90,11 +92,11 @@ const Feed = React.memo(function Comp({
     () => (
       <EmptyState
         type="timeline"
-        title="Welcome to Sky Social!"
+        title={t`Welcome to Sky Social!`}
         description={
           isAuthenticated
-            ? "Follow people to see their posts in your timeline. Discover new accounts in the search tab!"
-            : "Discover posts from the decentralized social web. Sign in to interact with posts and see your personalized timeline."
+            ? t`Follow people to see their posts in your timeline. Discover new accounts in the search tab!`
+            : t`Discover posts from the decentralized social web. Sign in to interact with posts and see your personalized timeline.`
         }
       />
     ),
@@ -106,10 +108,13 @@ const Feed = React.memo(function Comp({
     return (
       <View className="flex-1 items-center justify-center bg-white px-8">
         <Text className="text-xl font-bold mb-2 text-center">
-          Sign in required
+          <Trans>Sign in required</Trans>
         </Text>
         <Text className="text-gray-500 mb-4 text-center">
-          Please sign in to view your personalized feed and interact with posts.
+          <Trans>
+            Please sign in to view your personalized feed and interact with
+            posts.
+          </Trans>
         </Text>
         {/* You can add a button to navigate to login if needed */}
       </View>
@@ -130,10 +135,10 @@ const Feed = React.memo(function Comp({
     return (
       <View className="flex-1 bg-white">
         <ErrorState
-          title="Unable to load timeline"
+          title={t`Unable to load timeline`}
           description={
             feedQuery.error?.message ||
-            "Something went wrong while loading the timeline. Please try again."
+            t`Something went wrong while loading the timeline. Please try again.`
           }
           onRetry={() => feedQuery.refetch()}
         />

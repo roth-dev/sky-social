@@ -14,6 +14,7 @@ import HeaderTab from "@/components/home/HeaderTab";
 import { useAuth } from "@/contexts/AuthContext";
 import { isWeb } from "@/platform";
 import { router } from "expo-router";
+import { t } from "@lingui/core/macro";
 
 export default function HomeScreen() {
   const { isAuthenticated } = useAuth();
@@ -58,19 +59,19 @@ export default function HomeScreen() {
   const pages: { title: string; feed: FeedDescriptor | string }[] = useMemo(
     () => [
       {
-        title: "For You",
+        title: t`For You`,
         feed: PUBLIC_FEED_DESCRIPTOR,
       },
       ...(isAuthenticated
         ? [
             {
-              title: "Following",
+              title: t`Following`,
               feed: "following",
             },
           ]
         : [
             {
-              title: "Feeds",
+              title: t`Feeds`,
               feed: "",
             },
           ]),

@@ -26,7 +26,7 @@ export const VideoPlayer = memo(function Comp({
   const isFocused = useIsFocused();
 
   useEffect(() => {
-    if ((isFocused && shouldPlay && !lightBoxOpen) || autoPlay) {
+    if (isFocused && shouldPlay && !lightBoxOpen) {
       playerRef.current?.play();
     } else {
       playerRef.current?.pause();

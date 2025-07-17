@@ -1,0 +1,160 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2025-07-17 17:09+0700\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: en\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
+
+#. placeholder {0}: lang.nameKey
+#. placeholder {0}: theme.nameKey
+#. placeholder {0}: section.titleKey
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:236
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:318
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:394
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:421
+msgid "{0}"
+msgstr "{0}"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:159
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:164
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:184
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:189
+msgid "About"
+msgstr "About"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:132
+msgid "Account"
+msgstr "Account"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:107
+msgid "Appearance"
+msgstr "Appearance"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:55
+msgid "Are you sure you want to sign out?"
+msgstr "Are you sure you want to sign out?"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting.tsx:56
+#: src/app/(tabs)/(index,search,create,video,account)/account/settings.tsx:56
+#~ msgid "cancel"
+#~ msgstr "cancel"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:56
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:252
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:337
+msgid "Cancel"
+msgstr "Cancel"
+
+#: src/app/login/index.tsx:86
+msgid "Connect with the decentralized social web"
+msgstr "Connect with the decentralized social web"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:274
+#~ msgid "dark"
+#~ msgstr "dark"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:84
+msgid "Dark"
+msgstr "Dark"
+
+#: src/app/login/index.tsx:117
+msgid "Don't have a Bluesky account? Create one at"
+msgstr "Don't have a Bluesky account? Create one at"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:76
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:200
+msgid "English"
+msgstr "English"
+
+#~ msgid "Hello"
+#~ msgstr "Hello"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:76
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:201
+msgid "Khmer"
+msgstr "Khmer"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:112
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:218
+msgid "Language"
+msgstr "Language"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:269
+#~ msgid "light"
+#~ msgstr "light"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:82
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:269
+msgid "Light"
+msgstr "Light"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting.tsx:55
+#: src/app/(tabs)/(index,search,create,video,account)/setting.tsx:58
+#: src/app/(tabs)/(index,search,create,video,account)/account/settings.tsx:55
+#: src/app/(tabs)/(index,search,create,video,account)/account/settings.tsx:58
+#~ msgid "logout"
+#~ msgstr "logout"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:55
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:58
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:175
+msgid "Logout"
+msgstr "Logout"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:148
+msgid "Notifications"
+msgstr "Notifications"
+
+#: src/app/login/index.tsx:102
+msgid "Password"
+msgstr "Password"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:137
+msgid "Privacy"
+msgstr "Privacy"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:274
+msgid "Sark"
+msgstr "Sark"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:348
+msgid "Settings"
+msgstr ""
+
+#: src/app/login/index.tsx:111
+msgid "Sign In"
+msgstr "Sign In"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:466
+msgid "Signin"
+msgstr "Signin"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:279
+#~ msgid "system"
+#~ msgstr "system"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:86
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:279
+msgid "System"
+msgstr "System"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:120
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:298
+msgid "Theme"
+msgstr "Theme"
+
+#: src/app/login/index.tsx:92
+msgid "Username or Email"
+msgstr "Username or Email"
+
+#: src/app/login/index.tsx:79
+msgid "Welcome to Sky"
+msgstr "Welcome to Sky"

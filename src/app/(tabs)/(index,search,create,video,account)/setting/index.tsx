@@ -12,7 +12,6 @@ import {
 import { Header } from "@/components/Header";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSettings, Language, ThemeMode } from "@/contexts/SettingsContext";
-import { useTranslation } from "@/contexts/I18nContext";
 import { Avatar } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
 import {
@@ -28,7 +27,8 @@ import {
   Check,
 } from "lucide-react-native";
 import { router } from "expo-router";
-
+import { t } from "@lingui/core/macro";
+import { Trans } from "@lingui/react/macro";
 interface SettingItem {
   id: string;
   icon: React.ReactNode;
@@ -48,15 +48,14 @@ export default function SettingsScreen() {
   const { isAuthenticated, user, logout } = useAuth();
   const { language, themeMode, isDarkMode, setLanguage, setThemeMode } =
     useSettings();
-  const { t } = useTranslation();
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [showThemeModal, setShowThemeModal] = useState(false);
 
   const handleLogout = () => {
-    Alert.alert(t("settings.logout"), "Are you sure you want to sign out?", [
-      { text: t("common.cancel"), style: "cancel" },
+    Alert.alert(t`Logout`, t`Are you sure you want to sign out?`, [
+      { text: t`Cancel`, style: "cancel" },
       {
-        text: t("settings.logout"),
+        text: t`Logout`,
         style: "destructive",
         onPress: () => logout(),
       },
@@ -74,19 +73,17 @@ export default function SettingsScreen() {
   };
 
   const getLanguageDisplayName = (lang: Language) => {
-    return lang === "en"
-      ? t("settings.language.english")
-      : t("settings.language.khmer");
+    return lang === "en" ? t`English` : t`Khmer`;
   };
 
   const getThemeDisplayName = (theme: ThemeMode) => {
     switch (theme) {
       case "light":
-        return t("settings.theme.light");
+        return t`Light`;
       case "dark":
-        return t("settings.theme.dark");
+        return t`Dark`;
       case "system":
-        return t("settings.theme.system");
+        return t`System`;
       default:
         return theme;
     }
@@ -107,12 +104,12 @@ export default function SettingsScreen() {
 
   const sections: SettingSection[] = [
     {
-      titleKey: "settings.appearance",
+      titleKey: t`Appearance`,
       items: [
         {
           id: "language",
           icon: <Globe size={20} color="#6b7280" />,
-          titleKey: "settings.language",
+          titleKey: t`Language`,
           value: getLanguageDisplayName(language),
           onPress: () => setShowLanguageModal(true),
           showChevron: true,
@@ -120,7 +117,7 @@ export default function SettingsScreen() {
         {
           id: "theme",
           icon: getThemeIcon(themeMode),
-          titleKey: "settings.theme",
+          titleKey: t`Theme`,
           value: getThemeDisplayName(themeMode),
           onPress: () => setShowThemeModal(true),
           showChevron: true,
@@ -132,12 +129,12 @@ export default function SettingsScreen() {
   if (isAuthenticated) {
     sections.push(
       {
-        titleKey: "settings.account",
+        titleKey: t`Account`,
         items: [
           {
             id: "privacy",
             icon: <Shield size={20} color="#6b7280" />,
-            titleKey: "settings.privacy",
+            titleKey: t`Privacy`,
             onPress: () =>
               Alert.alert(
                 "Coming Soon",
@@ -148,7 +145,7 @@ export default function SettingsScreen() {
           {
             id: "notifications",
             icon: <Bell size={20} color="#6b7280" />,
-            titleKey: "settings.notifications",
+            titleKey: t`Notifications`,
             onPress: () =>
               Alert.alert(
                 "Coming Soon",
@@ -159,12 +156,12 @@ export default function SettingsScreen() {
         ],
       },
       {
-        titleKey: "settings.about",
+        titleKey: t`About`,
         items: [
           {
             id: "about",
             icon: <Info size={20} color="#6b7280" />,
-            titleKey: "settings.about",
+            titleKey: t`About`,
             onPress: () =>
               Alert.alert(
                 "Sky Social",
@@ -175,7 +172,7 @@ export default function SettingsScreen() {
           {
             id: "logout",
             icon: <LogOut size={20} color="#ef4444" />,
-            titleKey: "settings.logout",
+            titleKey: t`Logout`,
             onPress: handleLogout,
             destructive: true,
           },
@@ -184,12 +181,12 @@ export default function SettingsScreen() {
     );
   } else {
     sections.push({
-      titleKey: "settings.about",
+      titleKey: t`About`,
       items: [
         {
           id: "about",
           icon: <Info size={20} color="#6b7280" />,
-          titleKey: "settings.about",
+          titleKey: t`About`,
           onPress: () =>
             Alert.alert("Sky Social", "Version 1.0.0\nBuilt with AT Protocol"),
           showChevron: true,
@@ -200,8 +197,8 @@ export default function SettingsScreen() {
 
   const renderLanguageModal = () => {
     const languages: { code: Language; nameKey: string }[] = [
-      { code: "en", nameKey: "settings.language.english" },
-      { code: "km", nameKey: "settings.language.khmer" },
+      { code: "en", nameKey: t`English` },
+      { code: "km", nameKey: t`Khmer` },
     ];
 
     return (
@@ -218,7 +215,7 @@ export default function SettingsScreen() {
             style={[styles.modalContent, isDarkMode && styles.darkModalContent]}
           >
             <Text style={[styles.modalTitle, isDarkMode && styles.darkText]}>
-              {t("settings.language")}
+              <Trans>Language</Trans>
             </Text>
 
             {languages.map((lang) => (
@@ -236,7 +233,7 @@ export default function SettingsScreen() {
                     isDarkMode && styles.darkText,
                   ]}
                 >
-                  {t(lang.nameKey)}
+                  <Trans>{lang.nameKey}</Trans>
                 </Text>
                 {language === lang.code && <Check size={20} color="#3b82f6" />}
               </TouchableOpacity>
@@ -252,7 +249,7 @@ export default function SettingsScreen() {
                   isDarkMode && styles.darkSecondaryText,
                 ]}
               >
-                {t("common.cancel")}
+                <Trans>Cancel</Trans>
               </Text>
             </TouchableOpacity>
           </View>
@@ -269,17 +266,17 @@ export default function SettingsScreen() {
     }[] = [
       {
         mode: "light",
-        nameKey: "settings.theme.light",
+        nameKey: t`Light`,
         icon: <Sun size={20} color="#f59e0b" />,
       },
       {
         mode: "dark",
-        nameKey: "settings.theme.dark",
+        nameKey: t`Sark`,
         icon: <Moon size={20} color="#6366f1" />,
       },
       {
         mode: "system",
-        nameKey: "settings.theme.system",
+        nameKey: t`System`,
         icon: <Monitor size={20} color="#6b7280" />,
       },
     ];
@@ -298,7 +295,7 @@ export default function SettingsScreen() {
             style={[styles.modalContent, isDarkMode && styles.darkModalContent]}
           >
             <Text style={[styles.modalTitle, isDarkMode && styles.darkText]}>
-              {t("settings.theme")}
+              <Trans>Theme</Trans>
             </Text>
 
             {themes.map((theme) => (
@@ -318,7 +315,7 @@ export default function SettingsScreen() {
                       isDarkMode && styles.darkText,
                     ]}
                   >
-                    {t(theme.nameKey)}
+                    <Trans>{theme.nameKey}</Trans>
                   </Text>
                 </View>
                 {themeMode === theme.mode && (
@@ -337,7 +334,7 @@ export default function SettingsScreen() {
                   isDarkMode && styles.darkSecondaryText,
                 ]}
               >
-                {t("common.cancel")}
+                <Trans>Cancel</Trans>
               </Text>
             </TouchableOpacity>
           </View>
@@ -348,14 +345,7 @@ export default function SettingsScreen() {
 
   return (
     <View style={[styles.container, isDarkMode && styles.darkContainer]}>
-      {Platform.OS !== "web" && (
-        <Header
-          disabledLeft
-          title="Settings"
-          // leftIcon={<ArrowLeft size={24} color="#111827" />}
-          onLeftPress={() => router.back()}
-        />
-      )}
+      {Platform.OS !== "web" && <Header title={t`Settings`} />}
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* User Profile Section */}
@@ -401,7 +391,7 @@ export default function SettingsScreen() {
                 isDarkMode && styles.darkSecondaryText,
               ]}
             >
-              {t(section.titleKey)}
+              <Trans>{section.titleKey}</Trans>
             </Text>
             <View
               style={[
@@ -428,7 +418,7 @@ export default function SettingsScreen() {
                         isDarkMode && !item.destructive && styles.darkText,
                       ]}
                     >
-                      {t(item.titleKey)}
+                      <Trans>{item.titleKey}</Trans>
                     </Text>
                   </View>
                   <View style={styles.settingRight}>
@@ -473,7 +463,7 @@ export default function SettingsScreen() {
               others.
             </Text>
             <Button
-              title={t("auth.signin")}
+              title={t`Signin`}
               onPress={() => router.push("/login")}
               variant="primary"
               size="large"

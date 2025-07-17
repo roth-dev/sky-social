@@ -4,7 +4,7 @@ import { StatusBar } from "expo-status-bar";
 import { useFrameworkReady } from "@/hooks/useFrameworkReady";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { SettingsProvider } from "@/contexts/SettingsContext";
-import { I18nProvider } from "@/contexts/I18nContext";
+import { I18nProviderWrapper } from "@/contexts/I18nProvider";
 import { QueryProvider } from "@/contexts/QueryProvider";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Fragment } from "react";
@@ -57,11 +57,11 @@ export default function App() {
       <QueryProvider>
         <AuthProvider>
           <FontProvider>
-            <I18nProvider>
+            <I18nProviderWrapper>
               <GestureHandlerRootView className="flex-1">
                 <RootLayout />
               </GestureHandlerRootView>
-            </I18nProvider>
+            </I18nProviderWrapper>
           </FontProvider>
         </AuthProvider>
       </QueryProvider>

@@ -15,6 +15,9 @@ import { Colors } from "@/constants/colors";
 import { useSettings } from "@/contexts/SettingsContext";
 import { DropDownMenu, Trigger } from "@/components/dropdown";
 import { ChevronDown } from "lucide-react-native";
+import { Trans } from "@lingui/react/macro";
+import { t } from "@lingui/core/macro";
+
 export default function LoginScreen() {
   const { login } = useAuth();
   const [identifier, setIdentifier] = useState("");
@@ -73,20 +76,20 @@ export default function LoginScreen() {
                 contentFit="contain"
               />
               <Text size="xl" font="bold">
-                Welcome to Sky
+                <Trans>Welcome to Sky</Trans>
               </Text>
               <Text
                 font="normal"
                 style={styles.signupText}
                 className="text-gray-500"
               >
-                Connect with the decentralized social web
+                <Trans>Connect with the decentralized social web</Trans>
               </Text>
             </VStack>
 
             <VStack className="gap-4">
               <Input
-                label="Username or Email"
+                label={t`Username or Email`}
                 placeholder="your.handle or email@example.com"
                 value={identifier}
                 onChangeText={setIdentifier}
@@ -96,7 +99,7 @@ export default function LoginScreen() {
               />
 
               <Input
-                label="Password"
+                label={t`Password`}
                 placeholder="Enter your password"
                 value={password}
                 onChangeText={setPassword}
@@ -105,13 +108,14 @@ export default function LoginScreen() {
                 className="dark:text-white dark:border-white"
               />
               <Button
-                title={loading ? "Signing in..." : "Sign In"}
+                title={loading ? "Signing in..." : t`Sign In`}
                 onPress={handleLogin}
                 disabled={loading}
               />
 
               <Text size="sm" style={styles.signupText}>
-                Don&apos;t have a Bluesky account? Create one at{"\n"}
+                <Trans>Don&apos;t have a Bluesky account? Create one at</Trans>{" "}
+                {"\n"}
                 <Text
                   font="semiBold"
                   className="text-blue-500 dark:text-blue-500"

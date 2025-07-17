@@ -23,9 +23,7 @@ export default function Screen() {
               rightIcon={
                 <Settings size={24} color={Colors.inverted[colorScheme]} />
               }
-              onRightPress={() =>
-                router.push("/(tabs)/(account)/account/settings")
-              }
+              onRightPress={() => router.push("/(tabs)/setting")}
             />
           ),
         }}

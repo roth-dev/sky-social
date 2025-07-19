@@ -1,126 +1,135 @@
-import React from "react";
-import { TouchableOpacity, StyleSheet, ScrollView } from "react-native";
+import React, { useCallback } from "react";
+import { TouchableOpacity, ScrollView } from "react-native";
 import { Avatar } from "@/components/ui/Avatar";
 import { SearchActor, FeedGenerator } from "@/types/search";
-import { TrendingUp, Users, Rss } from "lucide-react-native";
+import { TrendingUp, Users, Rss, LucideIcon } from "lucide-react-native";
 import { router } from "expo-router";
-import { Text, View } from "../ui";
+import { Button, HStack, Text, View, VStack } from "../ui";
 import { Trans } from "@lingui/react/macro";
+import { useSettings } from "@/contexts/SettingsContext";
+import { Colors } from "@/constants/colors";
 
 interface TrendingSectionProps {
   suggestedUsers?: SearchActor[];
   popularFeeds?: FeedGenerator[];
-  onUserPress?: (user: SearchActor) => void;
-  onFeedPress?: (feed: FeedGenerator) => void;
-  onSeeAllUsers?: () => void;
-  onSeeAllFeeds?: () => void;
 }
 
+function RowHeader({
+  title,
+  onPress,
+  Icon,
+}: {
+  Icon: LucideIcon;
+  title: string;
+  onPress?: () => void;
+}) {
+  const { colorScheme } = useSettings();
+  return (
+    <HStack className="justify-between p-3">
+      <HStack>
+        <Icon size={20} color={Colors.inverted[colorScheme]} />
+        <Text font="semiBold" size="xl">
+          <Trans>{title}</Trans>
+        </Text>
+      </HStack>
+      <TouchableOpacity onPress={onPress}>
+        <Text className="text-[#3b82f6] dark:text-[#3b82f6]">
+          <Trans>See all</Trans>
+        </Text>
+      </TouchableOpacity>
+    </HStack>
+  );
+}
+
+function Profile({
+  onPress,
+  avatar,
+  displayName,
+  handle,
+}: {
+  avatar?: string;
+  displayName: string;
+  onPress?: () => void;
+  handle: string;
+}) {
+  return (
+    <Button
+      onPress={onPress}
+      variant="ghost"
+      className="border border-gray-200 dark:border-gray-700 w-32"
+    >
+      <VStack className="flex-1 items-center">
+        <Avatar uri={avatar} size="medium" fallbackText={displayName} />
+        <Text font="semiBold" numberOfLines={1}>
+          {displayName}
+        </Text>
+        <Text size="sm" numberOfLines={1} className="dark:text-gray-300">
+          by @{handle}
+        </Text>
+      </VStack>
+    </Button>
+  );
+}
 export function TrendingSection({
   suggestedUsers = [],
   popularFeeds = [],
-  onUserPress,
-  onFeedPress,
-  onSeeAllUsers,
-  onSeeAllFeeds,
 }: TrendingSectionProps) {
-  const handleSeeAllUsers = () => {
-    if (onSeeAllUsers) {
-      onSeeAllUsers();
-    } else {
-      router.push("/search/people");
-    }
-  };
+  const onUserPress = useCallback((handle: string) => {
+    router.push(`/profile/${handle}`);
+  }, []);
 
-  const handleSeeAllFeeds = () => {
-    if (onSeeAllFeeds) {
-      onSeeAllFeeds();
-    } else {
-      router.push("/search/feeds");
-    }
-  };
-
-  const handleFeedPress = (feed: FeedGenerator) => {
-    if (onFeedPress) {
-      onFeedPress(feed);
-    } else {
-      const safeFeedUri = encodeURIComponent(feed.uri);
-      router.push(`/feed/${safeFeedUri}`);
-    }
-  };
+  const handleFeedPress = useCallback((feed: FeedGenerator) => {
+    const safeFeedUri = encodeURIComponent(feed.uri);
+    // need to implement
+  }, []);
 
   const renderSuggestedUser = (user: SearchActor) => (
-    <TouchableOpacity
+    <Profile
       key={user.did}
-      style={styles.userCard}
-      onPress={() => onUserPress?.(user)}
-    >
-      <Avatar
-        uri={user.avatar}
-        size="medium"
-        fallbackText={user.displayName || user.handle}
-      />
-      <Text style={styles.userName} numberOfLines={1}>
-        {user.displayName || user.handle}
-      </Text>
-      <Text style={styles.userHandle} numberOfLines={1}>
-        @{user.handle}
-      </Text>
-    </TouchableOpacity>
+      displayName={user.displayName ?? ""}
+      avatar={user.avatar}
+      handle={user.handle}
+      onPress={() => onUserPress(user.handle)}
+    />
   );
 
-  const renderPopularFeed = (feed: FeedGenerator) => (
-    <TouchableOpacity
-      key={feed.uri}
-      style={styles.feedCard}
-      onPress={() => handleFeedPress(feed)}
-    >
-      <Avatar uri={feed.avatar} size="medium" fallbackText={feed.displayName} />
-      <Text style={styles.feedName} numberOfLines={1}>
-        {feed.displayName}
-      </Text>
-      <Text style={styles.feedCreator} numberOfLines={1}>
-        by @{feed.creator.handle}
-      </Text>
-    </TouchableOpacity>
+  const renderPopularFeed = useCallback(
+    (feed: FeedGenerator) => (
+      <Profile
+        key={feed.uri}
+        displayName={feed.description ?? ""}
+        onPress={() => handleFeedPress(feed)}
+        avatar={feed.avatar}
+        handle={feed.creator.handle}
+      />
+    ),
+    [handleFeedPress]
   );
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+    <ScrollView showsVerticalScrollIndicator={false}>
       {/* Trending Header */}
-      <View style={styles.header}>
-        <View style={styles.headerContent}>
-          <TrendingUp size={24} color="#3b82f6" />
-          <Text style={styles.headerTitle}>
+      <VStack className="items-center py-4">
+        <HStack>
+          <TrendingUp size={24} color={Colors.primary} />
+          <Text font="semiBold" size="2xl">
             <Trans>Discover</Trans>
           </Text>
-        </View>
-        <Text style={styles.headerSubtitle}>
+        </HStack>
+        <Text className="text-[#6b7280] dark:text-[#6b7280]">
           <Trans>Find interesting people and feeds to follow</Trans>
         </Text>
-      </View>
+      </VStack>
 
       {/* Suggested People */}
       {suggestedUsers.length > 0 && (
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <View style={styles.sectionTitleContainer}>
-              <Users size={20} color="#111827" />
-              <Text style={styles.sectionTitle}>
-                <Trans>Suggested People</Trans>
-              </Text>
-            </View>
-            <TouchableOpacity onPress={handleSeeAllUsers}>
-              <Text style={styles.seeAllText}>
-                <Trans>See all</Trans>
-              </Text>
-            </TouchableOpacity>
-          </View>
+        <View>
+          <RowHeader Icon={Users} title="Suggested People" />
 
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.horizontalList}
+            contentContainerClassName="gap-2 px-4"
           >
             {suggestedUsers.slice(0, 10).map(renderSuggestedUser)}
           </ScrollView>
@@ -129,189 +138,63 @@ export function TrendingSection({
 
       {/* Popular Feeds */}
       {popularFeeds.length > 0 && (
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <View style={styles.sectionTitleContainer}>
-              <Rss size={20} color="#111827" />
-              <Text style={styles.sectionTitle}>
-                <Trans>Popular Feeds</Trans>
-              </Text>
-            </View>
-            <TouchableOpacity onPress={handleSeeAllFeeds}>
-              <Text style={styles.seeAllText}>
-                <Trans>See all</Trans>
-              </Text>
-            </TouchableOpacity>
-          </View>
-
+        <VStack>
+          <RowHeader title="Popular Feeds" Icon={Rss} />
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.horizontalList}
+            contentContainerClassName="gap-2 px-4"
           >
             {popularFeeds.slice(0, 10).map(renderPopularFeed)}
           </ScrollView>
-        </View>
+        </VStack>
       )}
 
       {/* Search Tips */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>
+      <VStack className="p-4 gap-2">
+        <Text size="xl" font="semiBold">
           <Trans>Search Tips</Trans>
         </Text>
-        <View style={styles.tipsContainer}>
-          <View style={styles.tip}>
-            <Text style={styles.tipTitle}>
-              <Trans>Find people</Trans>
-            </Text>
-            <Text style={styles.tipDescription}>
-              <Trans>Search by handle (@username) or display name</Trans>
-            </Text>
-          </View>
-          <View style={styles.tip}>
-            <Text style={styles.tipTitle}>
-              <Trans>Discover posts</Trans>
-            </Text>
-            <Text style={styles.tipDescription}>
-              <Trans>
-                Use keywords to find posts about topics you're interested in
-              </Trans>
-            </Text>
-          </View>
-          <View style={styles.tip}>
-            <Text style={styles.tipTitle}>
-              <Trans>Explore feeds</Trans>
-            </Text>
-            <Text style={styles.tipDescription}>
-              <Trans>Find custom feeds created by the community</Trans>
-            </Text>
-          </View>
-        </View>
-      </View>
+        <SearchTips
+          title="Find people"
+          description="Search by handle (@username) or display name"
+        />
+        <SearchTips
+          title="Discover posts"
+          description="Search by handle (@username) or display name"
+        />
+        <SearchTips
+          title="Explore feeds"
+          description="Find custom feeds created by the community"
+        />
+      </VStack>
     </ScrollView>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  header: {
-    padding: 24,
-    alignItems: "center",
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "#e5e7eb",
-  },
-  headerContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    marginBottom: 8,
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: "700",
-    color: "#111827",
-  },
-  headerSubtitle: {
-    fontSize: 16,
-    color: "#6b7280",
-    textAlign: "center",
-  },
-  section: {
-    paddingVertical: 20,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "#e5e7eb",
-  },
-  sectionHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 16,
-    marginBottom: 16,
-  },
-  sectionTitleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#111827",
-  },
-  seeAllText: {
-    fontSize: 14,
-    color: "#3b82f6",
-    fontWeight: "500",
-  },
-  horizontalList: {
-    paddingHorizontal: 16,
-    gap: 12,
-  },
-  userCard: {
-    width: 120,
-    alignItems: "center",
-    padding: 12,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "#e5e7eb",
-  },
-  userName: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#111827",
-    marginTop: 8,
-    textAlign: "center",
-  },
-  userHandle: {
-    fontSize: 12,
-    color: "#6b7280",
-    marginTop: 2,
-    textAlign: "center",
-  },
-  feedCard: {
-    width: 140,
-    alignItems: "center",
-    padding: 12,
-    // backgroundColor: "#f9fafb",
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "#e5e7eb",
-  },
-  feedName: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#111827",
-    marginTop: 8,
-    textAlign: "center",
-  },
-  feedCreator: {
-    fontSize: 12,
-    color: "#6b7280",
-    marginTop: 2,
-    textAlign: "center",
-  },
-  tipsContainer: {
-    paddingHorizontal: 16,
-    gap: 16,
-  },
-  tip: {
-    padding: 16,
-    backgroundColor: "#f9fafb",
-    borderRadius: 12,
-    borderLeftWidth: 4,
-    borderLeftColor: "#3b82f6",
-  },
-  tipTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#111827",
-    marginBottom: 4,
-  },
-  tipDescription: {
-    fontSize: 14,
-    color: "#6b7280",
-    lineHeight: 20,
-  },
-});
+function SearchTips({
+  description,
+  title,
+}: {
+  title: string;
+  description: string;
+}) {
+  const { colorScheme } = useSettings();
+  return (
+    <View
+      style={[
+        {
+          backgroundColor: Colors.background.secondary[colorScheme],
+        },
+      ]}
+      className="border-l-4 p-4 rounded-xl border-l-blue-500"
+    >
+      <Text font="semiBold">
+        <Trans>{title}</Trans>
+      </Text>
+      <Text className="dark:text-[#6b7280]">
+        <Trans>{description}</Trans>
+      </Text>
+    </View>
+  );
+}

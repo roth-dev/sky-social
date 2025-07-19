@@ -1,29 +1,24 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Alert } from "react-native";
 import { SearchHeader } from "@/components/search/SearchHeader";
 import { SearchFilters } from "@/components/search/SearchFilters";
 import { SearchResults } from "@/components/search/SearchResults";
 import { TrendingSection } from "@/components/search/TrendingSection";
-import { useLikePost } from "@/hooks/mutation/useLikePost";
-import { useUnlikePost } from "@/hooks/mutation/useUnlikePost";
-import { useRepost } from "@/hooks/mutation/useRepost";
-import { useDeleteRepost } from "@/hooks/mutation/useDeleteRepost";
 import { useSuggestedFollows } from "@/hooks/query/useSuggestedFollows";
 import { usePopularFeeds } from "@/hooks/query/usePopularFeeds";
 import {
   SearchFilters as SearchFiltersType,
   SearchState,
 } from "@/types/search";
-import { useAuth } from "@/contexts/AuthContext";
-import { router, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { View } from "@/components/ui";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSearchActors, useSearchPosts } from "@/hooks/query";
+import { Colors } from "@/constants/colors";
+import { useSettings } from "@/contexts/SettingsContext";
 
 export default function SearchScreen() {
   const { q } = useLocalSearchParams<{ q: string }>();
-
-  const { isAuthenticated } = useAuth();
+  const { colorScheme } = useSettings();
   const [searchState, setSearchState] = useState<SearchState>({
     query: q ?? "",
     filters: {
@@ -45,12 +40,6 @@ export default function SearchScreen() {
   // Discovery queries - pass authentication status
   const suggestedFollowsQuery = useSuggestedFollows();
   const popularFeedsQuery = usePopularFeeds();
-
-  // Post interaction mutations
-  const likePostMutation = useLikePost();
-  const unlikePostMutation = useUnlikePost();
-  const repostMutation = useRepost();
-  const deleteRepostMutation = useDeleteRepost();
 
   // Debounce search query
   useEffect(() => {
@@ -126,64 +115,6 @@ export default function SearchScreen() {
     }
   };
 
-  const handleLike = async (
-    uri: string,
-    cid: string,
-    isLiked: boolean,
-    likeUri?: string
-  ) => {
-    if (!isAuthenticated) {
-      router.push("/login");
-      return;
-    }
-
-    try {
-      if (isLiked && likeUri) {
-        await unlikePostMutation.mutateAsync({ likeUri });
-      } else {
-        await likePostMutation.mutateAsync({ uri, cid });
-      }
-    } catch (error) {
-      Alert.alert("Error", "Failed to update like status");
-    }
-  };
-
-  const handleRepost = async (
-    uri: string,
-    cid: string,
-    isReposted: boolean,
-    repostUri?: string
-  ) => {
-    if (!isAuthenticated) {
-      router.push("/login");
-      return;
-    }
-
-    try {
-      if (isReposted && repostUri) {
-        await deleteRepostMutation.mutateAsync({ repostUri });
-      } else {
-        await repostMutation.mutateAsync({ uri, cid });
-      }
-    } catch (error) {
-      Alert.alert("Error", "Failed to update repost status");
-    }
-  };
-
-  const handleComment = (uri: string) => {
-    // This function is now handled directly in the Post component
-    // The Post component will open the composer modal for comments
-  };
-
-  const handleUserPress = (user: any) => {
-    router.push(`/profile/${user.handle}`);
-  };
-
-  const handleFeedPress = (feed: any) => {
-    const safeFeedUri = encodeURIComponent(feed.uri);
-    router.push(`/feed/${safeFeedUri}`);
-  };
-
   // Get current search data based on active filter
   const getCurrentSearchData = () => {
     switch (searchState.filters.type) {
@@ -246,7 +177,12 @@ export default function SearchScreen() {
   const showTrending = !showSearchResults;
 
   return (
-    <SafeAreaView edges={["top"]} className="flex-1">
+    <SafeAreaView
+      className="flex-1"
+      style={{
+        backgroundColor: Colors.background.primary[colorScheme],
+      }}
+    >
       <View className="flex-1 bg-white">
         <SearchHeader
           query={searchState.query}
@@ -267,22 +203,6 @@ export default function SearchScreen() {
           <TrendingSection
             suggestedUsers={suggestedFollowsQuery.data?.actors}
             popularFeeds={popularFeedsQuery.data?.feeds}
-            onUserPress={handleUserPress}
-            onFeedPress={handleFeedPress}
-            onSeeAllUsers={() => {
-              setSearchState((prev) => ({
-                ...prev,
-                filters: { ...prev.filters, type: "users" },
-                hasSearched: true,
-              }));
-            }}
-            onSeeAllFeeds={() => {
-              setSearchState((prev) => ({
-                ...prev,
-                filters: { ...prev.filters, type: "feeds" },
-                hasSearched: true,
-              }));
-            }}
           />
         ) : (
           <SearchResults
@@ -294,28 +214,6 @@ export default function SearchScreen() {
             query={debouncedQuery}
             onLoadMore={handleLoadMore}
             onRefresh={handleRefresh}
-            onLike={(uri, cid) => {
-              const post = getCurrentSearchData().find(
-                (p: any) => p.uri === uri
-              );
-              if (post) {
-                handleLike(uri, cid, !!post.viewer?.like, post.viewer?.like);
-              }
-            }}
-            onRepost={(uri, cid) => {
-              const post = getCurrentSearchData().find(
-                (p: any) => p.uri === uri
-              );
-              if (post) {
-                handleRepost(
-                  uri,
-                  cid,
-                  !!post.viewer?.repost,
-                  post.viewer?.repost
-                );
-              }
-            }}
-            onComment={handleComment}
           />
         )}
       </View>

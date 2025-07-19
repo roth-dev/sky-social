@@ -24,7 +24,7 @@ import { Text } from "./ui";
 import { cn } from "@/lib/utils";
 interface HeaderProps {
   title: string;
-  isBlur?: boolean;
+  isHome?: boolean;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   onLeftPress?: () => void;
@@ -86,9 +86,9 @@ function CollapsibleHeader({
 }
 export function Header({
   title,
+  isHome,
   leftIcon,
   rightIcon,
-  isBlur,
   onLeftPress,
   onRightPress,
   collapsible,
@@ -122,7 +122,7 @@ export function Header({
             : undefined,
         paddingTop: insets.top,
       }}
-      className={cn(isNative && "pb-3", "justify-end")}
+      className={cn(isNative && isHome && "pb-3")}
     >
       {!disbleTopHeader && (
         <View className="flex-row items-center justify-between px-4 py-3 web:dark:bg-[#111827]">

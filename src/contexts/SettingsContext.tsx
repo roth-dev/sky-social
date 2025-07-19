@@ -43,10 +43,26 @@ export function SettingsProvider({ children }: PropsWithChildren) {
     );
   }, [themeMode, systemColorScheme]);
 
+  const loadSettings = useCallback(async () => {
+    try {
+      const savedLanguage = await storage.getLanguage();
+      const savedThemeMode = await storage.getThemeMode();
+
+      if (savedLanguage) {
+        setLanguageState(savedLanguage);
+      }
+      if (savedThemeMode) {
+        setThemeModeState(savedThemeMode);
+      }
+    } catch (error) {
+      console.error("Failed to load settings:", error);
+    }
+  }, []);
+
   // Load settings from storage on mount
   useEffect(() => {
     loadSettings();
-  }, []);
+  }, [loadSettings]);
 
   // Listen to system color scheme changes
   useEffect(() => {
@@ -69,30 +85,14 @@ export function SettingsProvider({ children }: PropsWithChildren) {
     }
   }, [isDarkMode]);
 
-  const loadSettings = useCallback(async () => {
-    try {
-      const savedLanguage = await storage.getLanguage();
-      const savedThemeMode = await storage.getThemeMode();
-
-      if (savedLanguage) {
-        setLanguageState(savedLanguage);
-      }
-      if (savedThemeMode) {
-        setThemeModeState(savedThemeMode);
-      }
-    } catch (error) {
-      console.error("Failed to load settings:", error);
-    }
-  }, []);
-
-  const setLanguage = async (newLanguage: Language) => {
+  const setLanguage = useCallback(async (newLanguage: Language) => {
     try {
       setLanguageState(newLanguage);
       await storage.saveLanguage(newLanguage);
     } catch (error) {
       console.error("Failed to save language:", error);
     }
-  };
+  }, []);
 
   const setThemeMode = useCallback(async (mode: ThemeMode) => {
     try {

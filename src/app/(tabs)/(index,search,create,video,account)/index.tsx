@@ -94,7 +94,7 @@ export default function HomeScreen() {
   return (
     <View className="flex-1 bg-white">
       <Header
-        isBlur
+        isHome
         onHeightChange={setHeaderHeight}
         renderHeader={renderHeaderTabs}
         collapsible

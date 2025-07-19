@@ -1,8 +1,7 @@
 import { PropsWithChildren, useMemo } from "react";
 import { View } from "../ui";
-import { StyleSheet } from "react-native";
+import { ActivityIndicator, StyleSheet } from "react-native";
 import { VideoPlayerProps } from "./type";
-import Loading from "../ui/Loading";
 import { useResponsiveWidth } from "@/hooks/useResponsiveWidth";
 
 type Props = PropsWithChildren<
@@ -51,7 +50,7 @@ export default function VideoContainer({
           darkColor="secondary"
           className="w-full h-full absolute items-center justify-center"
         >
-          <Loading size="lg" />
+          <ActivityIndicator size="large" />
         </View>
       )}
     </View>

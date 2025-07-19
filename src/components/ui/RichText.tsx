@@ -70,7 +70,10 @@ const RichText = memo(
             font="semiBold"
             suppressHighlighting
             {...props}
-            className={cn("text-blue-500 underline", mentionClassName)}
+            className={cn(
+              "text-blue-500 dark:text-blue-500 underline",
+              mentionClassName
+            )}
             onPress={() => {
               router.push(`/profile/${text.slice(1)}`);
             }}
@@ -86,7 +89,10 @@ const RichText = memo(
             style={interactiveStyle}
             suppressHighlighting
             {...props}
-            className={cn("text-blue-500 underline", linkClassName)}
+            className={cn(
+              "text-blue-500 dark:text-blue-500 underline",
+              linkClassName
+            )}
             onPress={() =>
               onLinkPress ? onLinkPress(link.uri) : Linking.openURL(link.uri)
             }
@@ -106,7 +112,10 @@ const RichText = memo(
             style={interactiveStyle}
             suppressHighlighting
             {...props}
-            className={cn("text-blue-500 underline", hashtagClassName)}
+            className={cn(
+              "text-blue-500 dark:text-blue-500 underline",
+              hashtagClassName
+            )}
             onPress={() => {
               // router.push({
               //   pathname: "/(app)/",

@@ -1,11 +1,10 @@
-import React from "react";
-import { TouchableOpacity, StyleSheet } from "react-native";
+import React, { useCallback } from "react";
 import { Avatar } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
 import { SearchActor } from "@/types/search";
 import { useAuth } from "@/contexts/AuthContext";
 import { router } from "expo-router";
-import { Text, View } from "../ui";
+import { HStack, Text, VStack } from "../ui";
 import { useFollowProfile, useUnfollowProfile } from "@/hooks/mutation";
 
 interface UserSearchResultProps {
@@ -22,15 +21,15 @@ export function UserSearchResult({ user, onPress }: UserSearchResultProps) {
   const isFollowing = !!user.viewer?.following;
   const followLoading = followMutation.isPending || unfollowMutation.isPending;
 
-  const handlePress = () => {
+  const handlePress = useCallback(() => {
     if (onPress) {
       onPress();
     } else {
       router.push(`/profile/${user.handle}`);
     }
-  };
+  }, [onPress, user]);
 
-  const handleFollow = async () => {
+  const handleFollow = useCallback(async () => {
     if (!isAuthenticated) return;
 
     try {
@@ -44,27 +43,33 @@ export function UserSearchResult({ user, onPress }: UserSearchResultProps) {
     } catch (error) {
       console.error("Failed to update follow status:", error);
     }
-  };
+  }, [isAuthenticated, isFollowing, followMutation, unfollowMutation, user]);
 
   return (
-    <TouchableOpacity style={styles.container} onPress={handlePress}>
+    <Button
+      variant="ghost"
+      className="border-b-[0.5px] rounded-none border-b-gray-200 dark:border-b-gray-700"
+      onPress={handlePress}
+    >
       <Avatar
         uri={user.avatar}
         size="large"
         fallbackText={user.displayName || user.handle}
       />
 
-      <View style={styles.content}>
-        <View style={styles.header}>
-          <View style={styles.userInfo}>
-            <Text style={styles.displayName} numberOfLines={1}>
+      <VStack className="flex-1">
+        <HStack>
+          <VStack className="flex-1">
+            <Text font="semiBold" numberOfLines={1}>
               {user.displayName || user.handle}
             </Text>
-            <Text style={styles.handle} numberOfLines={1}>
+            <Text
+              className="text-[#6b7280] dark:text-[#6b7280]"
+              numberOfLines={1}
+            >
               @{user.handle}
             </Text>
-          </View>
-
+          </VStack>
           {!isOwnProfile && isAuthenticated && (
             <Button
               title={
@@ -74,59 +79,20 @@ export function UserSearchResult({ user, onPress }: UserSearchResultProps) {
               size="small"
               onPress={handleFollow}
               disabled={followLoading}
-              style={styles.followButton}
             />
           )}
-        </View>
+        </HStack>
 
-        {user.description && (
-          <Text style={styles.description} numberOfLines={2}>
+        {!!user.description && (
+          <Text
+            className="text-[#6b7280] dark:text-[#6b7280]"
+            size="sm"
+            numberOfLines={1}
+          >
             {user.description}
           </Text>
         )}
-      </View>
-    </TouchableOpacity>
+      </VStack>
+    </Button>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    padding: 16,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "#e5e7eb",
-    gap: 12,
-  },
-  content: {
-    flex: 1,
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    marginBottom: 4,
-  },
-  userInfo: {
-    flex: 1,
-    marginRight: 12,
-  },
-  displayName: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#111827",
-    marginBottom: 2,
-  },
-  handle: {
-    fontSize: 14,
-    color: "#6b7280",
-  },
-  description: {
-    fontSize: 14,
-    color: "#374151",
-    lineHeight: 20,
-    marginTop: 4,
-  },
-  followButton: {
-    paddingHorizontal: 16,
-  },
-});

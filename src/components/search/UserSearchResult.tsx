@@ -57,9 +57,9 @@ export function UserSearchResult({ user, onPress }: UserSearchResultProps) {
         fallbackText={user.displayName || user.handle}
       />
 
-      <VStack className="flex-1">
-        <HStack>
-          <VStack className="flex-1">
+      <VStack darkColor="none" className="flex-1">
+        <HStack darkColor="none">
+          <VStack darkColor="none" className="flex-1">
             <Text font="semiBold" numberOfLines={1}>
               {user.displayName || user.handle}
             </Text>

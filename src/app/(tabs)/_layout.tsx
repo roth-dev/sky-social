@@ -72,14 +72,18 @@ export default function TabLayout() {
         tabBarHideOnKeyboard: true,
         tabBarStyle: {
           paddingTop: isIOS ? 10 : 5,
-          borderTopColor: Colors.border[colorScheme],
           position: "absolute",
-          backgroundColor: Colors.background.primary[colorScheme],
+          borderTopColor: Colors.border[colorScheme],
+          ...Platform.select({
+            ios: undefined,
+            android: {
+              backgroundColor: Colors.background.primary[colorScheme],
+            },
+          }),
         },
         tabBarActiveTintColor: isVideoTab
           ? Colors.inverted.dark
           : Colors.inverted[colorScheme],
-
         tabBarInactiveTintColor: "#6b7280",
         tabBarShowLabel: false,
       }}

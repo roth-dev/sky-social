@@ -1,5 +1,5 @@
-import React from "react";
-import { StyleSheet, TouchableOpacity, Dimensions } from "react-native";
+import React, { useCallback } from "react";
+import { StyleSheet, Dimensions } from "react-native";
 import { Avatar } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
 import { ATProfile } from "@/types/atproto";
@@ -10,10 +10,12 @@ import {
   MessageCircle,
 } from "lucide-react-native";
 import { Image } from "expo-image";
-import { Text, View } from "../ui";
+import { HStack, Text, View, VStack } from "../ui";
 import { Colors } from "@/constants/colors";
 import { useSettings } from "@/contexts/SettingsContext";
 import { t } from "@lingui/core/macro";
+import { Trans } from "@lingui/react/macro";
+import { Formater } from "@/lib/format";
 
 interface ProfileHeaderProps {
   user: ATProfile;
@@ -41,7 +43,7 @@ export function ProfileHeader({
   setHeaderHeight,
 }: ProfileHeaderProps) {
   const { colorScheme } = useSettings();
-  const formatJoinDate = (indexedAt?: string) => {
+  const formatJoinDate = useCallback((indexedAt?: string) => {
     if (!indexedAt) return "Recently joined";
 
     const date = new Date(indexedAt);
@@ -49,17 +51,7 @@ export function ProfileHeader({
       month: "long",
       year: "numeric",
     })}`;
-  };
-
-  const extractWebsiteFromDescription = (description?: string) => {
-    if (!description) return null;
-
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    const match = description.match(urlRegex);
-    return match ? match[0] : null;
-  };
-
-  const website = extractWebsiteFromDescription(user?.description);
+  }, []);
 
   return (
     <View
@@ -67,7 +59,6 @@ export function ProfileHeader({
         setHeaderHeight?.(e.nativeEvent.layout.height);
       }}
       pointerEvents="none"
-      style={styles.container}
     >
       {/* Cover Image */}
       <View
@@ -91,9 +82,9 @@ export function ProfileHeader({
       </View>
 
       {/* Profile Content */}
-      <View style={styles.content}>
+      <VStack className="px-4">
         {/* Avatar and Actions Row */}
-        <View darkColor="none" style={styles.avatarRow}>
+        <HStack darkColor="none" style={styles.avatarRow}>
           <View
             style={[
               styles.avatarContainer,
@@ -110,13 +101,13 @@ export function ProfileHeader({
             />
           </View>
 
-          <View style={styles.actionsContainer}>
-            <TouchableOpacity style={styles.moreButton} onPress={onMorePress}>
-              <MoreHorizontal
-                size={20}
-                color={Colors.background.primary.light}
-              />
-            </TouchableOpacity>
+          <HStack>
+            <Button
+              variant="outline"
+              rightIcon={MoreHorizontal}
+              shape="round"
+              size="medium"
+            />
 
             {isOwnProfile ? (
               <Button
@@ -124,16 +115,14 @@ export function ProfileHeader({
                 variant="outline"
                 size="medium"
                 onPress={onEditProfile}
-                style={styles.actionButton}
               />
             ) : (
-              <View style={styles.userActions}>
-                <TouchableOpacity
-                  style={styles.messageButton}
-                  onPress={onMessage}
-                >
-                  <MessageCircle size={18} color="#6b7280" />
-                </TouchableOpacity>
+              <HStack>
+                <Button
+                  shape="round"
+                  variant="outline"
+                  rightIcon={MessageCircle}
+                />
                 <Button
                   title={
                     followLoading
@@ -143,15 +132,13 @@ export function ProfileHeader({
                       : t`Follow`
                   }
                   variant={isFollowing ? "outline" : "primary"}
-                  size="medium"
                   onPress={onFollow}
                   disabled={followLoading}
-                  style={styles.followButton}
                 />
-              </View>
+              </HStack>
             )}
-          </View>
-        </View>
+          </HStack>
+        </HStack>
 
         {/* Profile Info */}
         <View style={styles.profileInfo}>
@@ -165,62 +152,47 @@ export function ProfileHeader({
           )}
 
           {/* Metadata Row */}
-          <View style={styles.metadataRow}>
-            {!!website && (
-              <TouchableOpacity style={styles.metadataItem}>
-                <LinkIcon size={14} color="#3b82f6" />
-                <Text style={styles.metadataLink} numberOfLines={1}>
-                  {website.replace(/^https?:\/\//, "")}
-                </Text>
-              </TouchableOpacity>
-            )}
-            <View style={styles.metadataItem}>
-              <Calendar size={14} color="#6b7280" />
-              <Text style={styles.metadataText}>
-                {formatJoinDate(user.indexedAt)}
-              </Text>
-            </View>
-          </View>
+          <HStack className="mt-2">
+            <Calendar size={14} color="#6b7280" />
+            <Text style={styles.metadataText}>
+              {formatJoinDate(user.createdAt)}
+            </Text>
+          </HStack>
 
           {/* Stats Row */}
-          <View style={styles.statsRow}>
-            <TouchableOpacity style={styles.statItem}>
+          <HStack className="mt-2 gap-4">
+            <Button variant="ghost" className="px-0 gap-1">
               <Text font="semiBold">
-                {formatNumber(user.followsCount || 0)}
+                {Formater.formatNumberToKOrM(user.followsCount || 0)}
               </Text>
-              <Text style={styles.statLabel}>Following</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.statItem}>
+              <Text className="text-gray-500">
+                <Trans>Following</Trans>
+              </Text>
+            </Button>
+            <Button variant="ghost" className="px-0 gap-1">
               <Text font="semiBold">
-                {formatNumber(user.followersCount || 0)}
+                {Formater.formatNumberToKOrM(user.followersCount || 0)}
               </Text>
-              <Text style={styles.statLabel}>Followers</Text>
-            </TouchableOpacity>
-            <View style={styles.statItem}>
-              <Text font="semiBold">{formatNumber(user.postsCount || 0)}</Text>
-              <Text style={styles.statLabel}>Posts</Text>
-            </View>
-          </View>
+              <Text className="text-gray-500">
+                <Trans>Followers</Trans>
+              </Text>
+            </Button>
+            <Button variant="ghost" className="px-0 gap-1">
+              <Text font="semiBold">
+                {Formater.formatNumberToKOrM(user.postsCount || 0)}
+              </Text>
+              <Text className="text-gray-500">
+                <Trans>Posts</Trans>
+              </Text>
+            </Button>
+          </HStack>
         </View>
-      </View>
+      </VStack>
     </View>
   );
 }
 
-function formatNumber(num: number): string {
-  if (num >= 1000000) {
-    return (num / 1000000).toFixed(1) + "M";
-  }
-  if (num >= 1000) {
-    return (num / 1000).toFixed(1) + "K";
-  }
-  return num.toString();
-}
-
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#ffffff",
-  },
   coverImage: {
     height: 200,
     width: "100%",
@@ -238,10 +210,6 @@ const styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: "rgba(0, 0, 0, 0.1)",
   },
-  content: {
-    paddingHorizontal: 16,
-    paddingBottom: 20,
-  },
   avatarRow: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -256,41 +224,6 @@ const styles = StyleSheet.create({
   avatar: {
     width: 96,
     height: 96,
-  },
-  actionsContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  moreButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    borderWidth: 1,
-    borderColor: "#d1d5db",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  actionButton: {
-    paddingHorizontal: 20,
-  },
-  userActions: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  messageButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    borderWidth: 1,
-    borderColor: "#d1d5db",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#ffffff",
-  },
-  followButton: {
-    paddingHorizontal: 20,
   },
   profileInfo: {
     gap: 8,
@@ -311,38 +244,7 @@ const styles = StyleSheet.create({
     color: "#374151",
     marginTop: 8,
   },
-  metadataRow: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 16,
-    marginTop: 12,
-  },
-  metadataItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-    maxWidth: width * 0.6,
-  },
   metadataText: {
-    fontSize: 14,
-    color: "#6b7280",
-  },
-  metadataLink: {
-    fontSize: 14,
-    color: "#3b82f6",
-    flex: 1,
-  },
-  statsRow: {
-    flexDirection: "row",
-    gap: 24,
-    marginTop: 16,
-  },
-  statItem: {
-    flexDirection: "row",
-    alignItems: "baseline",
-    gap: 4,
-  },
-  statLabel: {
     fontSize: 14,
     color: "#6b7280",
   },

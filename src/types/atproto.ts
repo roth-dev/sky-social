@@ -9,6 +9,7 @@ export interface ATProfile {
   followsCount?: number;
   postsCount?: number;
   indexedAt?: string;
+  createdAt?: string;
   viewer?: {
     muted?: boolean;
     blockedBy?: boolean;

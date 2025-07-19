@@ -1,17 +1,12 @@
 import React, { ReactNode, forwardRef, useCallback } from "react";
-import {
-  TouchableOpacity,
-  Text,
-  ViewStyle,
-  TextStyle,
-  View,
-} from "react-native";
+import { TouchableOpacity, ViewStyle, TextStyle } from "react-native";
 import { LucideIcon } from "lucide-react-native";
 import { cn } from "@/lib/utils";
 import { cva, VariantProps } from "class-variance-authority";
+import { Text } from "./Text";
 
 const buttonVariants = cva(
-  "flex flex-row items-center justify-center transition-colors",
+  "flex flex-row items-center gap-2 justify-center transition-colors",
   {
     variants: {
       variant: {
@@ -169,22 +164,18 @@ export const Button = forwardRef<
             strokeWidth={leftIconStrokeWidth}
           />
         )}
-
-        {(title || children) && (
-          <View className={cn(LeftIcon && "ml-2", RightIcon && "mr-2")}>
-            {title && (
-              <Text
-                className={cn(
-                  textVariants({ variant, size }),
-                  disabled && "opacity-70"
-                )}
-                style={textStyle}
-              >
-                {title}
-              </Text>
+        {title ? (
+          <Text
+            className={cn(
+              textVariants({ variant, size }),
+              disabled && "opacity-70"
             )}
-            {children}
-          </View>
+            style={textStyle}
+          >
+            {title}
+          </Text>
+        ) : (
+          children
         )}
 
         {RightIcon && (

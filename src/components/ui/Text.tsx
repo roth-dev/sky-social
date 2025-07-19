@@ -4,20 +4,18 @@ import { Text as BaseText } from "react-native";
 import { cva, VariantProps } from "class-variance-authority";
 
 // custom font family
-// Inter_400Regular,
-// Inter_900Black,
-// Inter_500Medium,
-// Inter_700Bold,
-// Inter_600SemiBold,
-// Inter_100Thin,
-// Inter_800ExtraBold,
+// KantumruyPro_700Bold,
+// KantumruyPro_100Thin,
+// KantumruyPro_500Medium,
+// KantumruyPro_600SemiBold,
+// KantumruyPro_400Regular,
 
 const FONTS = {
-  thin: "Inter_100Thin",
-  normal: "Inter_400Regular",
-  bold: "Inter_700Bold",
-  semiBold: "Inter_600SemiBold",
-  extrabold: "Inter_800ExtraBold",
+  thin: "KantumruyPro_100Thin",
+  normal: "KantumruyPro_400Regular",
+  bold: "KantumruyPro_700Bold",
+  semiBold: "KantumruyPro_500Medium",
+  extrabold: "KantumruyPro_700Bold",
 };
 
 const textVariants = cva("dark:text-white text-black bg-transparent", {
@@ -50,7 +48,11 @@ const Text = React.forwardRef<React.ComponentRef<typeof BaseText>, TextProps>(
     return (
       <BaseText
         ref={ref}
-        className={cn(textVariants({ size }), className, "leading-snug")}
+        className={cn(
+          textVariants({ size }),
+          className,
+          "leading-snug web:leading-normal"
+        )}
         {...props}
         style={[
           {

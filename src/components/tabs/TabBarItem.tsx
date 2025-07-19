@@ -1,5 +1,6 @@
 import { Colors } from "@/constants/colors";
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
+import { Text } from "../ui";
 
 interface Props {
   title: string;
@@ -12,7 +13,10 @@ export default function TabBarItem({ onPress, title, active }: Props) {
       onPress={onPress}
       style={[styles.tabItem, active && styles.activeTabItem]}
     >
-      <Text style={[styles.tabText, active && styles.activeTabText]}>
+      <Text
+        font="semiBold"
+        style={[styles.tabText, active && styles.activeTabText]}
+      >
         {title}
       </Text>
     </TouchableOpacity>
@@ -32,10 +36,7 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.primary,
   },
   tabText: {
-    fontSize: 16,
-    fontWeight: "600",
     color: "#6b7280",
-    marginBottom: 2,
   },
   activeTabText: {
     color: Colors.primary,

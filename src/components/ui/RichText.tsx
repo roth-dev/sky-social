@@ -131,4 +131,5 @@ const RichText = memo(
   }
 );
 
+RichText.displayName = "RichText";
 export { RichText };

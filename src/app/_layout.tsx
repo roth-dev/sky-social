@@ -1,5 +1,5 @@
 import "../global.css";
-import { Stack } from "expo-router";
+import { SplashScreen, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useFrameworkReady } from "@/hooks/useFrameworkReady";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
@@ -8,8 +8,9 @@ import { I18nProviderWrapper } from "@/contexts/I18nProvider";
 import { QueryProvider } from "@/contexts/QueryProvider";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Fragment } from "react";
-import FontProvider from "@/contexts/FontProvider";
 import { isWeb } from "@/platform";
+
+SplashScreen.preventAutoHideAsync();
 
 function RootLayout() {
   const { isAuthenticated } = useAuth();
@@ -56,13 +57,11 @@ export default function App() {
     <SettingsProvider>
       <QueryProvider>
         <AuthProvider>
-          <FontProvider>
-            <I18nProviderWrapper>
-              <GestureHandlerRootView className="flex-1">
-                <RootLayout />
-              </GestureHandlerRootView>
-            </I18nProviderWrapper>
-          </FontProvider>
+          <I18nProviderWrapper>
+            <GestureHandlerRootView className="flex-1">
+              <RootLayout />
+            </GestureHandlerRootView>
+          </I18nProviderWrapper>
         </AuthProvider>
       </QueryProvider>
     </SettingsProvider>

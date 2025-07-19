@@ -41,17 +41,16 @@ export default function HomeScreen() {
 
   const handleTabPress = useCallback(
     (index: number) => {
-      if (!isAuthenticated && index === 1)
-        if (!isAuthenticated) {
-          router.push("/feeds");
-        } else {
-          setPage(index);
-          indicatorIndex.value = index;
+      if (!isAuthenticated) {
+        router.push("/feeds");
+      } else {
+        setPage(index);
+        indicatorIndex.value = index;
 
-          if (pagerRef.current) {
-            pagerRef.current.setPage(index);
-          }
+        if (pagerRef.current) {
+          pagerRef.current.setPage(index);
         }
+      }
     },
     [indicatorIndex, isAuthenticated]
   );

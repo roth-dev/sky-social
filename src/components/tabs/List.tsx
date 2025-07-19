@@ -5,20 +5,7 @@ import { useSettings } from "@/contexts/SettingsContext";
 import { ViewToken } from "react-native";
 
 let TabList = React.forwardRef<ListRef, ListProps>(
-  (
-    {
-      style,
-      onItemSeen,
-      refreshing,
-      onRefresh,
-      headerOffset,
-      progressViewOffset,
-      useScrollDetector,
-      automaticallyAdjustsScrollIndicatorInsets = false,
-      ...props
-    },
-    ref
-  ) => {
+  ({ onItemSeen, ...props }, ref) => {
     const { colorScheme } = useSettings();
 
     const [onViewableItemsChanged, viewabilityConfig] = React.useMemo(() => {

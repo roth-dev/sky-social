@@ -151,13 +151,16 @@ export function ExternalEmbed({
       >
         <View style={styles.header}>
           <ExternalLink size={14} color="#6b7280" />
-          <Text style={styles.domain} numberOfLines={1}>
+          <Text
+            // style={styles.domain}
+            numberOfLines={1}
+          >
             {getDomain(external.uri)}
           </Text>
         </View>
 
         <Text
-          style={[styles.title, isDetailView && styles.detailTitle]}
+          // style={[styles.title, isDetailView && styles.detailTitle]}
           numberOfLines={isDetailView ? 3 : 2}
         >
           {external.title}

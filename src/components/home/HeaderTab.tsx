@@ -40,7 +40,7 @@ export default function HeaderTab({
   return (
     <VStack
       darkColor="none"
-      className={cn(isNative ? "pb-2" : "py-6")}
+      className={cn(isNative ? "pb-2" : "py-4")}
       style={{ position: "relative" }}
     >
       <HStack darkColor="none" className="items-center justify-between">

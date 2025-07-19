@@ -9,6 +9,16 @@ import { I18nProvider } from "@lingui/react";
 import { detectLocale, LocalizCode } from "@/i18n/config";
 import { i18n } from "@lingui/core";
 import { loadCatalog } from "@/i18n/loader";
+import { storage } from "@/lib/storage";
+import {
+  KantumruyPro_700Bold,
+  KantumruyPro_100Thin,
+  KantumruyPro_500Medium,
+  KantumruyPro_600SemiBold,
+  useFonts,
+  KantumruyPro_400Regular,
+} from "@expo-google-fonts/kantumruy-pro";
+import { SplashScreen } from "expo-router";
 
 type I18nContextType = {
   locale: LocalizCode;
@@ -28,12 +38,34 @@ export const I18nProviderWrapper = ({
   const [locale, setLocale] = useState<LocalizCode>("en");
   const [ready, setReady] = useState(false);
 
+  const [fontsLoaded] = useFonts({
+    KantumruyPro_700Bold,
+    KantumruyPro_100Thin,
+    KantumruyPro_500Medium,
+    KantumruyPro_600SemiBold,
+    KantumruyPro_400Regular,
+  });
+
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
   useEffect(() => {
     const init = async () => {
-      const systemLocale = detectLocale();
-      await loadCatalog(systemLocale);
-      i18n.activate(systemLocale);
-      setLocale(systemLocale);
+      let initialLocale = detectLocale();
+      try {
+        const savedLanguage = await storage.getLanguage();
+        if (savedLanguage) {
+          initialLocale = savedLanguage;
+        }
+      } catch (e) {
+        console.log(e);
+      }
+      await loadCatalog(initialLocale);
+      i18n.activate(initialLocale);
+      setLocale(initialLocale);
       setReady(true);
     };
     init();
@@ -48,7 +80,7 @@ export const I18nProviderWrapper = ({
     },
     [locale]
   );
-  if (!ready) return null;
+  if (!ready || !fontsLoaded) return null;
 
   return (
     <I18nContext.Provider value={{ locale, changeLocale }}>

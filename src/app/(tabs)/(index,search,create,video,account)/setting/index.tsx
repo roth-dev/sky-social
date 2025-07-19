@@ -12,6 +12,7 @@ import {
 import { Header } from "@/components/Header";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSettings, Language, ThemeMode } from "@/contexts/SettingsContext";
+import { useI18n } from "@/contexts/I18nProvider";
 import { Avatar } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
 import {
@@ -48,6 +49,7 @@ export default function SettingsScreen() {
   const { isAuthenticated, user, logout } = useAuth();
   const { language, themeMode, isDarkMode, setLanguage, setThemeMode } =
     useSettings();
+  const { changeLocale } = useI18n();
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [showThemeModal, setShowThemeModal] = useState(false);
 
@@ -64,6 +66,7 @@ export default function SettingsScreen() {
 
   const handleLanguageSelect = (selectedLanguage: Language) => {
     setLanguage(selectedLanguage);
+    changeLocale(selectedLanguage);
     setShowLanguageModal(false);
   };
 

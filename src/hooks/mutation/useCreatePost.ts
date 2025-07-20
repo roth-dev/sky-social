@@ -5,7 +5,13 @@ import { queryKeys, handleQueryError, retryDelay } from "@/lib/queries";
 export function useCreatePost() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({ text, images }: { text: string; images?: any[] }) => {
+    mutationFn: async ({
+      text,
+      images,
+    }: {
+      text: string;
+      images?: unknown;
+    }) => {
       if (!text || text.trim().length === 0) {
         throw new Error("Post text cannot be empty");
       }

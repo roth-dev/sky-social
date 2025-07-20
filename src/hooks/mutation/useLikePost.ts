@@ -20,11 +20,11 @@ export function useLikePost() {
       await queryClient.cancelQueries({ queryKey: queryKeys.timeline });
       queryClient.setQueriesData(
         { queryKey: queryKeys.timeline },
-        (oldData: any) => {
+        (oldData) => {
           if (!oldData) return oldData;
           return {
             ...oldData,
-            pages: oldData.pages.map((page: any) => ({
+            pages: oldData.pages.map((page) => ({
               ...page,
               feed: page.feed.map((item: ATFeedItem) => {
                 if (item.post.uri === uri) {

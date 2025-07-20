@@ -12,19 +12,19 @@ export function useUnlikePost() {
       }
       const result = await atprotoClient.unlikePost(likeUri);
       if (!result.success) {
-        throw new Error((result as any).error || "Failed to unlike post");
+        throw new Error(result.error || "Failed to unlike post");
       }
-      return (result as any).data;
+      return result.data;
     },
     onMutate: async ({ likeUri }) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.timeline });
       queryClient.setQueriesData(
         { queryKey: queryKeys.timeline },
-        (oldData: any) => {
+        (oldData) => {
           if (!oldData) return oldData;
           return {
             ...oldData,
-            pages: oldData.pages.map((page: any) => ({
+            pages: oldData.pages.map((page) => ({
               ...page,
               feed: page.feed.map((item: ATFeedItem) => {
                 if (item.post.viewer?.like === likeUri) {

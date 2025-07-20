@@ -12,7 +12,7 @@ export function useProfile(handle: string) {
       }
       const result = await atprotoClient.getProfile(handle);
       if (!result.success) {
-        throw new Error((result as any).error || "Failed to fetch profile");
+        throw new Error(result.error || "Failed to fetch profile");
       }
       return result.data;
     },

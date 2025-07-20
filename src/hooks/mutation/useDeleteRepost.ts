@@ -12,7 +12,7 @@ export function useDeleteRepost() {
       }
       const result = await atprotoClient.deleteRepost(repostUri);
       if (!result.success) {
-        throw new Error((result as any).error || "Failed to delete repost");
+        throw new Error(result.error || "Failed to delete repost");
       }
       return result.success;
     },
@@ -20,11 +20,11 @@ export function useDeleteRepost() {
       await queryClient.cancelQueries({ queryKey: queryKeys.timeline });
       queryClient.setQueriesData(
         { queryKey: queryKeys.timeline },
-        (oldData: any) => {
+        (oldData) => {
           if (!oldData) return oldData;
           return {
             ...oldData,
-            pages: oldData.pages.map((page: any) => ({
+            pages: oldData.pages.map((page) => ({
               ...page,
               feed: page.feed.map((item: ATFeedItem) => {
                 if (item.post.viewer?.repost === repostUri) {

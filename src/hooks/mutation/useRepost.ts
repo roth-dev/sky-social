@@ -12,7 +12,7 @@ export function useRepost() {
       }
       const result = await atprotoClient.repost(uri, cid);
       if (!result.success) {
-        throw new Error((result as any).error || "Failed to repost");
+        throw new Error(result.error || "Failed to repost");
       }
       return result.data;
     },
@@ -20,11 +20,11 @@ export function useRepost() {
       await queryClient.cancelQueries({ queryKey: queryKeys.timeline });
       queryClient.setQueriesData(
         { queryKey: queryKeys.timeline },
-        (oldData: any) => {
+        (oldData) => {
           if (!oldData) return oldData;
           return {
             ...oldData,
-            pages: oldData.pages.map((page: any) => ({
+            pages: oldData.pages.map((page) => ({
               ...page,
               feed: page.feed.map((item: ATFeedItem) => {
                 if (item.post.uri === uri) {
@@ -51,11 +51,11 @@ export function useRepost() {
       // Update the cache with the real repost URI from the response
       queryClient.setQueriesData(
         { queryKey: queryKeys.timeline },
-        (oldData: any) => {
+        (oldData) => {
           if (!oldData) return oldData;
           return {
             ...oldData,
-            pages: oldData.pages.map((page: any) => ({
+            pages: oldData.pages.map((page) => ({
               ...page,
               feed: page.feed.map((item: ATFeedItem) => {
                 if (item.post.uri === uri) {

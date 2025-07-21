@@ -167,10 +167,7 @@ export const Button = forwardRef<
         )}
         {title ? (
           <Text
-            className={cn(
-              textVariants({ variant, size }),
-              disabled && "opacity-70"
-            )}
+            className={cn(textVariants({ variant }), disabled && "opacity-70")}
             style={textStyle}
           >
             {title}

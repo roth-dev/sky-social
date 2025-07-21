@@ -138,18 +138,18 @@ export function ActionButtons({
   }, [post.uri, post.cid, onShare]);
 
   return (
-    <View style={[styles.actions, isDetailView && styles.detailActions]}>
+    <View style={styles.actions}>
       <HapticTab
         icon={MessageCircle}
         iconSize={isDetailView ? 22 : 20}
-        count={!isDetailView ? post.replyCount : 0}
+        count={post.replyCount}
         onPress={handleComment}
         hapticType="light"
       />
       <HapticTab
         icon={Repeat2}
         iconSize={isDetailView ? 22 : 20}
-        count={!isDetailView ? repostCount : 0}
+        count={repostCount}
         isActive={isReposted}
         onPress={handleRepost}
         hapticType="medium"
@@ -157,7 +157,7 @@ export function ActionButtons({
       <HapticTab
         icon={Heart}
         iconSize={isDetailView ? 22 : 20}
-        count={!isDetailView ? likeCount : 0}
+        count={likeCount}
         isActive={isLiked}
         onPress={handleLike}
         hapticType="success"
@@ -176,18 +176,10 @@ export function ActionButtons({
 const styles = StyleSheet.create({
   actions: {
     flexDirection: "row",
-    justifyContent: "space-between",
     marginTop: 12,
-    marginLeft: 52,
-    paddingRight: 40,
-  },
-  detailActions: {
-    marginLeft: 0,
-    paddingRight: 0,
+    gap: 15,
     justifyContent: "space-around",
-    paddingVertical: 12,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderColor: "#e5e7eb",
-    marginTop: 16,
+    alignItems: "flex-end",
+    paddingTop: 12,
   },
 });

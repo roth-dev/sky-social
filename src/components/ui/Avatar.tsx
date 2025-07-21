@@ -1,29 +1,79 @@
 import { Image } from "expo-image";
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleProp, ViewStyle } from "react-native";
+import { cn } from "../../lib/utils";
+import { cva } from "class-variance-authority";
+
+const avatarVariants = cva("rounded-full overflow-hidden", {
+  variants: {
+    size: {
+      small: "w-8 h-8",
+      medium: "w-10 h-10",
+      large: "w-16 h-16",
+      xl: "w-24 h-24",
+    },
+    border: {
+      true: "border border-gray-300 dark:border-gray-700",
+      false: "",
+    },
+  },
+  defaultVariants: {
+    size: "medium",
+    border: false,
+  },
+});
+
+const textVariants = cva("font-medium text-gray-500", {
+  variants: {
+    size: {
+      small: "text-xs",
+      medium: "text-sm",
+      large: "text-xl",
+      xl: "text-4xl",
+    },
+  },
+  defaultVariants: {
+    size: "medium",
+  },
+});
 
 interface AvatarProps {
   uri?: string;
   size?: "small" | "medium" | "large" | "xl";
   fallbackText?: string;
-  style?: any;
+  style?: StyleProp<ViewStyle>;
+  /**
+   * If true, applies a default border. If not provided or false, no border is shown.
+   */
+  border?: boolean;
+  className?: string;
 }
 
 export function Avatar({
   uri,
   size = "medium",
   fallbackText,
+  border = false,
+  className,
   style,
 }: AvatarProps) {
-  const sizeStyle = styles[size];
+  // Determine border variant for cva
+  const borderVariant = !!border;
 
   return (
-    <View style={[styles.container, sizeStyle, style]}>
+    <View
+      className={cn(avatarVariants({ size, border: borderVariant }), className)}
+      style={style}
+    >
       {uri ? (
-        <Image source={{ uri }} style={[styles.image, sizeStyle]} />
+        <Image source={{ uri }} className={cn("w-full h-full")} />
       ) : (
-        <View style={[styles.fallback, sizeStyle]}>
-          <Text style={[styles.fallbackText, styles[`${size}Text`]]}>
+        <View
+          className={cn(
+            "bg-gray-200 items-center justify-center w-full h-full"
+          )}
+        >
+          <Text className={cn(textVariants({ size }))}>
             {fallbackText?.charAt(0)?.toUpperCase() || "?"}
           </Text>
         </View>
@@ -31,51 +81,3 @@ export function Avatar({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    borderRadius: 999,
-    overflow: "hidden",
-  },
-  image: {
-    width: "100%",
-    height: "100%",
-  },
-  fallback: {
-    backgroundColor: "#e5e7eb",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  fallbackText: {
-    color: "#6b7280",
-    fontWeight: "500",
-  },
-  small: {
-    width: 32,
-    height: 32,
-  },
-  medium: {
-    width: 40,
-    height: 40,
-  },
-  large: {
-    width: 64,
-    height: 64,
-  },
-  xl: {
-    width: 96,
-    height: 96,
-  },
-  smallText: {
-    fontSize: 12,
-  },
-  mediumText: {
-    fontSize: 14,
-  },
-  largeText: {
-    fontSize: 20,
-  },
-  xlText: {
-    fontSize: 32,
-  },
-});

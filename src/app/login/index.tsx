@@ -17,9 +17,11 @@ import { DropDownMenu, Trigger } from "@/components/dropdown";
 import { ChevronDown } from "lucide-react-native";
 import { Trans } from "@lingui/react/macro";
 import { t } from "@lingui/core/macro";
+import { useI18n } from "@/contexts/I18nProvider";
 
 export default function LoginScreen() {
   const { login } = useAuth();
+  const { changeLocale } = useI18n();
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -54,6 +56,13 @@ export default function LoginScreen() {
   const onOpenUrl = useCallback(() => {
     Linking.openURL("https://bsky.app");
   }, []);
+
+  const onChangeLanguage = useCallback(
+    (value: "km" | "en") => {
+      changeLocale(value);
+    },
+    [changeLocale]
+  );
 
   return (
     <KeyboardAvoidingView
@@ -125,16 +134,16 @@ export default function LoginScreen() {
                 </Text>
               </Text>
 
-              <View>
+              <View className="self-center">
                 <DropDownMenu
                   actions={[
                     {
                       label: t`English`,
-                      onPress() {},
+                      onPress: () => onChangeLanguage("en"),
                     },
                     {
                       label: t`Khmer`,
-                      onPress() {},
+                      onPress: () => onChangeLanguage("km"),
                     },
                   ]}
                 >
@@ -144,7 +153,6 @@ export default function LoginScreen() {
                     rightIconColor={Colors.inverted[colorScheme]}
                     title={t`English`}
                     onPress={() => {}}
-                    size="small"
                   />
                 </DropDownMenu>
               </View>

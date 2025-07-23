@@ -34,7 +34,7 @@ export default function ComposerModal() {
     if (!isAuthenticated) {
       router.replace("/login");
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, router]);
 
   const handleClose = () => {
     router.back();
@@ -99,7 +99,7 @@ export default function ComposerModal() {
       }
       // Close modal after successful posting
       router.back();
-    } catch (error) {
+    } catch {
       Alert.alert(
         "Error",
         isReply ? "Failed to post reply" : "Failed to create post"

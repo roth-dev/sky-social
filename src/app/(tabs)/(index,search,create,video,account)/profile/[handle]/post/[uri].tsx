@@ -56,8 +56,8 @@ export default function PostScreen() {
           </View>
         )}
 
-        <View style={styles.repliesSection}>
-          <Text style={styles.repliesTitle}>
+        <View className="m-4 mb-0">
+          <Text font="semiBold" size="lg">
             {replies.length} {replies.length === 1 ? "Reply" : "Replies"}
           </Text>
         </View>
@@ -131,8 +131,8 @@ const styles = StyleSheet.create({
     color: "#ef4444",
   },
   mainPost: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "#e5e7eb",
+    // borderBottomWidth: StyleSheet.hairlineWidth,
+    // borderBottomColor: "#e5e7eb",
   },
 
   repliesSection: {
@@ -146,8 +146,8 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
   },
   replyItem: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "#e5e7eb",
+    // borderBottomWidth: StyleSheet.hairlineWidth,
+    // borderBottomColor: "#e5e7eb",
   },
   noReplies: {
     alignItems: "center",

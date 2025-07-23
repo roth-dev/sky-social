@@ -1,5 +1,11 @@
-import React, { useCallback, useMemo, useState } from "react";
-import { View, TouchableOpacity, StyleSheet, Alert } from "react-native";
+import React, { memo, useCallback, useMemo, useState } from "react";
+import {
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  Pressable,
+} from "react-native";
 import { MoreHorizontal } from "lucide-react-native";
 import { Avatar } from "./ui/Avatar";
 import { EmbedContainer } from "./embeds/EmbedContainer";
@@ -7,7 +13,7 @@ import { ATPost } from "@/types/atproto";
 import { router } from "expo-router";
 import { Platform, Linking } from "react-native";
 import { isVideoPost } from "@/utils/embedUtils";
-import { Text, RichText } from "./ui";
+import { RichText, Text } from "./ui";
 import { Colors } from "@/constants/colors";
 import { VideoEmbed } from "./embeds/VideoEmbed";
 import { RichText as RichTextAPI } from "@atproto/api";
@@ -32,7 +38,18 @@ interface PostProps {
   shouldPlay?: boolean;
 }
 
-function Post({
+function Stats({ count, label }: { count: number; label: string }) {
+  return (
+    <View className="items-center">
+      <Text font="semiBold" size="lg">
+        {Formater.formatNumberToKOrM(count)}
+      </Text>
+      <Text>{label}</Text>
+    </View>
+  );
+}
+
+const Post = memo(function Comp({
   post,
   onLike,
   onRepost,
@@ -60,48 +77,9 @@ function Post({
     router.push(`/profile/${post.author.handle}`);
   }, [post]);
 
-  const handleImagePress = useCallback((images: any[], index: number) => {
+  const handleImagePress = useCallback((images: unknown, index: number) => {
     setLightBoxIndex(index);
     setLightBoxVisible(true);
-  }, []);
-
-  const handleLinkPress = useCallback(async (url: string) => {
-    try {
-      // Validate URL format
-      if (!isValidUrl(url)) {
-        Alert.alert(
-          t`Invalid URL`,
-          t`This link appears to be invalid or malformed.`
-        );
-        return;
-      }
-
-      // Check if the URL can be opened
-      const canOpen = await Linking.canOpenURL(url);
-
-      if (canOpen) {
-        await Linking.openURL(url);
-      } else {
-        Alert.alert(
-          t`Cannot Open Link`,
-          t`This link cannot be opened on your device. Would you like to copy the URL?`,
-          [
-            { text: t`Copy URL`, onPress: () => copyToClipboard(url) },
-            { text: t`Cancel`, style: "cancel" },
-          ]
-        );
-      }
-    } catch (error) {
-      console.error("Failed to open URL:", error);
-      Alert.alert(
-        t`Link Error`,
-        t`Unable to open this link. Would you like to copy the URL instead?`,
-        [
-          { text: t`Copy URL`, onPress: () => copyToClipboard(url) },
-          { text: t`Cancel`, style: "cancel" },
-        ]
-      );
-    }
   }, []);
 
   const isValidUrl = (url: string): boolean => {
@@ -118,7 +96,7 @@ function Post({
     router.push(`/profile/post/${safeUri}`);
   }, []);
 
-  const copyToClipboard = async (text: string) => {
+  const copyToClipboard = useCallback(async (text: string) => {
     try {
       if (
         Platform.OS === "web" &&
@@ -135,10 +113,10 @@ function Post({
       console.error("Failed to copy to clipboard:", error);
       Alert.alert(t`URL`, text);
     }
-  };
+  }, []);
 
   const handleImageShare = useCallback(
-    async (imageUri: string, index: number) => {
+    async (imageUri: string) => {
       try {
         if (Platform.OS === "web") {
           if (navigator.share) {
@@ -155,7 +133,7 @@ function Post({
         console.error("Failed to share image:", error);
       }
     },
-    [post]
+    [post, copyToClipboard]
   );
 
   const handleImageDownload = async (imageUri: string, index: number) => {
@@ -198,11 +176,6 @@ function Post({
     [isDetailView]
   );
 
-  const textStyle = isDetailView ? styles.detailText : styles.text;
-  const containerStyle = isReply
-    ? [styles.container, styles.replyContainer]
-    : styles.container;
-
   // Prepare images for LightBox from embed
   const lightBoxImages = useMemo(() => {
     const embedImages = post.embed?.images || [];
@@ -218,265 +191,276 @@ function Post({
   const handleTranslate = () => {
     Alert.alert(t`Translate`, t`Translate action triggered (implement logic)`);
   };
-  const handleCopyPostText = () => {
-    copyToClipboard(post.record.text);
-  };
 
-  const postMenuActions: DropDownMenuAction[] = [
-    {
-      label: t`Translate`,
-      onPress: handleTranslate,
-      web: {
-        icon: <Globe size={16} />,
-      },
+  const handleCopyPostText = useCallback(() => {
+    copyToClipboard(post.record.text);
+  }, [copyToClipboard, post]);
+
+  const handleLinkPress = useCallback(
+    async (url: string) => {
+      try {
+        // Validate URL format
+        if (!isValidUrl(url)) {
+          Alert.alert(
+            t`Invalid URL`,
+            t`This link appears to be invalid or malformed.`
+          );
+          return;
+        }
+
+        // Check if the URL can be opened
+        const canOpen = await Linking.canOpenURL(url);
+
+        if (canOpen) {
+          await Linking.openURL(url);
+        } else {
+          Alert.alert(
+            t`Cannot Open Link`,
+            t`This link cannot be opened on your device. Would you like to copy the URL?`,
+            [
+              { text: t`Copy URL`, onPress: () => copyToClipboard(url) },
+              { text: t`Cancel`, style: "cancel" },
+            ]
+          );
+        }
+      } catch (error) {
+        console.error("Failed to open URL:", error);
+        Alert.alert(
+          t`Link Error`,
+          t`Unable to open this link. Would you like to copy the URL instead?`,
+          [
+            { text: t`Copy URL`, onPress: () => copyToClipboard(url) },
+            { text: t`Cancel`, style: "cancel" },
+          ]
+        );
+      }
     },
-    {
-      label: t`Copy post text`,
-      onPress: handleCopyPostText,
-      web: {
-        icon: <Copy size={16} />,
+    [copyToClipboard]
+  );
+
+  const postMenuActions: DropDownMenuAction[] = useMemo(
+    () => [
+      {
+        label: t`Translate`,
+        onPress: handleTranslate,
+        web: {
+          icon: <Globe size={16} />,
+        },
       },
-    },
-  ];
+      {
+        label: t`Copy post text`,
+        onPress: handleCopyPostText,
+        web: {
+          icon: <Copy size={16} />,
+        },
+      },
+    ],
+    [handleCopyPostText]
+  );
+
+  const renderProfile = useCallback(
+    () => (
+      <Pressable onPress={handleProfilePress}>
+        <Avatar
+          border
+          size={isDetailView ? "large" : "medium"}
+          uri={post.author.avatar}
+          fallbackText={post.author.displayName || post.author.handle}
+        />
+      </Pressable>
+    ),
+    [post, handleProfilePress, isDetailView]
+  );
 
   return (
     <>
+      {lightBoxImages.length > 0 && (
+        <LightBox
+          visible={lightBoxVisible}
+          images={lightBoxImages}
+          initialIndex={lightBoxIndex}
+          onClose={() => {
+            setLightBoxVisible(false);
+          }}
+          onShare={handleImageShare}
+          onDownload={handleImageDownload}
+        />
+      )}
       <TouchableOpacity
-        style={[
-          containerStyle,
-          {
-            borderBottomColor: Colors.border[colorScheme],
-          },
-        ]}
         onPress={handlePostPress}
         activeOpacity={isDetailView ? 1 : 0.95}
         disabled={isDetailView}
         delayPressIn={200}
         pressRetentionOffset={{ top: 20, left: 20, right: 20, bottom: 20 }}
         hitSlop={{ top: 10, left: 10, right: 10, bottom: 10 }}
+        style={{
+          flexDirection: "row",
+          alignItems: "flex-start",
+          padding: 15,
+          gap: 10,
+          flex: 1,
+          borderBottomColor: Colors.border[colorScheme],
+          borderBottomWidth: 1,
+        }}
       >
-        <View style={styles.header}>
-          <TouchableOpacity onPress={handleProfilePress}>
-            <Avatar
-              uri={post.author.avatar}
-              size={isDetailView ? "large" : "medium"}
-              fallbackText={post.author.displayName || post.author.handle}
-            />
-          </TouchableOpacity>
+        {!isDetailView && renderProfile()}
 
-          <View style={styles.headerText}>
-            <TouchableOpacity onPress={handleProfilePress}>
-              <View style={styles.nameRow}>
-                <Text style={styles.displayName} numberOfLines={1}>
+        <View style={{ flex: 1 }}>
+          {
+            // Post header content
+          }
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: 10,
+            }}
+          >
+            {isDetailView && renderProfile()}
+
+            <Pressable
+              onPress={handleProfilePress}
+              style={{ flexDirection: "row" }}
+            >
+              <View
+                style={{
+                  flexDirection: isDetailView ? "column" : "row",
+                  flexWrap: "wrap",
+                }}
+              >
+                <Text
+                  font="semiBold"
+                  numberOfLines={1}
+                  size="lg"
+                  style={{ marginRight: 5 }}
+                >
                   {post.author.displayName || post.author.handle}
                 </Text>
-                <Text style={styles.handle}>@{post.author.handle}</Text>
+                <Text
+                  className="text-gray-700 dark:text-gray-300"
+                  style={{ marginRight: 5 }}
+                >
+                  @{post.author.handle}
+                </Text>
                 {!isDetailView && (
                   <>
-                    <Text style={styles.time}>·</Text>
-                    <Text style={styles.time}>
-                      {formatTime(post.record.createdAt)}
-                    </Text>
+                    <Text style={{ marginRight: 5 }}>·</Text>
+                    <Text>{formatTime(post.record.createdAt)}</Text>
                   </>
                 )}
+
+                {!!isDetailView && (
+                  <Text size="sm">{formatTime(post.record.createdAt)}</Text>
+                )}
               </View>
-            </TouchableOpacity>
-
-            {!!isDetailView && (
-              <Text style={styles.detailTime}>
-                {formatTime(post.record.createdAt)}
-              </Text>
-            )}
-          </View>
-          <DropDownMenu actions={postMenuActions}>
-            <Trigger variant="ghost">
-              <MoreHorizontal size={20} color="#6b7280" />
-            </Trigger>
-          </DropDownMenu>
-        </View>
-
-        <View style={[styles.content, isDetailView && styles.detailContent]}>
-          {!!post.record.text && (
-            <RichText
-              value={
-                post.record.facets
-                  ? new RichTextAPI({
-                      text: post.record.text,
-                      facets: post.record.facets,
-                    })
-                  : post.record.text
+              {
+                // Action menu button
               }
-              style={textStyle}
-              disableLinks={false}
-              enableTags={true}
-              onLinkPress={handleLinkPress}
-            />
-          )}
+            </Pressable>
+            <View style={{ flex: 1 }} />
+            <Pressable
+              style={{
+                height: 20,
+              }}
+            >
+              <DropDownMenu actions={postMenuActions}>
+                <Trigger
+                  shape="round"
+                  size="icon"
+                  className="py-0 web:p-1"
+                  variant="ghost"
+                >
+                  <MoreHorizontal size={20} color="#6b7280" />
+                </Trigger>
+              </DropDownMenu>
+            </Pressable>
+          </View>
+
+          {
+            // Post content
+          }
 
           {/* Embed Content - This will now properly handle videos */}
-          {!!post.embed && (
-            <EmbedContainer
-              embed={post.embed}
-              isDetailView={isDetailView}
-              onImagePress={handleImagePress}
-              onLinkPress={handleLinkPress}
-              onRecordPress={handleRecordPress}
-              shouldPlay={shouldPlay}
-            />
-          )}
+          <View style={{ flex: 1 }}>
+            {!!post.record.text && (
+              <RichText
+                value={
+                  post.record.facets
+                    ? new RichTextAPI({
+                        text: post.record.text,
+                        facets: post.record.facets,
+                      })
+                    : post.record.text
+                }
+                size={isDetailView ? "xl" : "lg"}
+                disableLinks={false}
+                enableTags={true}
+                onLinkPress={handleLinkPress}
+              />
+            )}
 
-          {/* Video indicator for debugging */}
-          {!!hasVideo && post.embed && (
-            <VideoEmbed
-              isDetailView={isDetailView}
-              video={post.embed}
-              shouldPlay={shouldPlay}
-            />
-          )}
-        </View>
+            {!!post.embed && (
+              <EmbedContainer
+                embed={post.embed}
+                isDetailView={isDetailView}
+                onImagePress={handleImagePress}
+                onLinkPress={handleLinkPress}
+                onRecordPress={handleRecordPress}
+                shouldPlay={shouldPlay}
+              />
+            )}
 
-        {isDetailView && (
-          <View style={styles.detailStats}>
-            <View style={styles.statGroup}>
-              <Text style={styles.statNumber}>
-                {Formater.formatNumberToKOrM(post.replyCount)}
-              </Text>
-              <Text style={styles.statLabel}>Replies</Text>
-            </View>
-            <View style={styles.statGroup}>
-              <Text style={styles.statNumber}>
-                {Formater.formatNumberToKOrM(post.repostCount)}
-              </Text>
-              <Text style={styles.statLabel}>Reposts</Text>
-            </View>
-            <View style={styles.statGroup}>
-              <Text style={styles.statNumber}>
-                {Formater.formatNumberToKOrM(post.likeCount)}
-              </Text>
-              <Text style={styles.statLabel}>Likes</Text>
-            </View>
+            {/* Video indicator for debugging */}
+            {!!hasVideo && post.embed && (
+              <VideoEmbed
+                isDetailView={isDetailView}
+                video={post.embed}
+                shouldPlay={shouldPlay}
+              />
+            )}
+            {isDetailView && (
+              <View
+                style={styles.detailStats}
+                className="border-gray-300 dark:border-gray-700"
+              >
+                <Stats count={post.replyCount} label="Replies" />
+                <Stats count={post.repostCount} label="Reposts" />
+                <Stats count={post.likeCount} label="Likes" />
+              </View>
+            )}
+            {
+              // Action buttons
+            }
+            <ActionButtons
+              post={post}
+              isDetailView={isDetailView}
+              onLike={onLike}
+              onRepost={onRepost}
+              onComment={onComment}
+            />
           </View>
-        )}
-
-        <ActionButtons
-          post={post}
-          isDetailView={isDetailView}
-          onLike={onLike}
-          onRepost={onRepost}
-          onComment={onComment}
-        />
+        </View>
       </TouchableOpacity>
-
-      {/* LightBox Modal */}
-      <LightBox
-        visible={lightBoxVisible}
-        images={lightBoxImages}
-        initialIndex={lightBoxIndex}
-        onClose={() => {
-          setLightBoxVisible(false);
-        }}
-        onShare={handleImageShare}
-        onDownload={handleImageDownload}
-      />
     </>
   );
-}
+});
+
+Post.displayName = "Post";
 
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 16,
     paddingVertical: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  replyContainer: {
-    paddingLeft: 32,
-    borderLeftWidth: 2,
-    borderLeftColor: "#e5e7eb",
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    marginBottom: 8,
-  },
-  headerText: {
-    flex: 1,
-    marginLeft: 12,
-  },
-  nameRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    flexWrap: "wrap",
-  },
-  displayName: {
-    fontSize: 15,
-    fontWeight: "600",
-    maxWidth: 120,
-  },
-  handle: {
-    fontSize: 15,
-    marginLeft: 4,
-  },
-  time: {
-    fontSize: 15,
-    marginLeft: 4,
-  },
-  detailTime: {
-    fontSize: 14,
-    marginTop: 2,
-  },
-  moreButton: {
-    padding: 4,
-  },
-  content: {
-    marginLeft: 52,
-  },
-  detailContent: {
-    marginLeft: 0,
-    marginTop: 12,
-  },
-  text: {
-    fontSize: 15,
-    lineHeight: 20,
-    marginBottom: 8,
-  },
-  detailText: {
-    fontSize: 18,
-    lineHeight: 26,
-    marginBottom: 16,
-  },
-  debugIndicator: {
-    marginTop: 8,
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    backgroundColor: "#fef3c7",
-    borderRadius: 6,
-    alignSelf: "flex-start",
-  },
-  debugText: {
-    fontSize: 12,
-    fontWeight: "500",
+    borderBottomWidth: 1,
   },
   detailStats: {
     flexDirection: "row",
     gap: 24,
-    paddingVertical: 16,
+    paddingVertical: 10,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: "#e5e7eb",
     marginTop: 16,
   },
-  statGroup: {
-    alignItems: "center",
-  },
-  statNumber: {
-    fontSize: 18,
-    fontWeight: "700",
-  },
-  statLabel: {
-    fontSize: 12,
-    marginTop: 2,
-  },
 });
-
-const MemoizedPost = React.memo(Post);
-export { MemoizedPost as Post };
+export { Post };

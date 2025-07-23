@@ -176,10 +176,9 @@ export function ActionButtons({
 const styles = StyleSheet.create({
   actions: {
     flexDirection: "row",
-    marginTop: 12,
     gap: 15,
     justifyContent: "space-around",
     alignItems: "flex-end",
-    paddingTop: 12,
+    paddingTop: 10,
   },
 });

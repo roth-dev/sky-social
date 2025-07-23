@@ -3,7 +3,7 @@ import { type MenuAction as RNMenuAction } from "@react-native-menu/menu";
 
 export type DropDownMenuAction = {
   label: string;
-  onPress: () => void;
+  onPress: (value: unknown) => void;
   disabled?: boolean;
   web?: {
     icon?: ReactNode;

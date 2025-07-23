@@ -7,8 +7,8 @@ import { cva } from "class-variance-authority";
 const avatarVariants = cva("rounded-full overflow-hidden", {
   variants: {
     size: {
-      small: "w-8 h-8",
-      medium: "w-10 h-10",
+      small: "w-10 h-10",
+      medium: "w-12 h-12",
       large: "w-16 h-16",
       xl: "w-24 h-24",
     },
@@ -66,7 +66,7 @@ export function Avatar({
       style={style}
     >
       {uri ? (
-        <Image source={{ uri }} className={cn("w-full h-full")} />
+        <Image source={{ uri }} style={{ width: "100%", height: "100%" }} />
       ) : (
         <View
           className={cn(

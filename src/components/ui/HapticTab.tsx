@@ -183,7 +183,6 @@ export const HapticTab = forwardRef<
           >
             {count !== undefined && count > 0 && (
               <Text
-                size="sm"
                 font="semiBold"
                 className={cn(
                   "ml-1",

@@ -31,7 +31,7 @@ const DropDownMenu = React.forwardRef<MenuComponentRef, DropDownMenuProps>(
       ({ nativeEvent }: NativeActionEvent) => {
         const idx = Number(nativeEvent.event);
         if (actions && actions[idx] && !actions[idx].disabled) {
-          actions[idx].onPress();
+          actions[idx].onPress(actions[idx]);
         }
       },
       [actions]

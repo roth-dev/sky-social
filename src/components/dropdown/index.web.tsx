@@ -156,7 +156,7 @@ const MenuView = ({
                 <Button
                   key={idx}
                   onPress={() => {
-                    action.onPress();
+                    action.onPress(action);
                     close();
                   }}
                   size="small"

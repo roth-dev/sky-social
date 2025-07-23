@@ -11,7 +11,7 @@ export default function TabLayout() {
       <WebSidebar />
 
       {/* Main Content Area */}
-      <View className="flex-[1.2] main-content-desktop">
+      <View className="flex-[1.5] main-content-desktop">
         <Tabs
           screenOptions={{
             headerShown: false,

@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useCallback } from "react";
+import React, { PropsWithChildren, ReactElement, useCallback } from "react";
 import {
   TouchableOpacity,
   StyleSheet,
@@ -30,10 +30,13 @@ interface HeaderProps {
   onLeftPress?: () => void;
   onRightPress?: () => void;
   collapsible?: boolean;
+  disableSafeArea?: boolean;
   disabledLeft?: boolean;
   disbleTopHeader?: boolean;
   onHeightChange?: (height: number) => void;
   renderHeader?: () => React.ReactNode;
+  renderRight?: () => ReactElement;
+  renderLeft?: () => ReactElement;
 }
 function CollapsibleHeader({
   children,
@@ -96,6 +99,9 @@ export function Header({
   onHeightChange,
   renderHeader,
   disbleTopHeader,
+  disableSafeArea,
+  renderLeft,
+  renderRight,
 }: HeaderProps) {
   const { colorScheme } = useSettings();
 
@@ -120,36 +126,45 @@ export function Header({
           isAndroid || !collapsible
             ? Colors.background.primary[colorScheme]
             : undefined,
-        paddingTop: insets.top,
+        paddingTop: !disableSafeArea ? insets.top : undefined,
       }}
       className={cn(isNative && isHome && "pb-3")}
     >
       {!disbleTopHeader && (
         <View className="flex-row items-center justify-between px-4 py-3 web:dark:bg-[#111827]">
-          <Pressable
-            className="w-10 h-10 items-center justify-center"
-            onPress={handleLeftIconPress}
-            disabled={disabledLeft}
-          >
-            {leftIcon ? (
-              leftIcon
-            ) : disabledLeft ? (
-              <></>
-            ) : (
-              <ArrowLeft size={24} color={Colors.inverted[colorScheme]} />
-            )}
-          </Pressable>
+          {renderLeft ? (
+            renderLeft()
+          ) : (
+            <Pressable
+              className="w-10 h-10 items-center justify-center"
+              onPress={handleLeftIconPress}
+              disabled={disabledLeft}
+            >
+              {leftIcon ? (
+                leftIcon
+              ) : disabledLeft ? (
+                <></>
+              ) : (
+                <ArrowLeft size={24} color={Colors.inverted[colorScheme]} />
+              )}
+            </Pressable>
+          )}
+
           <Text font="bold" size="lg" className="flex-1 text-center">
             {title}
           </Text>
 
-          <TouchableOpacity
-            className="w-10 h-10 items-center justify-center"
-            onPress={onRightPress}
-            disabled={!rightIcon}
-          >
-            {rightIcon}
-          </TouchableOpacity>
+          {renderRight ? (
+            renderRight()
+          ) : (
+            <TouchableOpacity
+              className="w-10 h-10 items-center justify-center"
+              onPress={onRightPress}
+              disabled={!rightIcon}
+            >
+              {rightIcon}
+            </TouchableOpacity>
+          )}
         </View>
       )}
 

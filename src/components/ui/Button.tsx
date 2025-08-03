@@ -3,7 +3,7 @@ import { TouchableOpacity, ViewStyle, TextStyle } from "react-native";
 import { LucideIcon } from "lucide-react-native";
 import { cn } from "@/lib/utils";
 import { cva, VariantProps } from "class-variance-authority";
-import { Text } from "./Text";
+import { Text, TextProps } from "./Text";
 
 const buttonVariants = cva(
   "flex flex-row items-center gap-2 justify-center transition-colors",
@@ -64,6 +64,7 @@ export interface ButtonProps
   extends React.ComponentPropsWithoutRef<typeof TouchableOpacity>,
     VariantProps<typeof buttonVariants> {
   title?: string;
+  font?: TextProps["font"];
   onPress?: () => void;
   disabled?: boolean;
   style?: ViewStyle;
@@ -97,6 +98,7 @@ export const Button = forwardRef<
       variant,
       size,
       shape,
+      font,
       leftIcon: LeftIcon,
       rightIcon: RightIcon,
       leftIconSize,
@@ -167,6 +169,7 @@ export const Button = forwardRef<
         )}
         {title ? (
           <Text
+            font={font}
             className={cn(textVariants({ variant }), disabled && "opacity-70")}
             style={textStyle}
           >

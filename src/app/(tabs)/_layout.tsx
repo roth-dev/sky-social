@@ -1,8 +1,9 @@
 import { Colors } from "@/constants/colors";
+import { useComposeMessage } from "@/contexts/ComposserProvider";
 import { useSettings } from "@/contexts/SettingsContext";
 import useScrollDirection from "@/hooks/useScrollDirection";
 import { isIOS } from "@/platform";
-import { router, Tabs, useSegments } from "expo-router";
+import { Tabs, useSegments } from "expo-router";
 import {
   Home,
   Search,
@@ -49,6 +50,7 @@ function TabBarBackground({
 
 export default function TabLayout() {
   const segment = useSegments();
+  const { composeMessage } = useComposeMessage();
 
   const { colorScheme } = useSettings();
 
@@ -108,7 +110,7 @@ export default function TabLayout() {
           return {
             tabPress: (e) => {
               e.preventDefault();
-              router.push("/(modal)/composer");
+              composeMessage();
             },
           };
         }}

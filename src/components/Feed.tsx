@@ -180,6 +180,7 @@ const Feed = React.memo(function Comp({
         minIndexForVisible: 0,
         autoscrollToTopThreshold: 10,
       }}
+      keyboardShouldPersistTaps={isNative ? "always" : "handled"}
       onViewableItemsChangedFull={handleViewableItemsChangedFull}
       onScrollStateChange={handleScrollStateChange}
     />

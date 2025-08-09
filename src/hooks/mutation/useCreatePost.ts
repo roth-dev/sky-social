@@ -8,14 +8,16 @@ export function useCreatePost() {
     mutationFn: async ({
       text,
       images,
+      video,
     }: {
       text: string;
-      images?: unknown;
+      images?: { uri: string; alt?: string }[];
+      video?: string;
     }) => {
       if (!text || text.trim().length === 0) {
         throw new Error("Post text cannot be empty");
       }
-      const result = await atprotoClient.createPost(text, images);
+      const result = await atprotoClient.createPost(text, images, video);
       if (!result.success) {
         throw new Error(result.error || "Failed to create post");
       }

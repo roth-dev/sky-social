@@ -19,9 +19,10 @@ export default function UserLikeSection({ handle }: Props) {
       tabKey="posts"
       data={data}
       loading={likedQuery.isLoading}
-      loadingMore={false}
-      onRefresh={() => {}}
-      onLoadMore={() => {}}
+      loadingMore={likedQuery.isFetchingNextPage}
+      onRefresh={likedQuery.refetch}
+      refreshing={likedQuery.isRefetching}
+      onLoadMore={likedQuery.fetchNextPage}
     />
   );
 }

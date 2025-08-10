@@ -21,8 +21,9 @@ export default function UserVideoSection({ handle }: Props) {
       data={data}
       loading={mediaQuery.isLoading}
       loadingMore={false}
-      onRefresh={() => {}}
-      onLoadMore={() => {}}
+      onRefresh={mediaQuery.refetch}
+      refreshing={mediaQuery.isRefetching}
+      onLoadMore={mediaQuery.fetchNextPage}
     />
   );
 }

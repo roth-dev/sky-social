@@ -1,14 +1,9 @@
 import React, { useCallback } from "react";
-import { StyleSheet, Dimensions } from "react-native";
+import { StyleSheet } from "react-native";
 import { Avatar } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
 import { ATProfile } from "@/types/atproto";
-import {
-  MoreHorizontal,
-  Link as LinkIcon,
-  Calendar,
-  MessageCircle,
-} from "lucide-react-native";
+import { MoreHorizontal, Calendar, MessageCircle } from "lucide-react-native";
 import { Image } from "expo-image";
 import { HStack, Text, View, VStack } from "../ui";
 import { Colors } from "@/constants/colors";
@@ -28,8 +23,6 @@ interface ProfileHeaderProps {
   onMorePress?: () => void;
   setHeaderHeight?: (height: number) => void;
 }
-
-const { width } = Dimensions.get("window");
 
 export function ProfileHeader({
   user,
@@ -58,10 +51,12 @@ export function ProfileHeader({
       onLayout={(e) => {
         setHeaderHeight?.(e.nativeEvent.layout.height);
       }}
-      pointerEvents="none"
+      className="relative"
+      pointerEvents="box-none"
     >
       {/* Cover Image */}
       <View
+        pointerEvents="none"
         style={[
           styles.coverImage,
           {
@@ -82,7 +77,7 @@ export function ProfileHeader({
       </View>
 
       {/* Profile Content */}
-      <VStack className="px-4">
+      <VStack className="px-4" pointerEvents="box-none">
         {/* Avatar and Actions Row */}
         <HStack darkColor="none" style={styles.avatarRow}>
           <View
@@ -100,8 +95,10 @@ export function ProfileHeader({
               style={styles.avatar}
             />
           </View>
-
-          <HStack>
+          <View
+            className="flex-row items-center gap-2"
+            pointerEvents="box-none"
+          >
             <Button
               variant="outline"
               rightIcon={MoreHorizontal}
@@ -137,11 +134,13 @@ export function ProfileHeader({
                 />
               </HStack>
             )}
-          </HStack>
+          </View>
         </HStack>
 
+        {/* Profile Actions */}
+
         {/* Profile Info */}
-        <View style={styles.profileInfo}>
+        <View style={styles.profileInfo} pointerEvents="none">
           <Text font="bold" style={styles.displayName}>
             {user.displayName || user.handle}
           </Text>
@@ -158,35 +157,34 @@ export function ProfileHeader({
               {formatJoinDate(user.createdAt)}
             </Text>
           </HStack>
-
-          {/* Stats Row */}
-          <HStack className="mt-2 gap-4">
-            <Button variant="ghost" className="px-0 gap-1">
-              <Text font="semiBold">
-                {Formater.formatNumberToKOrM(user.followsCount || 0)}
-              </Text>
-              <Text className="text-gray-500">
-                <Trans>Following</Trans>
-              </Text>
-            </Button>
-            <Button variant="ghost" className="px-0 gap-1">
-              <Text font="semiBold">
-                {Formater.formatNumberToKOrM(user.followersCount || 0)}
-              </Text>
-              <Text className="text-gray-500">
-                <Trans>Followers</Trans>
-              </Text>
-            </Button>
-            <Button variant="ghost" className="px-0 gap-1">
-              <Text font="semiBold">
-                {Formater.formatNumberToKOrM(user.postsCount || 0)}
-              </Text>
-              <Text className="text-gray-500">
-                <Trans>Posts</Trans>
-              </Text>
-            </Button>
-          </HStack>
         </View>
+        {/* Stats Row */}
+        <HStack className="mt-2 gap-4" pointerEvents="box-none">
+          <Button variant="ghost" className="px-0 gap-1">
+            <Text font="semiBold">
+              {Formater.formatNumberToKOrM(user.followsCount || 0)}
+            </Text>
+            <Text className="text-gray-500">
+              <Trans>Following</Trans>
+            </Text>
+          </Button>
+          <Button variant="ghost" className="px-0 gap-1">
+            <Text font="semiBold">
+              {Formater.formatNumberToKOrM(user.followersCount || 0)}
+            </Text>
+            <Text className="text-gray-500">
+              <Trans>Followers</Trans>
+            </Text>
+          </Button>
+          <Button variant="ghost" className="px-0 gap-1">
+            <Text font="semiBold">
+              {Formater.formatNumberToKOrM(user.postsCount || 0)}
+            </Text>
+            <Text className="text-gray-500">
+              <Trans>Posts</Trans>
+            </Text>
+          </Button>
+        </HStack>
       </VStack>
     </View>
   );
@@ -194,7 +192,7 @@ export function ProfileHeader({
 
 const styles = StyleSheet.create({
   coverImage: {
-    height: 200,
+    height: 150,
     width: "100%",
     position: "relative",
   },

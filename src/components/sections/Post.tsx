@@ -22,9 +22,10 @@ export default function UserPostSection({ handle, paddingBottom = 0 }: Props) {
       data={data}
       paddingBottom={paddingBottom}
       loading={postsQuery.isLoading}
-      loadingMore={false}
-      onRefresh={() => {}}
-      onLoadMore={() => {}}
+      loadingMore={postsQuery.isFetchingNextPage}
+      onRefresh={postsQuery.refetch}
+      refreshing={postsQuery.isRefetching}
+      onLoadMore={postsQuery.fetchNextPage}
     />
   );
 }

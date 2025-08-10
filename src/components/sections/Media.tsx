@@ -21,9 +21,10 @@ export default function UserMediaSection({ handle }: Props) {
       tabKey="media"
       data={data as unknown as ATFeedItem[]}
       loading={mediaQuery.isLoading}
-      loadingMore={false}
-      onRefresh={() => {}}
-      onLoadMore={() => {}}
+      loadingMore={mediaQuery.isFetchingNextPage}
+      onRefresh={mediaQuery.refetch}
+      refreshing={mediaQuery.isRefetching}
+      onLoadMore={mediaQuery.fetchNextPage}
     />
   );
 }

@@ -13,37 +13,46 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/components/profile/ProfileHeader.tsx:141
+#: src/components/profile/ProfileHeader.tsx:148
 msgid "..."
 msgstr ""
 
 #. placeholder {0}: lang.nameKey
 #. placeholder {0}: theme.nameKey
 #. placeholder {0}: section.titleKey
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:236
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:318
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:394
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:421
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:239
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:321
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:397
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:424
 msgid "{0}"
 msgstr ""
 
 #. placeholder {0}: Math.floor(diffInHours / 24)
-#: src/components/Post.tsx:197
+#: src/components/Post.tsx:174
 msgid "{0}d"
 msgstr ""
 
-#: src/components/Post.tsx:196
+#: src/components/search/TrendingSection.tsx:196
+msgid "{description}"
+msgstr ""
+
+#: src/components/Post.tsx:173
 msgid "{diffInHours}h"
 msgstr ""
 
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:159
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:164
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:184
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:189
+#: src/components/search/TrendingSection.tsx:32
+#: src/components/search/TrendingSection.tsx:193
+msgid "{title}"
+msgstr ""
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:162
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:167
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:187
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:192
 msgid "About"
 msgstr "អំពី"
 
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:132
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:135
 msgid "Account"
 msgstr "គនណី"
 
@@ -51,15 +60,15 @@ msgstr "គនណី"
 msgid "Additional options coming soon!"
 msgstr ""
 
-#: src/app/login/index.tsx:48
+#: src/app/login/index.tsx:50
 msgid "An unexpected error occurred"
 msgstr ""
 
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:107
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:110
 msgid "Appearance"
 msgstr "រូបរាង"
 
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:55
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:57
 msgid "Are you sure you want to sign out?"
 msgstr "តើ​អ្នក​ប្រាកដ​ជា​ចង់​ចេញ?"
 
@@ -68,15 +77,15 @@ msgstr "តើ​អ្នក​ប្រាកដ​ជា​ចង់​ចេ
 #~ msgid "cancel"
 #~ msgstr ""
 
-#: src/components/Post.tsx:91
-#: src/components/Post.tsx:102
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:56
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:252
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:337
+#: src/components/Post.tsx:222
+#: src/components/Post.tsx:233
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:58
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:255
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:340
 msgid "Cancel"
 msgstr "បោះបង់"
 
-#: src/components/Post.tsx:87
+#: src/components/Post.tsx:218
 msgid "Cannot Open Link"
 msgstr "មិនអាចបើកតំណបានទេ"
 
@@ -88,7 +97,7 @@ msgstr "ពិនិត្យការតភ្ជាប់អ៊ីនធឺណ
 msgid "Coming Soon"
 msgstr ""
 
-#: src/app/login/index.tsx:86
+#: src/app/login/index.tsx:95
 msgid "Connect with the decentralized social web"
 msgstr "ភ្ជាប់ជាមួយបណ្តាញសង្គមដែលមានលក្ខណៈ decentralized"
 
@@ -100,16 +109,16 @@ msgstr "បញ្ហានៃការតភ្ជាប់"
 msgid "Content will appear here when available."
 msgstr "ខ្លឹមសារនឹងបង្ហាញនៅទីនេះនៅពេលមាន"
 
-#: src/components/Post.tsx:130
+#: src/components/Post.tsx:107
 msgid "Copied"
 msgstr "បានចម្លង"
 
-#: src/components/Post.tsx:235
+#: src/components/Post.tsx:251
 msgid "Copy post text"
 msgstr "ចម្លងអត្ថបទ"
 
-#: src/components/Post.tsx:90
-#: src/components/Post.tsx:101
+#: src/components/Post.tsx:221
+#: src/components/Post.tsx:232
 msgid "Copy URL"
 msgstr "ចម្លង URL"
 
@@ -117,78 +126,79 @@ msgstr "ចម្លង URL"
 #~ msgid "dark"
 #~ msgstr ""
 
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:84
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:87
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:277
 msgid "Dark"
 msgstr "ងងឹត"
 
-#: src/components/search/TrendingSection.tsx:96
+#: src/components/search/TrendingSection.tsx:116
 msgid "Discover"
 msgstr "ស្វែងរក"
 
 #: src/components/search/TrendingSection.tsx:174
-msgid "Discover posts"
-msgstr "ស្វែងរក posts"
+#~ msgid "Discover posts"
+#~ msgstr "ស្វែងរក posts"
 
 #: src/components/Feed.tsx:99
 msgid "Discover posts from the decentralized social web. Sign in to interact with posts and see your personalized timeline."
 msgstr "ស្វែងរកការបង្ហោះពីគេហទំព័រសង្គម Decentralized។ ចូល​ដើម្បី​ធ្វើ​អន្តរកម្ម​ជាមួយ​ការ​បង្ហោះ និង​មើល timeline​ ផ្ទាល់ខ្លួន​របស់​អ្នក។"
 
-#: src/app/login/index.tsx:117
+#: src/app/login/index.tsx:127
 msgid "Don't have a Bluesky account? Create one at"
 msgstr "មិនទាន់មានគណនី Bluesky? បង្កើតនៅលើ"
 
-#: src/components/profile/ProfileHeader.tsx:124
+#: src/components/profile/ProfileHeader.tsx:133
 msgid "Edit Profile"
 msgstr "កែសម្រួលប្រវត្តិរូប"
 
-#: src/app/login/index.tsx:132
-#: src/app/login/index.tsx:145
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:76
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:200
+#: src/app/login/index.tsx:142
+#: src/app/login/index.tsx:155
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:79
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:203
 msgid "English"
 msgstr "English"
 
-#: src/components/search/SearchResults.tsx:106
+#: src/components/search/SearchResults.tsx:105
 msgid "Enter a search term"
 msgstr "បញ្ចូលពាក្យស្វែងរក"
 
-#: src/components/search/SearchResults.tsx:96
+#: src/components/search/SearchResults.tsx:95
 msgid "Enter a search term to find people, posts, and feeds on Bluesky."
 msgstr "បញ្ចូលពាក្យស្វែងរកដើម្បីស្វែងរកមនុស្ស posts និងមតិព័ត៌មាននៅលើ Bluesky"
 
-#: src/app/login/index.tsx:103
+#: src/app/login/index.tsx:113
 msgid "Enter your password"
 msgstr "បញ្ចូលពាក្យសម្ងាត់របស់អ្នក"
 
 #: src/components/composer/Composer.tsx:206
-msgid "Error"
-msgstr "កំហុស"
+#~ msgid "Error"
+#~ msgstr "កំហុស"
 
 #: src/components/search/TrendingSection.tsx:184
-msgid "Explore feeds"
-msgstr "រុករកព័ត៌មាន"
+#~ msgid "Explore feeds"
+#~ msgstr "រុករកព័ត៌មាន"
 
 #: src/components/composer/Composer.tsx:206
-msgid "Failed to create post"
-msgstr "បរាជ័យក្នុងការបង្កើតសារបង្ហោះ"
+#~ msgid "Failed to create post"
+#~ msgstr "បរាជ័យក្នុងការបង្កើតសារបង្ហោះ"
 
-#: src/app/(tabs)/(index,search,create,video,account)/index.tsx:75
+#: src/app/(tabs)/(index,search,create,video,account)/index.tsx:73
 msgid "Feeds"
 msgstr "ហ្វីត"
 
 #: src/components/search/TrendingSection.tsx:187
-msgid "Find custom feeds created by the community"
-msgstr "ស្វែងរកព័ត៌មានផ្ទាល់ខ្លួនដែលបង្កើតឡើងដោយសហគមន៍"
+#~ msgid "Find custom feeds created by the community"
+#~ msgstr "ស្វែងរកព័ត៌មានផ្ទាល់ខ្លួនដែលបង្កើតឡើងដោយសហគមន៍"
 
-#: src/components/search/TrendingSection.tsx:100
+#: src/components/search/TrendingSection.tsx:120
 msgid "Find interesting people and feeds to follow"
 msgstr "ស្វែងរកមនុស្សគួរឱ្យចាប់អារម្មណ៍ និងព័ត៌មានដើម្បីតាមដាន"
 
 #: src/components/search/TrendingSection.tsx:166
-msgid "Find people"
-msgstr "ស្វែងរកអ្នកប្រើប្រាស់ផ្សេងទៀត"
+#~ msgid "Find people"
+#~ msgstr "ស្វែងរកអ្នកប្រើប្រាស់ផ្សេងទៀត"
 
-#: src/components/profile/ProfileHeader.tsx:144
+#: src/components/profile/ProfileHeader.tsx:151
 msgid "Follow"
 msgstr "តាម"
 
@@ -196,19 +206,24 @@ msgstr "តាម"
 msgid "Follow people to see their posts in your timeline. Discover new accounts in the search tab!"
 msgstr "តាមដានអ្នកប្រើប្រាស់ផ្សេងទៀតដើម្បីមើលការបង្ហោះរបស់ពួកគេនៅក្នុង timeline របស់អ្នក។ ស្វែងរកគណនីថ្មីនៅក្នុងផ្ទាំងស្វែងរក"
 
-#: src/components/profile/ProfileHeader.tsx:143
-#: src/app/(tabs)/(index,search,create,video,account)/index.tsx:69
+#: src/components/profile/ProfileHeader.tsx:198
+msgid "Followers"
+msgstr "អ្នកតាម"
+
+#: src/components/profile/ProfileHeader.tsx:150
+#: src/components/profile/ProfileHeader.tsx:190
+#: src/app/(tabs)/(index,search,create,video,account)/index.tsx:67
 msgid "Following"
 msgstr "កំពុងតាម"
 
-#: src/app/(tabs)/(index,search,create,video,account)/index.tsx:63
+#: src/app/(tabs)/(index,search,create,video,account)/index.tsx:61
 msgid "For You"
 msgstr "សម្រាប់អ្នក"
 
 #~ msgid "Hello"
 #~ msgstr "សួស្តី"
 
-#: src/components/Post.tsx:74
+#: src/components/Post.tsx:205
 msgid "Invalid URL"
 msgstr "URL មិនត្រឹមត្រូវ"
 
@@ -216,14 +231,14 @@ msgstr "URL មិនត្រឹមត្រូវ"
 msgid "Join the conversation"
 msgstr "ចូលរួមការសន្ទនា"
 
-#: src/app/login/index.tsx:136
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:76
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:201
+#: src/app/login/index.tsx:146
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:79
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:204
 msgid "Khmer"
 msgstr "ខ្មែរ"
 
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:112
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:218
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:115
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:221
 msgid "Language"
 msgstr "ភាសា"
 
@@ -231,8 +246,8 @@ msgstr "ភាសា"
 #~ msgid "light"
 #~ msgstr "ពន្លឺ"
 
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:82
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:269
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:85
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:272
 msgid "Light"
 msgstr "ពន្លឺ"
 
@@ -240,7 +255,7 @@ msgstr "ពន្លឺ"
 msgid "Liked"
 msgstr "ចូលចិត្ត"
 
-#: src/components/Post.tsx:98
+#: src/components/Post.tsx:229
 msgid "Link Error"
 msgstr "កំហុសតំណ"
 
@@ -248,7 +263,7 @@ msgstr "កំហុសតំណ"
 msgid "Loading..."
 msgstr "កំពុងផ្ទុក..."
 
-#: src/app/login/index.tsx:45
+#: src/app/login/index.tsx:47
 msgid "Login failed"
 msgstr "ការចូលបានបរាជ័យ"
 
@@ -259,9 +274,9 @@ msgstr "ការចូលបានបរាជ័យ"
 #~ msgid "logout"
 #~ msgstr ""
 
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:55
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:58
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:175
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:57
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:60
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:178
 msgid "Logout"
 msgstr "ចេញ"
 
@@ -273,11 +288,11 @@ msgstr "ប្រព័ន្ធផ្សព្វផ្សាយ"
 msgid "More Options"
 msgstr "ជម្រើសច្រើនទៀត"
 
-#: src/components/search/SearchResults.tsx:142
+#: src/components/search/SearchResults.tsx:141
 msgid "No custom feeds found for \"{searchQuery}\". Try browsing popular feeds instead."
 msgstr ""
 
-#: src/components/search/SearchResults.tsx:141
+#: src/components/search/SearchResults.tsx:140
 msgid "No feeds found"
 msgstr "រកមិនឃើញមតិព័ត៌មានទេ"
 
@@ -293,15 +308,15 @@ msgstr "មិន​ទាន់​មាន posts ​ដែល​ចូលច�
 msgid "No media yet"
 msgstr "មិនទាន់មានប្រព័ន្ធផ្សព្វផ្សាយនៅឡើយទេ"
 
-#: src/components/search/SearchResults.tsx:131
+#: src/components/search/SearchResults.tsx:130
 msgid "No people found"
 msgstr "រកមិនឃើញអ្នកប្រើប្រាស់ទេ"
 
-#: src/components/search/SearchResults.tsx:136
+#: src/components/search/SearchResults.tsx:135
 msgid "No posts found"
 msgstr "រកមិនឃើញ posts"
 
-#: src/components/search/SearchResults.tsx:137
+#: src/components/search/SearchResults.tsx:136
 msgid "No posts found for \"{searchQuery}\". Try searching with different keywords."
 msgstr "រកមិនឃើញ posts សម្រាប់ \"{searchQuery}\" ទេ។ ព្យាយាមស្វែងរកដោយប្រើពាក្យគន្លឹះផ្សេងៗ"
 
@@ -309,12 +324,12 @@ msgstr "រកមិនឃើញ posts សម្រាប់ \"{searchQuery}\" �
 msgid "No posts yet"
 msgstr "មិនទាន់ posts នៅឡើយទេ"
 
-#: src/components/search/SearchResults.tsx:146
+#: src/components/search/SearchResults.tsx:145
 #: src/components/placeholders/EmptyState.tsx:97
 msgid "No results found"
 msgstr "រកមិនឃើញលទ្ធផល"
 
-#: src/components/search/SearchResults.tsx:147
+#: src/components/search/SearchResults.tsx:146
 msgid "No results found for \"{searchQuery}\". Try a different search term."
 msgstr "រកមិនឃើញលទ្ធផលសម្រាប់ \"{searchQuery}\" ទេ។ សាកល្បងពាក្យស្វែងរកផ្សេង"
 
@@ -322,7 +337,7 @@ msgstr "រកមិនឃើញលទ្ធផលសម្រាប់ \"{searc
 msgid "No suggestions available at the moment"
 msgstr "មិនមានការណែនាំទេនៅពេលនេះ"
 
-#: src/components/search/SearchResults.tsx:132
+#: src/components/search/SearchResults.tsx:131
 msgid "No users found for \"{searchQuery}\". Try searching with a different term or handle."
 msgstr "រកមិនឃើញអ្នកប្រើប្រាស់សម្រាប់ \"{searchQuery}\" ទេ។ សាកល្បងស្វែងរកដោយប្រើពាក្យ ឬ handle ផ្សេង"
 
@@ -334,15 +349,15 @@ msgstr "មិន​ទាន់​តាម​អ្នក​ណា​ទេ"
 msgid "Nothing here yet"
 msgstr "មិនមានអ្វីនៅទីនេះនៅឡើយទេ"
 
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:148
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:151
 msgid "Notifications"
 msgstr "ការជូនដំណឹង"
 
-#: src/components/Post.tsx:195
+#: src/components/Post.tsx:172
 msgid "now"
 msgstr "ឥឡូវ"
 
-#: src/app/login/index.tsx:102
+#: src/app/login/index.tsx:112
 msgid "Password"
 msgstr "ពាក្យសម្ងាត់"
 
@@ -350,7 +365,7 @@ msgstr "ពាក្យសម្ងាត់"
 msgid "Please check your internet connection and try again."
 msgstr "សូមពិនិត្យមើលការតភ្ជាប់អ៊ីនធឺណិតរបស់អ្នក ហើយព្យាយាមម្តងទៀត"
 
-#: src/app/login/index.tsx:31
+#: src/app/login/index.tsx:33
 msgid "Please fill in all fields"
 msgstr ""
 
@@ -359,18 +374,19 @@ msgid "Please sign in to view your personalized feed and interact with posts."
 msgstr "សូមចូលដើម្បីមើលព័ត៌មានផ្ទាល់ខ្លួនរបស់អ្នក និងធ្វើអន្តរកម្មជាមួយការបង្ហោះ"
 
 #: src/components/search/TrendingSection.tsx:138
-msgid "Popular Feeds"
-msgstr "មតិព័ត៌មានពេញនិយម"
+#~ msgid "Popular Feeds"
+#~ msgstr "មតិព័ត៌មានពេញនិយម"
 
 #: src/components/profile/UserProfile.tsx:33
+#: src/components/profile/ProfileHeader.tsx:206
 msgid "Posts"
-msgstr ""
+msgstr "ការបង្ហោះ"
 
 #: src/components/layout/WebSidebar.tsx:158
 msgid "Powered by AT Protocol"
 msgstr ""
 
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:137
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:140
 msgid "Privacy"
 msgstr "ឯកជនភាព"
 
@@ -379,7 +395,7 @@ msgid "Profile editing will be available soon!"
 msgstr ""
 
 #. placeholder {0}: replyTo.post.author.handle
-#: src/components/composer/Composer.tsx:245
+#: src/components/composer/Composer.tsx:326
 msgid "Replying to @{0}"
 msgstr "ឆ្លើយតបទៅ @{0}"
 
@@ -387,24 +403,19 @@ msgstr "ឆ្លើយតបទៅ @{0}"
 msgid "Retry"
 msgstr "ព្យាយាមម្តងទៀត"
 
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:274
-msgid "Dark"
-msgstr "ងងឹត"
-
 #: src/components/search/TrendingSection.tsx:169
-msgid "Search by handle (@username) or display name"
-msgstr "ស្វែងរកតាម handle (@username) ឬឈ្មោះ"
+#~ msgid "Search by handle (@username) or display name"
+#~ msgstr "ស្វែងរកតាម handle (@username) ឬឈ្មោះ"
 
-#: src/components/search/TrendingSection.tsx:161
+#: src/components/search/TrendingSection.tsx:156
 msgid "Search Tips"
 msgstr "គន្លឹះស្វែងរក"
 
-#: src/components/search/SearchResults.tsx:85
+#: src/components/search/SearchResults.tsx:84
 msgid "Searching for {type}..."
 msgstr "កំពុងស្វែងរក {type}..."
 
-#: src/components/search/TrendingSection.tsx:116
-#: src/components/search/TrendingSection.tsx:143
+#: src/components/search/TrendingSection.tsx:37
 #: src/components/layout/RightSidebar.tsx:221
 msgid "See all"
 msgstr "មើលទាំងអស់"
@@ -413,7 +424,7 @@ msgstr "មើលទាំងអស់"
 msgid "Service Unavailable"
 msgstr "សេវាកម្មមិនអាចប្រើបានទេ"
 
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:348
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:351
 msgid "Settings"
 msgstr "ការកំណត់"
 
@@ -422,7 +433,7 @@ msgid "Sign in"
 msgstr ""
 
 #: src/components/layout/WebSidebar.tsx:145
-#: src/app/login/index.tsx:111
+#: src/app/login/index.tsx:121
 msgid "Sign In"
 msgstr "ចូលគណនី"
 
@@ -438,11 +449,11 @@ msgstr "ចូលដើម្បីតាមដានអ្នកប្រប្
 msgid "Sign in to see personalized suggestions"
 msgstr "ចូលដើម្បីមើលការណែនាំផ្ទាល់ខ្លួន"
 
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:466
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:469
 msgid "Signin"
 msgstr "ចូលគណនី"
 
-#: src/app/login/index.tsx:111
+#: src/app/login/index.tsx:121
 msgid "Signing in..."
 msgstr "កំពុងចូល"
 
@@ -458,7 +469,7 @@ msgstr "មាន​អ្វី​មួយ​ខុស​ពេល​ផ្ទ
 msgid "Something went wrong while loading your profile."
 msgstr "មាន​អ្វី​មួយ​ខុស​ពេល​ផ្ទុក​ព័ត៌មាន​របស់​អ្នក"
 
-#: src/components/search/SearchResults.tsx:95
+#: src/components/search/SearchResults.tsx:94
 msgid "Start searching"
 msgstr "ចាប់ផ្តើមស្វែងរក"
 
@@ -469,15 +480,15 @@ msgid "Suggested people"
 msgstr "មនុស្សដែលបានណែនាំ"
 
 #: src/components/search/TrendingSection.tsx:111
-msgid "Suggested People"
-msgstr "មនុស្សដែលបានណែនាំ"
+#~ msgid "Suggested People"
+#~ msgstr "មនុស្សដែលបានណែនាំ"
 
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:279
 #~ msgid "system"
 #~ msgstr "ប្រព័ន្ធ"
 
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:86
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:279
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:89
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:282
 msgid "System"
 msgstr "ប្រព័ន្ធ"
 
@@ -485,25 +496,25 @@ msgstr "ប្រព័ន្ធ"
 msgid "The service is temporarily unavailable. Please try again in a few moments."
 msgstr ""
 
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:120
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:298
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:123
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:301
 msgid "Theme"
 msgstr "ពណ៌"
 
-#: src/components/Post.tsx:75
+#: src/components/Post.tsx:206
 msgid "This link appears to be invalid or malformed."
 msgstr "តំណនេះហាក់ដូចជាមិនត្រឹមត្រូវ ឬខុសទម្រង់"
 
-#: src/components/Post.tsx:88
+#: src/components/Post.tsx:219
 msgid "This link cannot be opened on your device. Would you like to copy the URL?"
 msgstr "តំណនេះមិនអាចបើកនៅលើឧបករណ៍របស់អ្នកបានទេ។ តើអ្នកចង់ចម្លង URL ទេ"
 
-#: src/components/Post.tsx:220
-#: src/components/Post.tsx:228
+#: src/components/Post.tsx:192
+#: src/components/Post.tsx:244
 msgid "Translate"
 msgstr "បកប្រែ"
 
-#: src/components/Post.tsx:220
+#: src/components/Post.tsx:192
 msgid "Translate action triggered (implement logic)"
 msgstr "បកប្រែសកម្មភាពដែលបានបង្កឡើង (អនុវត្តតក្កវិជ្ជា)"
 
@@ -515,7 +526,7 @@ msgstr "ព្យាយាមម្តងទៀត"
 msgid "Try searching for something else or check your spelling."
 msgstr "សាកល្បងស្វែងរកអ្វីផ្សេងទៀត ឬពិនិត្យមើលអក្ខរាវិរុទ្ធរបស់អ្នក"
 
-#: src/components/search/SearchResults.tsx:107
+#: src/components/search/SearchResults.tsx:106
 msgid "Type something to search for people, posts, and feeds."
 msgstr "វាយបញ្ចូលអ្វីមួយដើម្បីស្វែងរកមនុស្ស posts និងមតិព័ត៌មាន"
 
@@ -531,36 +542,36 @@ msgstr "មិនអាចផ្ទុក timeline បានទេ"
 msgid "Unable to load video"
 msgstr "មិនអាចផ្ទុកវីដេអូបានទេ"
 
-#: src/components/Post.tsx:99
+#: src/components/Post.tsx:230
 msgid "Unable to open this link. Would you like to copy the URL instead?"
 msgstr "មិនអាចបើកតំណនេះបានទេ។ តើអ្នកចង់ចម្លង URL ជំនួសវិញទេ?"
 
-#: src/components/Post.tsx:133
-#: src/components/Post.tsx:137
+#: src/components/Post.tsx:110
+#: src/components/Post.tsx:114
 msgid "URL"
 msgstr "URL"
 
-#: src/components/Post.tsx:130
+#: src/components/Post.tsx:107
 msgid "URL copied to clipboard"
 msgstr "URL ត្រូវបានចម្លងទៅ clipboard"
 
 #: src/components/search/TrendingSection.tsx:177
-msgid "Use keywords to find posts about topics you're interested in"
-msgstr ""
+#~ msgid "Use keywords to find posts about topics you're interested in"
+#~ msgstr ""
 
-#: src/app/login/index.tsx:92
+#: src/app/login/index.tsx:101
 msgid "Username or Email"
 msgstr "ឈ្មោះអ្នកប្រើប្រាស់ ឬ អីម៉ែល"
 
 #: src/components/profile/UserProfile.tsx:43
 msgid "Videos"
-msgstr ""
+msgstr "វីដេអូ"
 
 #: src/components/placeholders/EmptyState.tsx:156
 msgid "We encountered an error while loading this content."
 msgstr ""
 
-#: src/app/login/index.tsx:79
+#: src/app/login/index.tsx:88
 msgid "Welcome to Sky"
 msgstr "ស្វាគមន័ មកកាន់ Sky"
 
@@ -569,7 +580,7 @@ msgstr "ស្វាគមន័ មកកាន់ Sky"
 msgid "Welcome to Sky Social!"
 msgstr "ស្វាគមន័ មកកាន់ Sky"
 
-#: src/components/composer/Composer.tsx:274
+#: src/components/composer/Composer.tsx:355
 msgid "What's on your mind?"
 msgstr "មានរឿងក្នុងចិត្ត?"
 
@@ -593,7 +604,7 @@ msgstr "នៅពេលដែលអ្នកប្រើប្រាស់នេ
 msgid "When this user shares photos and videos, they will appear here."
 msgstr "នៅពេលដែលអ្នកប្រើប្រាស់នេះចែករំលែករូបថត និងវីដេអូ វានឹងបង្ហាញនៅទីនេះ"
 
-#: src/components/composer/Composer.tsx:274
+#: src/components/composer/Composer.tsx:355
 msgid "Write your reply..."
 msgstr "សរសេរការឆ្លើយតបរបស់អ្នក"
 
@@ -605,7 +616,7 @@ msgstr "អ្នកគ្មានអ៊ីនធឺណិតទេ"
 msgid "Your timeline will appear here once you follow some people and they start posting."
 msgstr "timeline របស់អ្នកនឹងបង្ហាញនៅទីនេះ នៅពេលដែលអ្នកតាមដានអ្នកប្រើប្រាស់មួយចំនួន ហើយពួកគេចាប់ផ្តើមបង្ហោះ"
 
-#: src/app/login/index.tsx:93
+#: src/app/login/index.tsx:102
 msgid "your.handle or email@example.com"
 msgstr "handle របស់អ្នក ឬ អីម៉ែល"
 

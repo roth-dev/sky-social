@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { HapticTab } from "@/components/ui";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -11,6 +11,7 @@ import { ATPost } from "@/types/atproto";
 import { Heart, MessageCircle, Repeat2, Share } from "lucide-react-native";
 import { View, StyleSheet } from "react-native";
 import { router } from "expo-router";
+import { Composer, type CompopserRef } from "./composer/Composer";
 
 interface ActionButtonsProps {
   post: ATPost;
@@ -39,6 +40,8 @@ export function ActionButtons({
   const [repostCount, setRepostCount] = useState(post.repostCount ?? 0);
   const [isLiked, setIsLiked] = useState(!!post.viewer?.like);
   const [isReposted, setIsReposted] = useState(!!post.viewer?.repost);
+
+  const composerRef = useRef<CompopserRef>(null);
 
   const handleLike = useCallback(() => {
     if (!isAuthenticated) {
@@ -129,9 +132,9 @@ export function ActionButtons({
     if (!isAuthenticated) {
       router.push("/login");
     } else {
-      onComment?.(post.uri, post.cid);
+      composerRef.current?.open();
     }
-  }, [post.uri, post.cid, isAuthenticated, onComment]);
+  }, [isAuthenticated]);
 
   const handleShare = useCallback(() => {
     onShare?.(post.uri, post.cid);
@@ -168,6 +171,19 @@ export function ActionButtons({
         variant="share"
         onPress={handleShare}
         hapticType="light"
+      />
+      {
+        // compose message
+      }
+      <Composer
+        replyTo={{
+          post,
+        }}
+        ref={composerRef}
+        onClose={() => {}}
+        onPost={() => {}}
+        onPostStateChange={() => {}}
+        onPostTrigger={() => {}}
       />
     </View>
   );

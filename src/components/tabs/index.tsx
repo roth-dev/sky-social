@@ -1,43 +1,12 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useCallback, useRef } from "react";
 import {
   Tabs,
-  TabBarProps,
   CollapsibleRef,
   MaterialTabBar,
 } from "react-native-collapsible-tab-view";
 import { Route, TabViewProps } from "./type";
-import { HStack } from "../ui";
-import TabBarItem from "./TabBarItem";
-import { Colors } from "@/constants/colors";
-import { useSettings } from "@/contexts/SettingsContext";
+import { StyleSheet } from "react-native";
 
-function TabBar(props: TabBarProps<string>) {
-  const { colorScheme } = useSettings();
-  const [activeTab, setActiveTab] = useState(0);
-
-  return (
-    <HStack
-      style={{
-        borderBottomColor: Colors.border[colorScheme],
-        borderBottomWidth: 1,
-      }}
-    >
-      {props.tabNames.map((tab, index) => {
-        return (
-          <TabBarItem
-            key={index}
-            onPress={() => {
-              setActiveTab(index);
-              props.onTabPress(tab);
-            }}
-            active={index === activeTab}
-            title={tab}
-          />
-        );
-      })}
-    </HStack>
-  );
-}
 export default function TabView({
   routes,
   onChange,
@@ -48,9 +17,12 @@ export default function TabView({
 }: TabViewProps) {
   const ref = useRef<CollapsibleRef>(null);
 
-  const handleIndexChange = useCallback((index: number) => {
-    onChange?.({ key: routes[index].key, name: routes[index].name });
-  }, []);
+  const handleIndexChange = useCallback(
+    (index: number) => {
+      onChange?.({ key: routes[index].key, name: routes[index].name });
+    },
+    [onChange, routes]
+  );
 
   const renderScene = useCallback(({ item }: { item: Route }) => {
     return (
@@ -66,20 +38,44 @@ export default function TabView({
       ref={ref}
       renderHeader={renderHeader}
       allowHeaderOverscroll
-      renderTabBar={(props) => <TabBar {...props} />}
+      renderTabBar={(props) => (
+        <MaterialTabBar
+          {...props}
+          scrollEnabled
+          style={styles.tabBar}
+          labelStyle={styles.tabLabel}
+          contentContainerStyle={styles.tabContentContainer}
+        />
+      )}
       onIndexChange={handleIndexChange}
       headerHeight={headerHeight}
-      headerContainerStyle={{
-        elevation: 0,
-        shadowRadius: 0,
-        shadowOpacity: 0,
-        shadowOffset: {
-          width: 0,
-          height: 0,
-        },
-      }}
+      headerContainerStyle={styles.container}
     >
       {routes.map((route) => renderScene({ item: route }))}
     </Tabs.Container>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    elevation: 0,
+    shadowRadius: 0,
+    shadowOpacity: 0,
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+  },
+  tabLabel: {
+    fontSize: 16,
+    marginHorizontal: 15,
+    textAlign: "center",
+    fontFamily: "KantumruyPro_500Medium",
+  },
+  tabBar: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  tabContentContainer: {
+    padding: 8,
+  },
+});

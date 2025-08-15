@@ -669,8 +669,12 @@ export class ATProtoClient {
     }
   }
 
-  async createPost(text: string, images?: unknown[]) {
-    logger.log("createPost", { text, images });
+  async createPost(
+    text: string,
+    images?: { uri: string; alt?: string }[],
+    video?: string
+  ) {
+    logger.log("createPost", { text, images: images?.length, video: !!video });
     if (!this.isAuthenticated) {
       throw new Error("Not authenticated");
     }
@@ -680,16 +684,48 @@ export class ATProtoClient {
         throw new Error("Post text cannot be empty");
       }
 
-      const record: { text: string; createdAt: string } = {
+      const record: {
+        text: string;
+        createdAt: string;
+        embed?: {
+          $type: string;
+          images?: unknown[];
+          video?: unknown;
+        };
+      } = {
         text: text.trim(),
         createdAt: new Date().toISOString(),
       };
 
+      // Handle media uploads
       if (images && images.length > 0) {
-        // Handle image upload logic here
-        // This would require implementing image upload to AT Protocol
-      }
+        const { uploadImages } = await import("./blobUpload");
+        const uploadResult = await uploadImages(this.agent, images);
 
+        if (!uploadResult.success) {
+          throw new Error(uploadResult.error || "Failed to upload images");
+        }
+
+        record.embed = {
+          $type: "app.bsky.embed.images",
+          images: uploadResult.images,
+        };
+      } else if (video) {
+        const { uploadVideo } = await import("./blobUpload");
+        const uploadResult = await uploadVideo(this.agent, video);
+
+        if (!uploadResult.success) {
+          throw new Error(uploadResult.error || "Failed to upload video");
+        }
+
+        record.embed = {
+          $type: "app.bsky.embed.video",
+          video: uploadResult.blob,
+          ...(uploadResult.aspectRatio && {
+            aspectRatio: uploadResult.aspectRatio,
+          }),
+        };
+      }
       const response = await this.retryWithBackoff(
         () => this.agent.post(record),
         "Create Post"
@@ -948,10 +984,7 @@ export class ATProtoClient {
     // Clear stored session data
     await storage.clearAll();
 
-    // Clear agent session
-    this.agent.session = null;
-
-    // On web, switch back to PUBLIC_SERVICE_URL after logout
+    // Reinitialize agent to clear session
     this.setAgent(false);
   }
 }

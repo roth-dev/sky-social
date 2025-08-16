@@ -1,15 +1,20 @@
 import useAnimatedBottomTab from "@/hooks/useAnimatedBottomTab";
 import { HStack } from "./ui";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
-import Animated from "react-native-reanimated";
+import Animated, { FadeIn } from "react-native-reanimated";
 import { Pressable, StyleSheet } from "react-native";
 import { Colors } from "@/constants/colors";
 import { useSettings } from "@/contexts/SettingsContext";
 import { isIOS } from "@/platform";
+import { useTabBarStore } from "@/store/tabBarStore";
 
 export default function TabBar(props: BottomTabBarProps) {
   const { colorScheme } = useSettings();
   const { animatedStyle, backgroundColor } = useAnimatedBottomTab();
+  const { isVisible } = useTabBarStore();
+
+  // If tab bar is not visible, return null (don't render it)
+  if (!isVisible) return null;
 
   return (
     <Animated.View
@@ -26,6 +31,7 @@ export default function TabBar(props: BottomTabBarProps) {
         },
         animatedStyle,
       ]}
+      entering={FadeIn.duration(100)}
     >
       <HStack
         style={{

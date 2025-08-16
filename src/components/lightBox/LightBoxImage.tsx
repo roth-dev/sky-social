@@ -3,19 +3,32 @@ import PagerView from "../pager";
 import { Image } from "expo-image";
 
 interface Props {
-  initailIndex?: number;
+  initialIndex?: number;
   images: EmbedImage[];
+  onChangeIndex?: (index: number) => void;
 }
-export default function LightBoxImage({ images, initailIndex }: Props) {
+export default function LightBoxImage({
+  images,
+  initialIndex,
+  onChangeIndex,
+}: Props) {
   return (
-    <PagerView initialPage={initailIndex} style={{ flex: 1 }}>
+    <PagerView
+      orientation="horizontal"
+      initialPage={initialIndex}
+      onPageSelected={(event) => {
+        onChangeIndex?.(event.nativeEvent.position);
+      }}
+      style={{ flex: 1 }}
+    >
       {images.map((image, index) => {
         return (
           <Image
             key={index}
-            source={{ uri: image.uri }}
+            source={{ uri: image.fullsize }}
             alt={image.alt}
-            contentFit="contain"
+            accessibilityLabel={image.alt}
+            contentFit="cover"
             style={{ width: "100%", height: "100%" }}
           />
         );

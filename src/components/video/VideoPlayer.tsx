@@ -6,7 +6,6 @@ import { useIsFocused } from "@react-navigation/native";
 import VideoContainer from "./VideoContainer";
 import { VideoPlayerProps } from "./type";
 import VideoError from "./VideoError";
-import { useLightBoxOpen } from "@/store/lightBox";
 import { isAndroid } from "@/platform";
 
 export const VideoPlayer = memo(function Comp({
@@ -20,7 +19,6 @@ export const VideoPlayer = memo(function Comp({
   const videoRef = useRef<VideoView>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
-  const { isOpen } = useLightBoxOpen();
 
   const player = useVideoPlayer(
     {
@@ -29,18 +27,19 @@ export const VideoPlayer = memo(function Comp({
     },
     (player) => {
       player.loop = true;
+      player.muted = true;
     }
   );
 
   const isFocused = useIsFocused();
 
   useEffect(() => {
-    if (shouldPlay && isFocused && !isOpen && !isAndroid) {
+    if (shouldPlay && isFocused && !isAndroid) {
       player.play();
     } else {
       player.pause();
     }
-  }, [shouldPlay, isFocused, player, isOpen]);
+  }, [shouldPlay, isFocused, player]);
 
   // Listen for duration and loading/error status
   useEventListener(player, "sourceLoad", () => {

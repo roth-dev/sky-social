@@ -3,20 +3,47 @@ import { View, TouchableOpacity, StyleSheet, Text } from "react-native";
 import { EmbedImage } from "@/types/embed";
 import { Image } from "expo-image";
 import { useResponsiveWidth } from "@/hooks/useResponsiveWidth";
-
+import { router } from "expo-router";
+import Transition from "react-native-screen-transitions";
+import { useLightBoxOpen } from "@/store/lightBox";
 interface ImageEmbedProps {
   images: EmbedImage[];
   isDetailView?: boolean;
   onImagePress?: (images: EmbedImage[], index: number) => void;
 }
 
-export function ImageEmbed({
-  images,
-  isDetailView = false,
-  onImagePress,
-}: ImageEmbedProps) {
-  const maxImageWidth = useResponsiveWidth();
+function ImageShareTransition({
+  image,
+  dimensions,
+  onPress,
+}: {
+  onPress: () => void;
+  image: EmbedImage;
+  dimensions: { width: number; height: number };
+}) {
+  const sharedBoundTag = `post-${image.fullsize}`;
+  return (
+    <Transition.Pressable
+      onPress={onPress}
+      delayLongPress={200}
+      style={{
+        alignSelf: "stretch",
+        aspectRatio: dimensions.width / dimensions.height,
+      }}
+      sharedBoundTag={sharedBoundTag}
+    >
+      <Image
+        source={{ uri: image.fullsize }}
+        style={[styles.singleImage, dimensions]}
+        contentFit="cover"
+      />
+    </Transition.Pressable>
+  );
+}
 
+export function ImageEmbed({ images, isDetailView = false }: ImageEmbedProps) {
+  const maxImageWidth = useResponsiveWidth();
+  const { setValue } = useLightBoxOpen();
   const calculateImageDimensions = useCallback(
     (image: EmbedImage, index: number, total: number) => {
       const aspectRatio = image.aspectRatio
@@ -54,9 +81,14 @@ export function ImageEmbed({
     [isDetailView, maxImageWidth]
   );
 
-  const handleImagePress = (index: number) => {
-    onImagePress?.(images, index);
-  };
+  const handleImagePress = useCallback(
+    (index: number) => {
+      // Ensure destination has data before navigating to avoid transient empty shared tags
+      setValue(images, index, `post-${images[index].fullsize}`);
+      router.push({ pathname: "/viewer/image-post" });
+    },
+    [images, setValue]
+  );
 
   if (!images || images.length === 0) {
     return null;
@@ -68,16 +100,11 @@ export function ImageEmbed({
     if (totalImages === 1) {
       const dimensions = calculateImageDimensions(images[0], 0, 1);
       return (
-        <TouchableOpacity
+        <ImageShareTransition
           onPress={() => handleImagePress(0)}
-          activeOpacity={0.9}
-        >
-          <Image
-            source={{ uri: images[0].fullsize }}
-            style={[styles.singleImage, dimensions]}
-            contentFit="cover"
-          />
-        </TouchableOpacity>
+          image={images[0]}
+          dimensions={dimensions}
+        />
       );
     }
 
@@ -87,21 +114,12 @@ export function ImageEmbed({
           {displayImages.map((image, index) => {
             const dimensions = calculateImageDimensions(image, index, 2);
             return (
-              <TouchableOpacity
-                key={index}
+              <ImageShareTransition
                 onPress={() => handleImagePress(index)}
-                activeOpacity={0.9}
-                style={[
-                  styles.imageWrapper,
-                  { marginRight: index === 0 ? 4 : 0 },
-                ]}
-              >
-                <Image
-                  source={{ uri: image.fullsize }}
-                  style={[styles.gridImage, dimensions]}
-                  contentFit="cover"
-                />
-              </TouchableOpacity>
+                key={index}
+                image={image}
+                dimensions={dimensions}
+              />
             );
           })}
         </View>
@@ -112,36 +130,21 @@ export function ImageEmbed({
       const firstDimensions = calculateImageDimensions(images[0], 0, 3);
       return (
         <View style={styles.threeImageContainer}>
-          <TouchableOpacity
+          <ImageShareTransition
             onPress={() => handleImagePress(0)}
-            activeOpacity={0.9}
-            style={styles.firstImageWrapper}
-          >
-            <Image
-              source={{ uri: images[0].fullsize }}
-              style={[styles.gridImage, firstDimensions]}
-              contentFit="cover"
-            />
-          </TouchableOpacity>
+            image={images[0]}
+            dimensions={firstDimensions}
+          />
           <View style={styles.bottomImagesContainer}>
             {images.slice(1).map((image, index) => {
               const dimensions = calculateImageDimensions(image, index + 1, 3);
               return (
-                <TouchableOpacity
-                  key={index + 1}
+                <ImageShareTransition
                   onPress={() => handleImagePress(index + 1)}
-                  activeOpacity={0.9}
-                  style={[
-                    styles.imageWrapper,
-                    { marginRight: index === 0 ? 4 : 0 },
-                  ]}
-                >
-                  <Image
-                    source={{ uri: image.fullsize }}
-                    style={[styles.gridImage, dimensions]}
-                    contentFit="cover"
-                  />
-                </TouchableOpacity>
+                  key={index + 1}
+                  image={image}
+                  dimensions={dimensions}
+                />
               );
             })}
           </View>
@@ -161,23 +164,12 @@ export function ImageEmbed({
                 4
               );
               return (
-                <TouchableOpacity
+                <ImageShareTransition
+                  onPress={() => handleImagePress(i)}
                   key={i}
-                  onPress={() =>
-                    handleImagePress(images.indexOf(displayImages[i]))
-                  }
-                  activeOpacity={0.9}
-                  style={[
-                    styles.gridImageWrapper,
-                    { marginRight: i === 0 ? 4 : 0 },
-                  ]}
-                >
-                  <Image
-                    source={{ uri: displayImages[i].fullsize }}
-                    style={[styles.gridImage, dimensions]}
-                    contentFit="cover"
-                  />
-                </TouchableOpacity>
+                  image={displayImages[i]}
+                  dimensions={dimensions}
+                />
               );
             })}
           </View>
@@ -189,23 +181,12 @@ export function ImageEmbed({
                 4
               );
               return (
-                <TouchableOpacity
+                <ImageShareTransition
                   key={i}
-                  onPress={() =>
-                    handleImagePress(images.indexOf(displayImages[i]))
-                  }
-                  activeOpacity={0.9}
-                  style={[
-                    styles.gridImageWrapper,
-                    { marginRight: i === 2 ? 4 : 0 },
-                  ]}
-                >
-                  <Image
-                    source={{ uri: displayImages[i].fullsize }}
-                    style={[styles.gridImage, dimensions]}
-                    contentFit="cover"
-                  />
-                </TouchableOpacity>
+                  onPress={() => handleImagePress(i)}
+                  image={displayImages[i]}
+                  dimensions={dimensions}
+                />
               );
             })}
           </View>

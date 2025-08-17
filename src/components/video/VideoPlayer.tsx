@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, memo } from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, TouchableWithoutFeedback } from "react-native";
 import { useEventListener } from "expo";
 import { useVideoPlayer, VideoView } from "expo-video";
 import { useIsFocused } from "@react-navigation/native";
@@ -68,16 +68,22 @@ export const VideoPlayer = memo(function Comp({
       containerStyle={containerStyle}
       isDetailView={isDetailView}
     >
-      <VideoView
-        ref={videoRef}
-        style={styles.video}
-        player={player}
-        allowsPictureInPicture={false}
-        contentFit={contentFit}
-        playsInline
-        nativeControls={false}
-        allowsVideoFrameAnalysis
-      />
+      <TouchableWithoutFeedback
+        onPress={() => {
+          videoRef.current?.enterFullscreen();
+        }}
+      >
+        <VideoView
+          ref={videoRef}
+          style={styles.video}
+          player={player}
+          allowsPictureInPicture={false}
+          contentFit={contentFit}
+          playsInline
+          nativeControls
+          allowsVideoFrameAnalysis
+        />
+      </TouchableWithoutFeedback>
     </VideoContainer>
   );
 });

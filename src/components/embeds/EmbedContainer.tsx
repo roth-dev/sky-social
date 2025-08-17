@@ -20,7 +20,6 @@ interface EmbedContainerProps {
 export function EmbedContainer({
   embed,
   isDetailView = false,
-  onImagePress,
   onLinkPress,
   onRecordPress,
   shouldPlay = false,
@@ -29,11 +28,7 @@ export function EmbedContainer({
     switch (embed.$type) {
       case "app.bsky.embed.images#view":
         return (
-          <ImageEmbed
-            images={embed.images || []}
-            isDetailView={isDetailView}
-            onImagePress={onImagePress}
-          />
+          <ImageEmbed images={embed.images || []} isDetailView={isDetailView} />
         );
 
       case "app.bsky.embed.external#view":
@@ -69,7 +64,6 @@ export function EmbedContainer({
             record={embed.record}
             media={embed.media}
             isDetailView={isDetailView}
-            onImagePress={onImagePress}
             onRecordPress={onRecordPress}
             shouldPlay={shouldPlay}
           />
@@ -78,14 +72,7 @@ export function EmbedContainer({
       default:
         return null;
     }
-  }, [
-    embed,
-    isDetailView,
-    onImagePress,
-    onRecordPress,
-    onLinkPress,
-    shouldPlay,
-  ]);
+  }, [embed, isDetailView, onRecordPress, onLinkPress, shouldPlay]);
 
   const embedContent = useMemo(() => renderEmbed(), [renderEmbed]);
 

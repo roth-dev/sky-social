@@ -1,7 +1,7 @@
 import useAnimatedBottomTab from "@/hooks/useAnimatedBottomTab";
 import { HStack } from "./ui";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
-import Animated, { FadeIn } from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 import { Pressable, StyleSheet } from "react-native";
 import { Colors } from "@/constants/colors";
 import { useSettings } from "@/contexts/SettingsContext";
@@ -15,6 +15,15 @@ export default function TabBar(props: BottomTabBarProps) {
 
   // If tab bar is not visible, return null (don't render it)
   if (!isVisible) return null;
+
+  // Map tab route names to their nested stack's initial screen
+  const nestedScreenMap: Record<string, string> = {
+    "(index)": "index",
+    "(search)": "search",
+    "(create)": "create",
+    "(video)": "video",
+    "(account)": "account",
+  };
 
   return (
     <Animated.View
@@ -31,7 +40,6 @@ export default function TabBar(props: BottomTabBarProps) {
         },
         animatedStyle,
       ]}
-      entering={FadeIn.duration(100)}
     >
       <HStack
         style={{
@@ -52,7 +60,15 @@ export default function TabBar(props: BottomTabBarProps) {
               canPreventDefault: true,
             });
             if (!isFocused && !event.defaultPrevented) {
-              props.navigation.navigate(route.name);
+              const nested = nestedScreenMap[route.name];
+              if (nested) {
+                // Navigate to the tab and specify the nested screen explicitly
+                // to avoid falling back to the group's default "index" screen
+                // when using grouped layouts in expo-router.
+                props.navigation.navigate(route.name, { screen: nested });
+              } else {
+                props.navigation.navigate(route.name);
+              }
             }
           };
           return (

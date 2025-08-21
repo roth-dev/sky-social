@@ -12,14 +12,11 @@ import { EmbedContainer } from "./embeds/EmbedContainer";
 import { ATPost } from "@/types/atproto";
 import { router } from "expo-router";
 import { Platform, Linking } from "react-native";
-import { isVideoPost } from "@/utils/embedUtils";
 import { RichText, Text } from "./ui";
 import { Colors } from "@/constants/colors";
-import { VideoEmbed } from "./embeds/VideoEmbed";
 import { RichText as RichTextAPI } from "@atproto/api";
 import { POST_PRIFIX } from "@/constants";
 import { Formater } from "@/lib/format";
-import { LightBox } from "./lightBox";
 import { ActionButtons } from "./ActionButtons";
 import { useSettings } from "@/contexts/SettingsContext";
 import { DropDownMenu, Trigger } from "./dropdown";
@@ -59,9 +56,6 @@ const Post = memo(function Comp({
   shouldPlay = false,
 }: PostProps) {
   const { colorScheme } = useSettings();
-  const [lightBoxVisible, setLightBoxVisible] = useState(false);
-  const [lightBoxIndex, setLightBoxIndex] = useState(0);
-  const hasVideo = isVideoPost(post);
 
   const handlePostPress = useCallback(() => {
     if (!isDetailView) {
@@ -76,11 +70,6 @@ const Post = memo(function Comp({
   const handleProfilePress = useCallback(() => {
     router.push(`/profile/${post.author.handle}`);
   }, [post]);
-
-  const handleImagePress = useCallback((images: unknown, index: number) => {
-    setLightBoxIndex(index);
-    setLightBoxVisible(true);
-  }, []);
 
   const isValidUrl = (url: string): boolean => {
     try {
@@ -115,42 +104,6 @@ const Post = memo(function Comp({
     }
   }, []);
 
-  const handleImageShare = useCallback(
-    async (imageUri: string) => {
-      try {
-        if (Platform.OS === "web") {
-          if (navigator.share) {
-            await navigator.share({
-              title: `Image from @${post.author.handle}`,
-              text: post.record.text,
-              url: imageUri,
-            });
-          } else {
-            await copyToClipboard(imageUri);
-          }
-        }
-      } catch (error) {
-        console.error("Failed to share image:", error);
-      }
-    },
-    [post, copyToClipboard]
-  );
-
-  const handleImageDownload = async (imageUri: string, index: number) => {
-    try {
-      if (Platform.OS === "web") {
-        const link = document.createElement("a");
-        link.href = imageUri;
-        link.download = `image-${index + 1}.jpg`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
-    } catch (error) {
-      console.error("Failed to download image:", error);
-    }
-  };
-
   const formatTime = useCallback(
     (dateString: string) => {
       const date = new Date(dateString);
@@ -175,17 +128,6 @@ const Post = memo(function Comp({
     },
     [isDetailView]
   );
-
-  // Prepare images for LightBox from embed
-  const lightBoxImages = useMemo(() => {
-    const embedImages = post.embed?.images || [];
-
-    return embedImages.map((img) => ({
-      uri: img.fullsize,
-      alt: img.alt || `Image from @${post.author.handle}`,
-      aspectRatio: img.aspectRatio,
-    }));
-  }, [post.embed, post.author]);
 
   // Action menu handlers
   const handleTranslate = () => {
@@ -274,18 +216,6 @@ const Post = memo(function Comp({
 
   return (
     <>
-      {lightBoxImages.length > 0 && (
-        <LightBox
-          visible={lightBoxVisible}
-          images={lightBoxImages}
-          initialIndex={lightBoxIndex}
-          onClose={() => {
-            setLightBoxVisible(false);
-          }}
-          onShare={handleImageShare}
-          onDownload={handleImageDownload}
-        />
-      )}
       <TouchableOpacity
         onPress={handlePostPress}
         activeOpacity={isDetailView ? 1 : 0.95}
@@ -404,7 +334,6 @@ const Post = memo(function Comp({
               <EmbedContainer
                 embed={post.embed}
                 isDetailView={isDetailView}
-                onImagePress={handleImagePress}
                 onLinkPress={handleLinkPress}
                 onRecordPress={handleRecordPress}
                 shouldPlay={shouldPlay}
@@ -412,13 +341,6 @@ const Post = memo(function Comp({
             )}
 
             {/* Video indicator for debugging */}
-            {!!hasVideo && post.embed && (
-              <VideoEmbed
-                isDetailView={isDetailView}
-                video={post.embed}
-                shouldPlay={shouldPlay}
-              />
-            )}
             {isDetailView && (
               <View
                 style={styles.detailStats}

@@ -274,7 +274,7 @@ export default function SettingsScreen() {
       },
       {
         mode: "dark",
-        nameKey: t`Sark`,
+        nameKey: t`Dark`,
         icon: <Moon size={20} color="#6366f1" />,
       },
       {

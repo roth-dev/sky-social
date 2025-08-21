@@ -1,18 +1,19 @@
-import React, { memo } from "react";
+import React from "react";
 import { Colors } from "@/constants/colors";
 import { useSettings } from "@/contexts/SettingsContext";
 import { isAndroid } from "@/platform";
 import { useScrollStore } from "@/store/scrollStore";
-import { FlatList, RefreshControl, ViewToken } from "react-native";
-import Animated, {
-  FlatListPropsWithLayout,
-  useAnimatedScrollHandler,
-} from "react-native-reanimated";
+import { RefreshControl, ViewToken } from "react-native";
+import { useAnimatedScrollHandler } from "react-native-reanimated";
+import Transition from "react-native-screen-transitions";
+import { FlashList, FlashListProps } from "@shopify/flash-list";
 
-export type ListRef = React.ForwardedRef<FlatList<unknown>>;
+export type ListRef<ItemT = unknown> = React.ForwardedRef<
+  FlashListProps<ItemT>
+>;
 
 export type ListProps<ItemT = unknown> = Omit<
-  FlatListPropsWithLayout<ItemT>,
+  FlashListProps<ItemT>,
   | "contentOffset" // Pass headerOffset instead.
   | "progressViewOffset" // Can't be an animated value
 > & {
@@ -28,6 +29,9 @@ export type ListProps<ItemT = unknown> = Omit<
   progressViewOffset?: number;
   useScrollDetector?: boolean;
 };
+
+const TransitionFlashList =
+  Transition.createTransitionAwareComponent(FlashList);
 
 let List = React.forwardRef<ListRef, ListProps>(
   (
@@ -50,13 +54,12 @@ let List = React.forwardRef<ListRef, ListProps>(
     const { scrollY } = useScrollStore();
 
     const scrollHandler = useAnimatedScrollHandler({
-      onScroll(e) {
+      onScroll: (event) => {
         if (useScrollDetector) {
-          scrollY.value = e.contentOffset.y;
+          scrollY.value = event.contentOffset.y;
         }
       },
     });
-
     const [onViewableItemsChanged, viewabilityConfig] = React.useMemo(() => {
       if (!onItemSeen && !onViewableItemsChangedFull) {
         return [undefined, undefined];
@@ -104,7 +107,7 @@ let List = React.forwardRef<ListRef, ListProps>(
     }
 
     return (
-      <Animated.FlatList
+      <TransitionFlashList
         showsVerticalScrollIndicator={!isAndroid} // overridable
         onViewableItemsChanged={onViewableItemsChanged}
         viewabilityConfig={viewabilityConfig}
@@ -125,7 +128,6 @@ let List = React.forwardRef<ListRef, ListProps>(
         indicatorStyle={colorScheme === "dark" ? "white" : "black"}
         contentOffset={contentOffset}
         refreshControl={refreshControl}
-        scrollEventThrottle={1}
         style={style}
         // @ts-expect-error Animated.FlatList ref type is wrong -sfn
         ref={ref}
@@ -136,6 +138,6 @@ let List = React.forwardRef<ListRef, ListProps>(
 
 List.displayName = "List";
 
-List = memo(List);
+List = React.memo(List);
 
 export { List };

@@ -20,7 +20,7 @@ export function useFeeds(feed: FeedDescriptor, limit: number = 30) {
     staleTime: 1000 * 60 * 2,
     gcTime: 1000 * 60 * 10,
     enabled: true,
-    retry: (failureCount, error) => {
+    retry: (failureCount) => {
       if (failureCount >= 3) return false;
       return true;
     },

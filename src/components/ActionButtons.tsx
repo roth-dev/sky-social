@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useRef } from "react";
 import { HapticTab } from "@/components/ui";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -12,7 +12,7 @@ import { Heart, MessageCircle, Repeat2, Share } from "lucide-react-native";
 import { View, StyleSheet } from "react-native";
 import { router } from "expo-router";
 import { Composer, type CompopserRef } from "./composer/Composer";
-
+import { useRecyclingState } from "@shopify/flash-list";
 interface ActionButtonsProps {
   post: ATPost;
   isDetailView?: boolean;
@@ -36,10 +36,19 @@ export function ActionButtons({
   const repostMutation = useRepost();
   const deleteRepostMutation = useDeleteRepost();
 
-  const [likeCount, setLikeCount] = useState(post.likeCount ?? 0);
-  const [repostCount, setRepostCount] = useState(post.repostCount ?? 0);
-  const [isLiked, setIsLiked] = useState(!!post.viewer?.like);
-  const [isReposted, setIsReposted] = useState(!!post.viewer?.repost);
+  const [likeCount, setLikeCount] = useRecyclingState(post.likeCount ?? 0, [
+    post.likeCount,
+  ]);
+  const [repostCount, setRepostCount] = useRecyclingState(
+    post.repostCount ?? 0,
+    [post.repostCount]
+  );
+  const [isLiked, setIsLiked] = useRecyclingState(!!post.viewer?.like, [
+    post.viewer?.like,
+  ]);
+  const [isReposted, setIsReposted] = useRecyclingState(!!post.viewer?.repost, [
+    post.viewer?.repost,
+  ]);
 
   const composerRef = useRef<CompopserRef>(null);
 
@@ -50,12 +59,11 @@ export function ActionButtons({
     }
     setIsLiked((prev) => !prev);
     setLikeCount((prev) => (isLiked ? prev - 1 : prev + 1));
-    if (post.viewer?.like) {
+    if (isLiked) {
       // Unlike the post
       unlikePostMutation.mutate(
-        { likeUri: post.viewer.like },
+        { likeUri: post.viewer?.like as string },
         {
-          //fallback to defualt like state
           onError: () => {
             setLikeCount(post.likeCount);
             setIsLiked(!!post.viewer?.like);
@@ -84,6 +92,8 @@ export function ActionButtons({
     unlikePostMutation,
     likePostMutation,
     onLike,
+    setLikeCount,
+    setIsLiked,
   ]);
 
   const handleRepost = useCallback(() => {
@@ -93,7 +103,7 @@ export function ActionButtons({
     }
     setIsReposted((prev) => !prev);
     setRepostCount((prev) => (isReposted ? prev - 1 : prev + 1));
-    if (post.viewer?.repost) {
+    if (post.viewer?.repost && isReposted) {
       // Delete repost
       deleteRepostMutation.mutate(
         { repostUri: post.viewer.repost },
@@ -126,6 +136,8 @@ export function ActionButtons({
     deleteRepostMutation,
     onRepost,
     isReposted,
+    setRepostCount,
+    setIsReposted,
   ]);
 
   const handleComment = useCallback(() => {

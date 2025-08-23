@@ -1,7 +1,7 @@
 import useAnimatedBottomTab from "@/hooks/useAnimatedBottomTab";
 import { HStack } from "./ui";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
-import Animated from "react-native-reanimated";
+import Animated, { FadeIn } from "react-native-reanimated";
 import { Pressable, StyleSheet } from "react-native";
 import { Colors } from "@/constants/colors";
 import { useSettings } from "@/contexts/SettingsContext";
@@ -27,6 +27,7 @@ export default function TabBar(props: BottomTabBarProps) {
 
   return (
     <Animated.View
+      entering={FadeIn.duration(300)}
       style={[
         {
           position: "absolute",

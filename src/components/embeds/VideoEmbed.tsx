@@ -34,7 +34,7 @@ export function VideoEmbed({
     }
   }, [video]);
 
-  if (!videoUrl) return <></>;
+  if (!videoUrl) return null;
 
   return (
     <View

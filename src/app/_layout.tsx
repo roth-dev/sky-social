@@ -1,5 +1,5 @@
 import "../global.css";
-import { SplashScreen, Stack } from "expo-router";
+import { SplashScreen } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useFrameworkReady } from "@/hooks/useFrameworkReady";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
@@ -9,6 +9,26 @@ import { QueryProvider } from "@/contexts/QueryProvider";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Fragment } from "react";
 import { isWeb } from "@/platform";
+import ComposerProvider from "@/contexts/ComposserProvider";
+import type {
+  ParamListBase,
+  StackNavigationState,
+} from "@react-navigation/native";
+import { withLayoutContext } from "expo-router";
+import {
+  createNativeStackNavigator,
+  type NativeStackNavigationEventMap,
+  type NativeStackNavigationOptions,
+} from "react-native-screen-transitions";
+
+const { Navigator } = createNativeStackNavigator();
+
+export const Stack = withLayoutContext<
+  NativeStackNavigationOptions,
+  typeof Navigator,
+  StackNavigationState<ParamListBase>,
+  NativeStackNavigationEventMap
+>(Navigator);
 
 SplashScreen.preventAutoHideAsync();
 
@@ -19,15 +39,12 @@ function RootLayout() {
 
   return (
     <Fragment>
-      <Stack
-        screenOptions={{ headerShown: false, animation: "ios_from_right" }}
-      >
+      <Stack screenOptions={{ headerShown: false }}>
         <Stack.Protected guard={isAuthenticated || isWeb}>
           <Stack.Screen
             name="(tabs)"
             options={{
               headerShown: false,
-              animation: "fade_from_bottom",
               animationTypeForReplace: "push",
             }}
           />
@@ -36,7 +53,7 @@ function RootLayout() {
             options={{
               presentation: "modal",
               gestureEnabled: false,
-              gestureDirection: "vertical",
+              gestureDirection: ["horizontal", "vertical"],
             }}
           />
         </Stack.Protected>
@@ -47,6 +64,7 @@ function RootLayout() {
 
         <Stack.Screen name="+not-found" />
       </Stack>
+
       <StatusBar style="auto" />
     </Fragment>
   );
@@ -59,7 +77,9 @@ export default function App() {
         <AuthProvider>
           <I18nProviderWrapper>
             <GestureHandlerRootView className="flex-1">
-              <RootLayout />
+              <ComposerProvider>
+                <RootLayout />
+              </ComposerProvider>
             </GestureHandlerRootView>
           </I18nProviderWrapper>
         </AuthProvider>

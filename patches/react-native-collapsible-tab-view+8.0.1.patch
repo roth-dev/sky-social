@@ -1,0 +1,15 @@
+diff --git a/node_modules/react-native-collapsible-tab-view/src/FlashList.tsx b/node_modules/react-native-collapsible-tab-view/src/FlashList.tsx
+index 9ce60da..85467f8 100644
+--- a/node_modules/react-native-collapsible-tab-view/src/FlashList.tsx
++++ b/node_modules/react-native-collapsible-tab-view/src/FlashList.tsx
+@@ -93,8 +93,8 @@ function FlashListImpl<R>(
+   const { progressViewOffset, contentContainerStyle } = useCollapsibleStyle()
+ 
+   React.useEffect(() => {
+-    setRef(name, recyclerRef)
+-  }, [name, recyclerRef, setRef])
++    setRef(name, ref);
++  }, [name, ref, setRef]);
+ 
+   const scrollContentSizeChange = useUpdateScrollViewContentSize({
+     name,

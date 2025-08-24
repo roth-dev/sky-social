@@ -9,6 +9,7 @@
     "lint": "expo lint",
     "android": "expo run:android",
     "ios": "expo run:ios",
+    "postinstall": "patch-package",
     "compile:locale": "npx lingui compile",
     "catalog": "npx lingui extract",
     "eas:build:android": "eas build --platform android --profile preview"
@@ -50,6 +51,7 @@
     "lucide-react-native": "^0.475.0",
     "make-plural": "^7.4.0",
     "nativewind": "^4.1.23",
+    "patch-package": "^8.0.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-native": "0.79.5",

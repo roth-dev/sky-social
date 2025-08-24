@@ -80,6 +80,7 @@ export default function TabBar(props: BottomTabBarProps) {
                 flex: 1,
                 alignItems: "center",
                 justifyContent: "center",
+                height: "100%",
               }}
             >
               {icon

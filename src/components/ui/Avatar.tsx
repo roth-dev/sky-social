@@ -1,8 +1,8 @@
-import { Image } from "expo-image";
 import React from "react";
 import { View, Text, StyleProp, ViewStyle } from "react-native";
 import { cn } from "../../lib/utils";
 import { cva } from "class-variance-authority";
+import FastImage from "react-native-fast-image";
 
 const avatarVariants = cva("rounded-full overflow-hidden", {
   variants: {
@@ -66,7 +66,7 @@ export function Avatar({
       style={style}
     >
       {uri ? (
-        <Image source={{ uri }} style={{ width: "100%", height: "100%" }} />
+        <FastImage source={{ uri }} style={{ width: "100%", height: "100%" }} />
       ) : (
         <View
           className={cn(

@@ -1,4 +1,4 @@
-export { Composer } from "./Composer";
+export { Composer, type CompopserRef } from "./Composer";
 export { ComposerToolbar } from "./ComposerToolbar";
 export { ComposerImagePreview } from "./ComposerImagePreview";
 export { ComposerVideoPreview } from "./ComposerVideoPreview";

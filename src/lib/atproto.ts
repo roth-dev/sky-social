@@ -613,6 +613,50 @@ export class ATProtoClient {
     }
   }
 
+  async getFollowers(actor: string, limit = 30, cursor?: string) {
+    logger.log("getFollowers", { actor, limit, cursor });
+    try {
+      if (!actor || typeof actor !== "string" || actor.trim().length === 0) {
+        throw new Error("Invalid actor parameter");
+      }
+
+      const response = await this.retryWithBackoff(
+        () => this.agent.getFollowers({ actor: actor.trim(), limit, cursor }),
+        "Get Followers"
+      );
+
+      return { success: true, data: response.data };
+    } catch (error: unknown) {
+      console.error("Failed to get followers:", error);
+      return {
+        success: false,
+        error: getErrorMessage(error),
+      };
+    }
+  }
+
+  async getFollowing(actor: string, limit = 30, cursor?: string) {
+    logger.log("getFollowing", { actor, limit, cursor });
+    try {
+      if (!actor || typeof actor !== "string" || actor.trim().length === 0) {
+        throw new Error("Invalid actor parameter");
+      }
+
+      const response = await this.retryWithBackoff(
+        () => this.agent.getFollows({ actor: actor.trim(), limit, cursor }),
+        "Get Following"
+      );
+
+      return { success: true, data: response.data };
+    } catch (error: unknown) {
+      console.error("Failed to get following:", error);
+      return {
+        success: false,
+        error: getErrorMessage(error),
+      };
+    }
+  }
+
   async followProfile(did: string) {
     logger.log("followProfile", { did });
     if (!this.isAuthenticated) {

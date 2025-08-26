@@ -17,6 +17,8 @@ export function useFollowProfile() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["profile"] });
+      queryClient.invalidateQueries({ queryKey: ["followers"] });
+      queryClient.invalidateQueries({ queryKey: ["following"] });
       queryClient.invalidateQueries({ queryKey: queryKeys.suggestedFollows });
     },
     retry: (failureCount, error) => {

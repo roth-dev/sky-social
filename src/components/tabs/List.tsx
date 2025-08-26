@@ -31,13 +31,12 @@ let TabList = React.forwardRef<ListRef, ListProps>(
     }, [onItemSeen]);
 
     return (
-      <Tabs.FlatList
+      <Tabs.FlashList
         {...props}
         onViewableItemsChanged={onViewableItemsChanged}
         viewabilityConfig={viewabilityConfig}
         indicatorStyle={colorScheme === "dark" ? "white" : "black"}
         scrollEventThrottle={1}
-        // @ts-expect-error Animated.FlatList ref type is wrong -sfn
         ref={ref}
       />
     );

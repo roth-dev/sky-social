@@ -6,6 +6,8 @@ import {
 } from "react-native-collapsible-tab-view";
 import { Route, TabViewProps } from "./type";
 import { StyleSheet } from "react-native";
+import { Colors } from "@/constants/colors";
+import { useSettings } from "@/contexts/SettingsContext";
 
 export default function TabView({
   routes,
@@ -15,6 +17,7 @@ export default function TabView({
   refreshing = false,
   renderHeader,
 }: TabViewProps) {
+  const { colorScheme } = useSettings();
   const ref = useRef<CollapsibleRef>(null);
 
   const handleIndexChange = useCallback(
@@ -42,9 +45,15 @@ export default function TabView({
         <MaterialTabBar
           {...props}
           scrollEnabled
-          style={styles.tabBar}
-          labelStyle={styles.tabLabel}
-          contentContainerStyle={styles.tabContentContainer}
+          style={[
+            styles.tabBar,
+            { backgroundColor: Colors.background.primary[colorScheme] },
+          ]}
+          labelStyle={[
+            styles.tabLabel,
+            { color: Colors.inverted[colorScheme] },
+          ]}
+          contentContainerStyle={[styles.tabContentContainer]}
         />
       )}
       onIndexChange={handleIndexChange}

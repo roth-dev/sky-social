@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from "react";
-import { StyleSheet, Dimensions } from "react-native";
+import { StyleSheet } from "react-native";
 import { Post } from "@/components/Post";
 import { EmptyState } from "@/components/placeholders/EmptyState";
 import { ATFeedItem } from "@/types/atproto";
@@ -13,6 +13,7 @@ interface ProfileTabContentProps {
   data: ATFeedItem[];
   loading?: boolean;
   loadingMore?: boolean;
+  refreshing?: boolean;
   onRefresh?: () => void;
   onLoadMore?: () => void;
 }
@@ -23,46 +24,9 @@ export function ProfileTabContent({
   loadingMore = false,
   onRefresh,
   onLoadMore,
+  refreshing,
 }: ProfileTabContentProps) {
   const barBarHeight = useBottomTabBarHeight();
-  const renderPostItem = useCallback(
-    ({ item }: { item: ATFeedItem }) => (
-      <Post
-        post={item.post}
-        onLike={() => {}}
-        onRepost={() => {}}
-        onComment={() => {}}
-      />
-    ),
-    []
-  );
-
-  const renderLoadingFooter = useCallback(() => {
-    if (!loadingMore) return null;
-
-    return (
-      <VStack className="flex-1 items-center m-4">
-        <Loading />
-        <Text>Loading more...</Text>
-      </VStack>
-    );
-  }, [loadingMore]);
-
-  const renderEmptyState = useCallback(() => {
-    // Show different empty states based on tab and loading state
-    if (loading) return null;
-
-    const emptyStateConfig = getEmptyStateConfig(tabKey);
-
-    return (
-      <EmptyState
-        type={emptyStateConfig.type}
-        title={emptyStateConfig.title}
-        description={emptyStateConfig.description}
-        style={styles.emptyState}
-      />
-    );
-  }, [loading]);
 
   const getEmptyStateConfig = useCallback((key: string) => {
     switch (key) {
@@ -99,7 +63,7 @@ export function ProfileTabContent({
     if (onLoadMore && !loadingMore && !loading && data.length > 0) {
       onLoadMore();
     }
-  }, [loadingMore, loading, data]);
+  }, [loadingMore, onLoadMore, loading, data]);
 
   // Filter out null items for media tab
   const filteredData = useMemo(() => {
@@ -108,12 +72,48 @@ export function ProfileTabContent({
           (item) => item.post.embed?.images && item.post.embed.images.length > 0
         )
       : data;
-  }, [data]);
+  }, [data, tabKey]);
+
+  const renderPostItem = useCallback(
+    ({ item }: { item: ATFeedItem }) => (
+      <Post
+        post={item.post}
+        onLike={() => {}}
+        onRepost={() => {}}
+        onComment={() => {}}
+      />
+    ),
+    []
+  );
+
+  const renderLoadingFooter = useCallback(() => {
+    if (!loadingMore) return null;
+
+    return (
+      <VStack className="flex-1 items-center m-4">
+        <Loading size="large" />
+        <Text>Loading more...</Text>
+      </VStack>
+    );
+  }, [loadingMore]);
+
+  const renderEmptyState = useCallback(() => {
+    if (loading) return null;
+    const emptyStateConfig = getEmptyStateConfig(tabKey);
+    return (
+      <EmptyState
+        type={emptyStateConfig.type}
+        title={emptyStateConfig.title}
+        description={emptyStateConfig.description}
+        style={styles.emptyState}
+      />
+    );
+  }, [loading, getEmptyStateConfig, tabKey]);
 
   if (loading)
     return (
       <VStack className="flex-1 items-center m-4">
-        <Loading size="lg" />
+        <Loading size="large" />
         <Text>Loading...</Text>
       </VStack>
     );
@@ -124,15 +124,11 @@ export function ProfileTabContent({
       renderItem={renderPostItem}
       keyExtractor={(item, index) => `${tabKey}-${item.post.uri}-${index}`}
       onRefresh={onRefresh}
-      refreshing={loading}
+      refreshing={refreshing}
       onEndReached={handleLoadMore}
       onEndReachedThreshold={0.3}
       ListEmptyComponent={renderEmptyState}
       ListFooterComponent={renderLoadingFooter}
-      removeClippedSubviews={true}
-      maxToRenderPerBatch={10}
-      windowSize={10}
-      initialNumToRender={5}
       contentContainerStyle={{
         paddingBottom: barBarHeight,
       }}

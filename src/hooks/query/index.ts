@@ -9,3 +9,5 @@ export { useAuthorFeed } from "./useAuthorFeed";
 export { useActorLikes } from "./useActorLikes";
 export { usePostThread } from "./usePostThread";
 export { useAuthorMediaFeed } from "./useAuthorMediaFeed";
+export { useFollowers } from "./useFollowers";
+export { useFollowing } from "./useFollowing";

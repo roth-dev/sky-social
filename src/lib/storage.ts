@@ -7,6 +7,8 @@ const STORAGE_KEYS = {
   USER_PROFILE: "@skysocial/user_profile",
   LANGUAGE: "@skysocial/language",
   THEME_MODE: "@skysocial/theme_mode",
+  ACCOUNTS: "@skysocial/accounts",
+  ACTIVE_ACCOUNT: "@skysocial/active_account",
 } as const;
 
 interface AuthSession {
@@ -31,6 +33,16 @@ interface UserProfile {
   followsCount?: number;
   postsCount?: number;
   indexedAt?: string;
+}
+
+interface AccountData {
+  session: AuthSession;
+  profile: UserProfile;
+  addedAt: string;
+}
+
+interface StoredAccounts {
+  [did: string]: AccountData;
 }
 
 class StorageManager {
@@ -196,12 +208,105 @@ class StorageManager {
   // Clear all stored data
   async clearAll(): Promise<void> {
     await Promise.all([
-      this.clearAuthSession(), 
-      this.clearUserProfile()
+      this.clearAuthSession(),
+      this.clearUserProfile(),
       // Note: We don't clear settings (language/theme) on logout
     ]);
+  }
+
+  // Multi-account methods
+  async saveAccount(session: AuthSession, profile: UserProfile): Promise<void> {
+    try {
+      const accounts = await this.getAccounts();
+      const accountData: AccountData = {
+        session,
+        profile,
+        addedAt: new Date().toISOString(),
+      };
+
+      accounts[profile.did] = accountData;
+      await this.setItem(STORAGE_KEYS.ACCOUNTS, JSON.stringify(accounts));
+
+      // Set as active account
+      await this.setActiveAccount(profile.did);
+    } catch (error) {
+      console.error("Failed to save account:", error);
+    }
+  }
+
+  async getAccounts(): Promise<StoredAccounts> {
+    try {
+      const accountsData = await this.getItem(STORAGE_KEYS.ACCOUNTS);
+      if (accountsData) {
+        return JSON.parse(accountsData);
+      }
+      return {};
+    } catch (error) {
+      console.error("Failed to get accounts:", error);
+      return {};
+    }
+  }
+
+  async removeAccount(did: string): Promise<void> {
+    try {
+      const accounts = await this.getAccounts();
+      delete accounts[did];
+      await this.setItem(STORAGE_KEYS.ACCOUNTS, JSON.stringify(accounts));
+
+      // If this was the active account, clear it
+      const activeAccountDid = await this.getActiveAccount();
+      if (activeAccountDid === did) {
+        await this.clearActiveAccount();
+      }
+    } catch (error) {
+      console.error("Failed to remove account:", error);
+    }
+  }
+
+  async setActiveAccount(did: string): Promise<void> {
+    try {
+      await this.setItem(STORAGE_KEYS.ACTIVE_ACCOUNT, did);
+    } catch (error) {
+      console.error("Failed to set active account:", error);
+    }
+  }
+
+  async getActiveAccount(): Promise<string | null> {
+    try {
+      return await this.getItem(STORAGE_KEYS.ACTIVE_ACCOUNT);
+    } catch (error) {
+      console.error("Failed to get active account:", error);
+      return null;
+    }
+  }
+
+  async clearActiveAccount(): Promise<void> {
+    try {
+      await this.removeItem(STORAGE_KEYS.ACTIVE_ACCOUNT);
+    } catch (error) {
+      console.error("Failed to clear active account:", error);
+    }
+  }
+
+  async switchAccount(did: string): Promise<AccountData | null> {
+    try {
+      const accounts = await this.getAccounts();
+      const accountData = accounts[did];
+
+      if (accountData) {
+        // Save current session and profile
+        await this.saveAuthSession(accountData.session);
+        await this.saveUserProfile(accountData.profile);
+        await this.setActiveAccount(did);
+        return accountData;
+      }
+      return null;
+    } catch (error) {
+      console.error("Failed to switch account:", error);
+      return null;
+    }
   }
 }
 
 export const storage = new StorageManager();
-export type { AuthSession, UserProfile };
+export type { AuthSession, UserProfile, AccountData, StoredAccounts };

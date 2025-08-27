@@ -48,6 +48,14 @@ export class ATProtoClient {
   }
 
   /**
+   * Create a new ATProtoClient instance for temporary operations
+   * Used for adding new accounts without affecting the main client
+   */
+  createNewInstance(): ATProtoClient {
+    return new ATProtoClient();
+  }
+
+  /**
    * Create a new AtpAgent instance with the correct service URL
    * @param authenticated Whether the user is authenticated
    */

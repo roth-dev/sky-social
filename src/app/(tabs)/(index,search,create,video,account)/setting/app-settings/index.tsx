@@ -23,7 +23,6 @@ import {
 } from "lucide-react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as FileSystem from "expo-file-system";
-import { router } from "expo-router";
 
 interface AppSetting {
   id: string;
@@ -314,7 +313,9 @@ export default function AppSettingsScreen() {
   }, []);
 
   const handleNetworkSettings = useCallback(() => {
-    router.push("/app-settings/network" as `/app-settings/network`);
+    Alert.alert("Network Settings", "Network configuration coming soon!", [
+      { text: "OK" },
+    ]);
   }, []);
 
   const handleStorageSettings = useCallback(() => {

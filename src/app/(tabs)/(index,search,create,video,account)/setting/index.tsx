@@ -127,7 +127,7 @@ export default function SettingsScreen() {
             user={user}
             onSignOut={handleSignOut}
             onProfilePress={() => {
-              router.push("/accounts");
+              router.push("/setting/accounts");
             }}
           />
         )}

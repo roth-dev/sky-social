@@ -57,7 +57,7 @@ const UserProfile = ({ handle }: Props) => {
   }, [handle, isOwner]);
 
   const handleEditProfile = () => {
-    router.push("/account-settings/edit-profile");
+    router.push("/setting/account-settings");
   };
 
   const handleMorePress = () => {

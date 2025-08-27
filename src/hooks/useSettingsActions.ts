@@ -26,7 +26,7 @@ export function useSettingsActions() {
 
   const handleAddAccount = () => {
     // Navigate to add account screen
-    router.push("/add-account");
+    router.push("/setting/add-account");
   };
 
   const handleGrayskyPro = () => {
@@ -36,7 +36,7 @@ export function useSettingsActions() {
   };
 
   const handleLanguage = () => {
-    router.push("/language-settings");
+    router.push("/setting/language-settings");
   };
 
   const handleLanguageSelect = (selectedLanguage: Language) => {
@@ -51,19 +51,19 @@ export function useSettingsActions() {
   };
 
   const handleAccount = () => {
-    router.push("/account-settings");
+    router.push("/setting/account-settings");
   };
 
   const handleModeration = () => {
-    router.push("/moderation");
+    router.push("/setting/moderation");
   };
 
   const handleHomeFeedPreferences = () => {
-    router.push("/home-feed-preferences");
+    router.push("/setting/home-feed-preferences");
   };
 
   const handleAppSettings = () => {
-    router.push("/app-settings");
+    router.push("/setting/app-settings");
   };
 
   const handleAbout = () => {
@@ -92,7 +92,7 @@ export function useSettingsActions() {
   };
 
   const handleThemePress = () => {
-    router.push("/theme-settings");
+    router.push("/setting/theme-settings");
   };
 
   return {

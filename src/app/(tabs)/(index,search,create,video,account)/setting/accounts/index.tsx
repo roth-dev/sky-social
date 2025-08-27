@@ -9,7 +9,7 @@ export default function AccountsScreen() {
   const { isDarkMode } = useSettings();
 
   const handleAddAccount = () => {
-    router.push("/add-account");
+    router.push("/setting/add-account");
   };
 
   return (

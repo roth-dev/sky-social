@@ -11,6 +11,7 @@ import {
 import { useVideoPlayer, VideoView } from "expo-video";
 import Svg, { Circle, G } from "react-native-svg";
 import { BlurView } from "expo-blur";
+import FastImage from "react-native-fast-image";
 
 interface ComposerVideoPreviewProps {
   videoUri: string;
@@ -134,10 +135,10 @@ export const ComposerVideoPreview: FunctionComponent<
         {/* Thumbnail overlay when video is not playing */}
         {!isPlaying && thumbnailUri && (
           <View className="absolute inset-0">
-            <Image
+            <FastImage
               source={{ uri: thumbnailUri }}
               className="w-full h-full"
-              contentFit="cover"
+              resizeMode="cover"
             />
             <View className="absolute inset-0 bg-black/20" />
           </View>

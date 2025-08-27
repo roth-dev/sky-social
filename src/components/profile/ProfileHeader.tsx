@@ -4,13 +4,14 @@ import { Avatar } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
 import { ATProfile } from "@/types/atproto";
 import { MoreHorizontal, Calendar, MessageCircle } from "lucide-react-native";
-import { Image } from "expo-image";
 import { HStack, Text, View, VStack } from "../ui";
 import { Colors } from "@/constants/colors";
 import { useSettings } from "@/contexts/SettingsContext";
 import { t } from "@lingui/core/macro";
 import { Trans } from "@lingui/react/macro";
 import { Formater } from "@/lib/format";
+import FastImage from "react-native-fast-image";
+import { router } from "expo-router";
 
 interface ProfileHeaderProps {
   user: ATProfile;
@@ -30,12 +31,11 @@ export function ProfileHeader({
   isFollowing = false,
   followLoading = false,
   onFollow,
-  onMessage,
   onEditProfile,
-  onMorePress,
   setHeaderHeight,
 }: ProfileHeaderProps) {
   const { colorScheme } = useSettings();
+
   const formatJoinDate = useCallback((indexedAt?: string) => {
     if (!indexedAt) return "Recently joined";
 
@@ -45,6 +45,18 @@ export function ProfileHeader({
       year: "numeric",
     })}`;
   }, []);
+
+  const handleFollowingPress = useCallback(() => {
+    router.push(
+      `/(modal)/followers?handle=${user.handle}&initialTab=following`
+    );
+  }, [user.handle]);
+
+  const handleFollowersPress = useCallback(() => {
+    router.push(
+      `/(modal)/followers?handle=${user.handle}&initialTab=followers`
+    );
+  }, [user.handle]);
 
   return (
     <View
@@ -67,10 +79,10 @@ export function ProfileHeader({
         ]}
       >
         {!!user.banner && (
-          <Image
+          <FastImage
             source={{ uri: user.banner }}
             style={styles.bannerImage}
-            contentFit="cover"
+            resizeMode="cover"
           />
         )}
         <View style={styles.coverOverlay} />
@@ -160,7 +172,11 @@ export function ProfileHeader({
         </View>
         {/* Stats Row */}
         <HStack className="mt-2 gap-4" pointerEvents="box-none">
-          <Button variant="ghost" className="px-0 gap-1">
+          <Button
+            variant="ghost"
+            className="px-0 gap-1"
+            onPress={handleFollowingPress}
+          >
             <Text font="semiBold">
               {Formater.formatNumberToKOrM(user.followsCount || 0)}
             </Text>
@@ -168,7 +184,11 @@ export function ProfileHeader({
               <Trans>Following</Trans>
             </Text>
           </Button>
-          <Button variant="ghost" className="px-0 gap-1">
+          <Button
+            variant="ghost"
+            className="px-0 gap-1"
+            onPress={handleFollowersPress}
+          >
             <Text font="semiBold">
               {Formater.formatNumberToKOrM(user.followersCount || 0)}
             </Text>

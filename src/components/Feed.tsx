@@ -1,7 +1,7 @@
 import { useAuth } from "@/contexts/AuthContext";
 import React, { useCallback, useMemo, useState } from "react";
 import { ATFeedItem } from "@/types/atproto";
-import { isIOS, isNative } from "@/platform";
+import { isNative } from "@/platform";
 import { Text, View } from "./ui";
 import { EmptyState, ErrorState } from "./placeholders/EmptyState";
 import { FeedPlaceholder } from "./placeholders/FeedPlaceholder";
@@ -14,7 +14,8 @@ import { FeedDescriptor } from "@/lib/atproto";
 import { useFeeds } from "@/hooks/query/useFeeds";
 import { t } from "@lingui/core/macro";
 import { Trans } from "@lingui/react/macro";
-
+import { ListRenderItemInfo } from "@shopify/flash-list";
+import { FeedViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
 interface FeedProps {
   isFocused?: boolean;
   headerHeight?: number;
@@ -42,7 +43,17 @@ const Feed = React.memo(function Comp({
 
   const allPosts = useMemo(() => {
     const pages = feedQuery.data?.pages;
-    return pages?.flatMap((page) => page?.feed) || [];
+    return (
+      pages?.flatMap((page) => {
+        return page?.feed.map((post, index) => {
+          const key = `${index}-${post.post.uri}_${post.post.cid}`;
+          return {
+            key,
+            ...post,
+          };
+        });
+      }) || []
+    );
   }, [feedQuery.data]);
 
   const [visiblePostUris, setVisiblePostUris] = useState<Set<string>>(
@@ -64,7 +75,7 @@ const Feed = React.memo(function Comp({
   }, []);
 
   const renderItem = useCallback(
-    ({ item }: { item: ATFeedItem }) => (
+    ({ item }: ListRenderItemInfo<ATFeedItem>) => (
       <Post
         post={item.post}
         shouldPlay={
@@ -80,7 +91,7 @@ const Feed = React.memo(function Comp({
 
     return (
       <View className="py-5 items-center bg-white gap-2">
-        <Loading />
+        <Loading size="small" />
         <Text className="text-sm text-gray-500 font-medium">
           Loading more posts...
         </Text>
@@ -151,9 +162,10 @@ const Feed = React.memo(function Comp({
   return (
     <List
       data={allPosts}
-      extraData={allPosts}
       renderItem={renderItem}
-      keyExtractor={(item, index) => `${item.post.uri}-${index}`}
+      keyExtractor={(item) => {
+        return item.key;
+      }}
       headerOffset={headerHeight}
       useScrollDetector
       refreshing={feedQuery.isRefetching}
@@ -161,7 +173,7 @@ const Feed = React.memo(function Comp({
       onEndReached={handleLoadMore}
       ListEmptyComponent={showEmptyState ? renderEmptyState : null}
       ListFooterComponent={renderLoadingFooter}
-      showsVerticalScrollIndicator={false}
+      showsVerticalScrollIndicator={true}
       contentContainerStyle={
         showEmptyState
           ? { flex: 1 }
@@ -170,15 +182,16 @@ const Feed = React.memo(function Comp({
               paddingBottom: tabBarHeight,
             }
       }
-      removeClippedSubviews
-      initialNumToRender={2}
-      windowSize={9}
-      maxToRenderPerBatch={isIOS ? 5 : 1}
-      updateCellsBatchingPeriod={40}
-      onEndReachedThreshold={3} // number of posts left to trigger load more
+      onEndReachedThreshold={1.5} // number of posts left to trigger load more
       maintainVisibleContentPosition={{
-        minIndexForVisible: 0,
         autoscrollToTopThreshold: 10,
+      }}
+      getItemType={(item: unknown) => {
+        const feedItem = item as FeedViewPost;
+        if (feedItem.post?.embed) {
+          return feedItem.post.embed?.$type as string;
+        }
+        return "<unknown>";
       }}
       keyboardShouldPersistTaps={isNative ? "always" : "handled"}
       onViewableItemsChangedFull={handleViewableItemsChangedFull}

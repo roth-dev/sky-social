@@ -5,7 +5,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { HStack, Text, View, VStack } from "../ui";
 import { cn } from "@/lib/utils";
-import { Pressable } from "react-native";
+import { Pressable, StyleProp, ViewStyle } from "react-native";
 import { isNative } from "@/platform";
 
 interface HeaderTabProps {
@@ -13,7 +13,9 @@ interface HeaderTabProps {
   setPage: (idx: number) => void;
   page: number;
   tabTitles: string[];
+  className?: string;
   tabLayouts: { width: number; x: number }[];
+  indicatorStyle?: StyleProp<ViewStyle>;
   setTabLayouts: React.Dispatch<
     React.SetStateAction<{ width: number; x: number }[]>
   >;
@@ -23,10 +25,12 @@ export default function HeaderTab({
   indicatorIndex,
   setPage,
   tabTitles,
+  className,
   tabLayouts,
+  indicatorStyle,
   setTabLayouts,
 }: HeaderTabProps) {
-  const indicatorStyle = useAnimatedStyle(() => {
+  const animatedIndicatorStyle = useAnimatedStyle(() => {
     if (tabLayouts.length !== tabTitles.length) return {};
     const idx = indicatorIndex.value as number;
     const x = tabLayouts[idx]?.x ?? 0;
@@ -40,7 +44,7 @@ export default function HeaderTab({
   return (
     <VStack
       darkColor="none"
-      className={cn(isNative ? "pb-2" : "py-4")}
+      className={cn(isNative ? "pb-2" : "py-4", className)}
       style={{ position: "relative" }}
     >
       <HStack darkColor="none" className="items-center justify-between">
@@ -72,6 +76,7 @@ export default function HeaderTab({
               alignItems: "center",
               bottom: isNative ? -10 : 0,
             },
+            animatedIndicatorStyle,
             indicatorStyle,
           ]}
         >

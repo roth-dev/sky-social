@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from "react";
+import React, { useMemo, useState } from "react";
 import { StyleSheet, Alert } from "react-native";
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { ErrorState } from "@/components/placeholders/EmptyState";
@@ -12,6 +12,7 @@ import Loading from "../ui/Loading";
 import UserVideoSection from "../sections/Videos";
 import { useProfile } from "@/hooks/query";
 import { t } from "@lingui/core/macro";
+import { router } from "expo-router";
 
 interface Props {
   handle: string;
@@ -20,7 +21,7 @@ interface Props {
 const UserProfile = ({ handle }: Props) => {
   const { user } = useAuth();
   const profileQuery = useProfile(handle);
-  const headerHeight = useRef(200);
+  const [headerHeight, setHeaderHeight] = useState(200);
 
   const isOwner = useMemo(() => {
     return handle === user?.handle;
@@ -56,7 +57,7 @@ const UserProfile = ({ handle }: Props) => {
   }, [handle, isOwner]);
 
   const handleEditProfile = () => {
-    Alert.alert(t`Coming Soon`, t`Profile editing will be available soon!`);
+    router.push("/account-settings/edit-profile");
   };
 
   const handleMorePress = () => {
@@ -79,13 +80,13 @@ const UserProfile = ({ handle }: Props) => {
     );
   }
 
-  const currentProfile = profileQuery.data;
+  const profileData = profileQuery.data;
 
   // Show loading placeholder if profile is loading or not yet available
-  if (profileQuery.isLoading || !currentProfile) {
+  if (profileQuery.isLoading || !profileData) {
     return (
       <View className="flex-1 bg-white items-center justify-center">
-        <Loading size="lg" />
+        <Loading size="large" />
         {/* You may want to import and use a ProfilePlaceholder here */}
         {/* Replace the following with your actual placeholder component if available */}
         {/* <ProfilePlaceholder /> */}
@@ -96,13 +97,11 @@ const UserProfile = ({ handle }: Props) => {
   return (
     <View className="flex-1 bg-white">
       <TabView
-        headerHeight={headerHeight.current}
+        headerHeight={headerHeight}
         renderHeader={() => (
           <ProfileHeader
-            user={currentProfile}
-            setHeaderHeight={(height) => {
-              headerHeight.current = height;
-            }}
+            user={profileData}
+            setHeaderHeight={setHeaderHeight}
             isOwnProfile={isOwner}
             onEditProfile={handleEditProfile}
             onMorePress={handleMorePress}

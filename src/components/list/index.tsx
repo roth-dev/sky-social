@@ -81,8 +81,9 @@ let List = React.forwardRef<ListRef, ListProps>(
           }
         },
         {
-          itemVisiblePercentThreshold: 40,
-          minimumViewTime: 0.5e3,
+          waitForInteraction: true,
+          itemVisiblePercentThreshold: 50,
+          minimumViewTime: 100,
         },
       ];
     }, [onItemSeen, onViewableItemsChangedFull]);

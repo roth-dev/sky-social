@@ -1,8 +1,9 @@
 import React, { FunctionComponent } from "react";
-import { View, TouchableOpacity } from "react-native";
-import { HStack, Text } from "@/components/ui";
+import { View } from "react-native";
+import { HStack, Text, Button } from "@/components/ui";
 import { Image } from "expo-image";
 import { Pen, X as CloseIcon } from "lucide-react-native";
+import FastImage from "react-native-fast-image";
 
 interface ComposerImagePreviewProps {
   images: { uri: string; alt?: string }[];
@@ -31,32 +32,39 @@ export const ComposerImagePreview: FunctionComponent<
           }`}
           style={{ maxWidth: maxSize, maxHeight: maxSize, aspectRatio: 1 }}
         >
-          <Image
+          <FastImage
             source={{ uri: img.uri }}
             className="w-full h-full"
             style={{ aspectRatio: 1, borderRadius: 10 }}
-            contentFit="cover"
+            resizeMode="cover"
           />
           {/* Edit and Remove overlays */}
-          <TouchableOpacity
+          <Button
+            variant="ghost"
+            size="icon"
             className="absolute top-1 right-8 bg-black/40 rounded-full p-1.5"
             onPress={() => onEditAlt(idx)}
-          >
-            <Pen size={16} color="#fff" />
-          </TouchableOpacity>
-          <TouchableOpacity
+            leftIcon={Pen}
+            leftIconSize={16}
+            leftIconColor="#fff"
+          />
+          <Button
+            variant="ghost"
+            size="icon"
             className="absolute top-1 right-1 bg-black/40 rounded-full p-1.5"
             onPress={() => onRemoveImage(idx)}
-          >
-            <CloseIcon size={16} color="#fff" />
-          </TouchableOpacity>
+            leftIcon={CloseIcon}
+            leftIconSize={16}
+            leftIconColor="#fff"
+          />
           {/* ALT button */}
-          <TouchableOpacity
+          <Button
+            variant="ghost"
             className="absolute left-2 bottom-2 bg-black/60 rounded px-2 py-0.5"
             onPress={() => onEditAlt(idx)}
           >
             <Text className="text-white font-semibold text-xs">+ ALT</Text>
-          </TouchableOpacity>
+          </Button>
         </View>
       ))}
     </HStack>

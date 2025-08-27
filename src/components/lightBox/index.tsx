@@ -326,7 +326,7 @@ export function LightBox({
         <View style={styles.imageContainer}>
           <GestureDetector gesture={composedGesture}>
             <Animated.View className="flex-1" style={imageAnimatedStyle}>
-              <LightBoxImage images={images} initailIndex={initialIndex} />
+              <LightBoxImage images={images} initialIndex={initialIndex} />
             </Animated.View>
           </GestureDetector>
         </View>

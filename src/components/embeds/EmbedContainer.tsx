@@ -52,7 +52,7 @@ export function EmbedContainer({
       case "app.bsky.embed.video#view":
         return (
           <VideoEmbed
-            video={embed.video}
+            video={embed}
             isDetailView={isDetailView}
             shouldPlay={shouldPlay}
           />

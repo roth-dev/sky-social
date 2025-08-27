@@ -138,7 +138,7 @@ export function LoadingState({
 }: LoadingStateProps) {
   return (
     <View style={[styles.container, style]}>
-      <Loading size="lg" />
+      <Loading size="large" />
       <Text style={styles.loadingText}>{message}</Text>
     </View>
   );

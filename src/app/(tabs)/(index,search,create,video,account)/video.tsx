@@ -10,7 +10,6 @@ import { View } from "@/components/ui";
 import { List, ListRef } from "@/components/list";
 import { VideoPlayer } from "@/components/video/VideoPlayer";
 import { VideoFeedOverlay } from "@/components/video/VideoFeedOverlay";
-import { FeedViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
 import { isMobileWeb, isWeb } from "@/platform";
 
 const { height: screenHeight } = Dimensions.get("window");
@@ -53,7 +52,6 @@ function VideoFeedItem({
         thumbnail={videoEmbed.thumbnail}
         aspectRatio={videoEmbed.aspectRatio}
         shouldPlay={isActive}
-        muted={false}
         contentFit="contain"
         containerStyle={{
           borderRadius: 0,
@@ -85,7 +83,11 @@ export default function VideoScreen() {
     if (!videoFeedQuery.data) return [];
 
     return videoFeedQuery.data.pages.flatMap(
-      (page) => page?.feed as FeedViewPost[]
+      (page) =>
+        page?.feed.map((item) => ({
+          key: item.post.uri,
+          ...item,
+        })) || []
     );
   }, [videoFeedQuery.data]);
 
@@ -225,22 +227,15 @@ export default function VideoScreen() {
         ref={listRef}
         data={videoFeed}
         renderItem={renderVideoItem}
-        keyExtractor={(item, index) => `video-${item.post.uri}-${index}`}
+        keyExtractor={(item, index) => {
+          return item.key;
+        }}
         pagingEnabled
         showsVerticalScrollIndicator={false}
         onEndReached={handleLoadMore}
         onItemSeen={onItemSeen}
         onEndReachedThreshold={0.1}
-        removeClippedSubviews={true}
         useScrollDetector={isMobileWeb}
-        maxToRenderPerBatch={4}
-        windowSize={6}
-        initialNumToRender={3}
-        getItemLayout={(_, index) => ({
-          length: height.current,
-          offset: height.current * index,
-          index,
-        })}
       />
     </View>
   );

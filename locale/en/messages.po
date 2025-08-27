@@ -13,22 +13,33 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/components/profile/ProfileHeader.tsx:148
+#: src/components/profile/ProfileHeader.tsx:138
 msgid "..."
 msgstr "..."
 
-#. placeholder {0}: lang.nameKey
-#. placeholder {0}: theme.nameKey
-#. placeholder {0}: section.titleKey
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:239
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:321
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:397
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:424
+#. placeholder {0}: theme.name
+#. placeholder {0}: theme.description
+#. placeholder {0}: item.title
+#: src/app/theme-settings/index.tsx:338
+#: src/app/theme-settings/index.tsx:346
+#: src/app/theme-settings/index.tsx:470
+#: src/app/theme-settings/index.tsx:479
+#: src/app/theme-settings/index.tsx:517
+#: src/app/language-settings/index.tsx:234
+#: src/app/language-settings/index.tsx:300
+#: src/app/app-settings/network.tsx:142
+#: src/app/app-settings/network.tsx:151
+#: src/app/app-settings/network.tsx:189
+#: src/app/app-settings/index.tsx:515
+#: src/app/app-settings/index.tsx:525
+#: src/app/app-settings/index.tsx:576
+#: src/app/account-settings/index.tsx:473
+#: src/app/account-settings/index.tsx:538
 msgid "{0}"
 msgstr "{0}"
 
 #. placeholder {0}: Math.floor(diffInHours / 24)
-#: src/components/Post.tsx:174
+#: src/components/Post.tsx:127
 msgid "{0}d"
 msgstr "{0}d"
 
@@ -36,7 +47,7 @@ msgstr "{0}d"
 msgid "{description}"
 msgstr "{description}"
 
-#: src/components/Post.tsx:173
+#: src/components/Post.tsx:126
 msgid "{diffInHours}h"
 msgstr "{diffInHours}h"
 
@@ -45,57 +56,134 @@ msgstr "{diffInHours}h"
 msgid "{title}"
 msgstr "{title}"
 
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:162
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:167
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:187
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:192
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:112
 msgid "About"
 msgstr "About"
 
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:135
+#: src/app/moderation/blocked-users.tsx:165
+msgid "About Blocking"
+msgstr "About Blocking"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:57
 msgid "Account"
 msgstr "Account"
 
-#: src/components/profile/UserProfile.tsx:63
+#: src/app/account-settings/edit-profile.tsx:206
+msgid "Account Information"
+msgstr "Account Information"
+
+#: src/app/account-settings/index.tsx:563
+msgid "Account Settings"
+msgstr "Account Settings"
+
+#: src/components/settings/AccountSelector.tsx:136
+msgid "Active"
+msgstr "Active"
+
+#: src/components/settings/AddAccountSection.tsx:27
+#: src/components/settings/AccountSelector.tsx:232
+msgid "Add another account"
+msgstr "Add another account"
+
+#: src/app/add-account/index.tsx:115
+msgid "Add Another Account"
+msgstr "Add Another Account"
+
+#: src/components/profile/UserProfile.tsx:64
 msgid "Additional options coming soon!"
 msgstr "Additional options coming soon!"
+
+#: src/app/home-feed-preferences/index.tsx:251
+msgid "Allow mature and adult content to appear in your feed"
+msgstr "Allow mature and adult content to appear in your feed"
 
 #: src/app/login/index.tsx:50
 msgid "An unexpected error occurred"
 msgstr "An unexpected error occurred"
 
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:97
+msgid "App settings"
+msgstr "App settings"
+
+#: src/app/app-settings/index.tsx:611
+msgid "App Settings"
+msgstr "App Settings"
+
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:110
-msgid "Appearance"
-msgstr "Appearance"
+#~ msgid "Appearance"
+#~ msgstr "Appearance"
+
+#: src/app/theme-settings/index.tsx:647
+msgid "Applying theme..."
+msgstr "Applying theme..."
+
+#: src/app/home-feed-preferences/index.tsx:110
+msgid "Are you sure you want to reset all feed preferences to their default values?"
+msgstr "Are you sure you want to reset all feed preferences to their default values?"
 
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:57
-msgid "Are you sure you want to sign out?"
-msgstr "Are you sure you want to sign out?"
+#~ msgid "Are you sure you want to sign out?"
+#~ msgstr "Are you sure you want to sign out?"
+
+#: src/app/language-settings/index.tsx:406
+msgid "Auto-download languages"
+msgstr "Auto-download languages"
+
+#: src/app/language-settings/index.tsx:414
+msgid "Automatically download language packs when selected"
+msgstr "Automatically download language packs when selected"
+
+#: src/app/account-settings/edit-profile.tsx:167
+msgid "Bio"
+msgstr "Bio"
+
+#: src/app/moderation/blocked-users.tsx:173
+msgid "Blocked users cannot see your posts, follow you, or send you messages. They will not be notified that you have blocked them."
+msgstr "Blocked users cannot see your posts, follow you, or send you messages. They will not be notified that you have blocked them."
 
 #: src/app/(tabs)/(index,search,create,video,account)/setting.tsx:56
 #: src/app/(tabs)/(index,search,create,video,account)/account/settings.tsx:56
 #~ msgid "cancel"
 #~ msgstr "cancel"
 
-#: src/components/Post.tsx:222
-#: src/components/Post.tsx:233
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:58
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:255
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:340
+#: src/components/Post.tsx:164
+#: src/components/Post.tsx:175
+#: src/app/home-feed-preferences/index.tsx:112
+#: src/app/account-settings/edit-profile.tsx:253
 msgid "Cancel"
 msgstr "Cancel"
 
-#: src/components/Post.tsx:218
+#: src/components/Post.tsx:160
 msgid "Cannot Open Link"
 msgstr "Cannot Open Link"
+
+#: src/app/home-feed-preferences/index.tsx:275
+msgid "Changes to your feed preferences will take effect immediately. Some changes may require refreshing your timeline."
+msgstr "Changes to your feed preferences will take effect immediately. Some changes may require refreshing your timeline."
+
+#: src/app/account-settings/edit-profile.tsx:268
+msgid "Changes to your profile may take a few minutes to appear throughout the platform."
+msgstr "Changes to your profile may take a few minutes to appear throughout the platform."
+
+#: src/app/language-settings/index.tsx:497
+msgid "Changing language..."
+msgstr "Changing language..."
 
 #: src/components/placeholders/EmptyState.tsx:107
 msgid "Check your internet connection and try again."
 msgstr "Check your internet connection and try again."
 
+#: src/app/home-feed-preferences/index.tsx:230
+msgid "Choose how your timeline is organized"
+msgstr "Choose how your timeline is organized"
+
+#: src/app/home-feed-preferences/index.tsx:235
+msgid "Chronological feed"
+msgstr "Chronological feed"
+
 #: src/components/profile/UserProfile.tsx:59
-msgid "Coming Soon"
-msgstr "Coming Soon"
+#~ msgid "Coming Soon"
+#~ msgstr "Coming Soon"
 
 #: src/app/login/index.tsx:95
 msgid "Connect with the decentralized social web"
@@ -105,22 +193,59 @@ msgstr "Connect with the decentralized social web"
 msgid "Connection Problem"
 msgstr "Connection Problem"
 
+#: src/app/home-feed-preferences/index.tsx:244
+msgid "Content Filtering"
+msgstr "Content Filtering"
+
 #: src/components/placeholders/EmptyState.tsx:114
 msgid "Content will appear here when available."
 msgstr "Content will appear here when available."
 
-#: src/components/Post.tsx:107
+#: src/app/home-feed-preferences/index.tsx:245
+msgid "Control mature and sensitive content"
+msgstr "Control mature and sensitive content"
+
+#: src/app/home-feed-preferences/index.tsx:197
+msgid "Control what content appears in your home timeline"
+msgstr "Control what content appears in your home timeline"
+
+#: src/app/moderation/index.tsx:448
+msgid "Control your experience by managing content filtering, blocking, and privacy settings"
+msgstr "Control your experience by managing content filtering, blocking, and privacy settings"
+
+#: src/components/Post.tsx:96
 msgid "Copied"
 msgstr "Copied"
 
-#: src/components/Post.tsx:251
+#: src/components/Post.tsx:193
 msgid "Copy post text"
 msgstr "Copy post text"
 
-#: src/components/Post.tsx:221
-#: src/components/Post.tsx:232
+#: src/components/Post.tsx:163
+#: src/components/Post.tsx:174
 msgid "Copy URL"
 msgstr "Copy URL"
+
+#: src/components/settings/AccountSelector.tsx:104
+msgid "Current Account"
+msgstr "Current Account"
+
+#: src/app/language-settings/index.tsx:339
+msgid "Current Language"
+msgstr "Current Language"
+
+#: src/app/theme-settings/index.tsx:556
+msgid "Current Theme"
+msgstr "Current Theme"
+
+#: src/app/add-account/index.tsx:131
+msgid "Currently signed in as:"
+msgstr "Currently signed in as:"
+
+#. placeholder {0}: systemTheme === "dark" ? "Dark" : "Light"
+#: src/app/theme-settings/index.tsx:355
+msgid "Currently: {0}"
+msgstr "Currently: {0}"
 
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:274
 #~ msgid "dark"
@@ -128,8 +253,8 @@ msgstr "Copy URL"
 
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:87
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:277
-msgid "Dark"
-msgstr "Dark"
+#~ msgid "Dark"
+#~ msgstr "Dark"
 
 #: src/components/search/TrendingSection.tsx:116
 msgid "Discover"
@@ -139,22 +264,33 @@ msgstr "Discover"
 #~ msgid "Discover posts"
 #~ msgstr "Discover posts"
 
-#: src/components/Feed.tsx:99
+#: src/components/Feed.tsx:110
 msgid "Discover posts from the decentralized social web. Sign in to interact with posts and see your personalized timeline."
 msgstr "Discover posts from the decentralized social web. Sign in to interact with posts and see your personalized timeline."
 
-#: src/app/login/index.tsx:127
+#: src/app/account-settings/edit-profile.tsx:135
+msgid "Display Name"
+msgstr "Display Name"
+
+#: src/app/login/index.tsx:126
 msgid "Don't have a Bluesky account? Create one at"
 msgstr "Don't have a Bluesky account? Create one at"
 
-#: src/components/profile/ProfileHeader.tsx:133
+#: src/app/home-feed-preferences/index.tsx:203
+msgid "Don't show replies to posts in your timeline"
+msgstr "Don't show replies to posts in your timeline"
+
+#: src/app/home-feed-preferences/index.tsx:212
+msgid "Don't show reposts in your timeline"
+msgstr "Don't show reposts in your timeline"
+
+#: src/components/profile/ProfileHeader.tsx:123
+#: src/app/account-settings/edit-profile.tsx:68
 msgid "Edit Profile"
 msgstr "Edit Profile"
 
-#: src/app/login/index.tsx:142
-#: src/app/login/index.tsx:155
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:79
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:203
+#: src/app/login/index.tsx:141
+#: src/app/login/index.tsx:154
 msgid "English"
 msgstr "English"
 
@@ -166,13 +302,14 @@ msgstr "Enter a search term"
 msgid "Enter a search term to find people, posts, and feeds on Bluesky."
 msgstr "Enter a search term to find people, posts, and feeds on Bluesky."
 
-#: src/app/login/index.tsx:113
+#: src/app/login/index.tsx:112
 msgid "Enter your password"
 msgstr "Enter your password"
 
-#: src/components/composer/Composer.tsx:206
-#~ msgid "Error"
-#~ msgstr "Error"
+#: src/app/home-feed-preferences/index.tsx:54
+#: src/app/home-feed-preferences/index.tsx:98
+msgid "Error"
+msgstr "Error"
 
 #: src/components/search/TrendingSection.tsx:184
 #~ msgid "Explore feeds"
@@ -181,6 +318,22 @@ msgstr "Enter your password"
 #: src/components/composer/Composer.tsx:206
 #~ msgid "Failed to create post"
 #~ msgstr "Failed to create post"
+
+#: src/app/home-feed-preferences/index.tsx:55
+msgid "Failed to load your feed preferences. Please try again."
+msgstr "Failed to load your feed preferences. Please try again."
+
+#: src/app/home-feed-preferences/index.tsx:99
+msgid "Failed to save your feed preferences. Please try again."
+msgstr "Failed to save your feed preferences. Please try again."
+
+#: src/app/home-feed-preferences/index.tsx:196
+msgid "Feed Content"
+msgstr "Feed Content"
+
+#: src/app/home-feed-preferences/index.tsx:229
+msgid "Feed Ordering"
+msgstr "Feed Ordering"
 
 #: src/app/(tabs)/(index,search,create,video,account)/index.tsx:73
 msgid "Feeds"
@@ -198,20 +351,20 @@ msgstr "Find interesting people and feeds to follow"
 #~ msgid "Find people"
 #~ msgstr "Find people"
 
-#: src/components/profile/ProfileHeader.tsx:151
+#: src/components/profile/ProfileHeader.tsx:141
 msgid "Follow"
 msgstr "Follow"
 
-#: src/components/Feed.tsx:98
+#: src/components/Feed.tsx:109
 msgid "Follow people to see their posts in your timeline. Discover new accounts in the search tab!"
 msgstr "Follow people to see their posts in your timeline. Discover new accounts in the search tab!"
 
-#: src/components/profile/ProfileHeader.tsx:198
+#: src/components/profile/ProfileHeader.tsx:196
 msgid "Followers"
 msgstr "Followers"
 
-#: src/components/profile/ProfileHeader.tsx:150
-#: src/components/profile/ProfileHeader.tsx:190
+#: src/components/profile/ProfileHeader.tsx:140
+#: src/components/profile/ProfileHeader.tsx:184
 #: src/app/(tabs)/(index,search,create,video,account)/index.tsx:67
 msgid "Following"
 msgstr "Following"
@@ -220,10 +373,31 @@ msgstr "Following"
 msgid "For You"
 msgstr "For You"
 
+#: src/app/account-settings/edit-profile.tsx:215
+msgid "Handle"
+msgstr "Handle"
+
 #~ msgid "Hello"
 #~ msgstr "Hello"
 
-#: src/components/Post.tsx:205
+#: src/app/home-feed-preferences/index.tsx:202
+msgid "Hide replies"
+msgstr "Hide replies"
+
+#: src/app/home-feed-preferences/index.tsx:211
+msgid "Hide reposts"
+msgstr "Hide reposts"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:71
+msgid "Home feed preferences"
+msgstr "Home feed preferences"
+
+#: src/app/home-feed-preferences/index.tsx:173
+#: src/app/home-feed-preferences/index.tsx:187
+msgid "Home Feed Preferences"
+msgstr "Home Feed Preferences"
+
+#: src/components/Post.tsx:147
 msgid "Invalid URL"
 msgstr "Invalid URL"
 
@@ -231,16 +405,30 @@ msgstr "Invalid URL"
 msgid "Join the conversation"
 msgstr "Join the conversation"
 
-#: src/app/login/index.tsx:146
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:79
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:204
+#: src/app/account-settings/index.tsx:631
+msgid "Keep your account secure by enabling two-factor authentication and using a strong password."
+msgstr "Keep your account secure by enabling two-factor authentication and using a strong password."
+
+#: src/app/login/index.tsx:145
 msgid "Khmer"
 msgstr "Khmer"
 
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:115
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:221
-msgid "Language"
-msgstr "Language"
+#~ msgid "Language"
+#~ msgstr "Language"
+
+#: src/app/language-settings/index.tsx:480
+msgid "Language changes take effect immediately. Some content may require app restart to display in the new language."
+msgstr "Language changes take effect immediately. Some content may require app restart to display in the new language."
+
+#: src/app/language-settings/index.tsx:325
+msgid "Language Settings"
+msgstr "Language Settings"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:87
+msgid "Languages"
+msgstr "Languages"
 
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:269
 #~ msgid "light"
@@ -248,16 +436,28 @@ msgstr "Language"
 
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:85
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:272
-msgid "Light"
-msgstr "Light"
+#~ msgid "Light"
+#~ msgstr "Light"
 
-#: src/components/profile/UserProfile.tsx:50
+#: src/components/profile/UserProfile.tsx:51
 msgid "Liked"
 msgstr "Liked"
 
-#: src/components/Post.tsx:229
+#: src/components/Post.tsx:171
 msgid "Link Error"
 msgstr "Link Error"
+
+#: src/app/moderation/blocked-users.tsx:196
+msgid "Loading blocked users..."
+msgstr "Loading blocked users..."
+
+#: src/app/moderation/muted-users.tsx:154
+msgid "Loading muted users..."
+msgstr "Loading muted users..."
+
+#: src/app/home-feed-preferences/index.tsx:177
+msgid "Loading preferences..."
+msgstr "Loading preferences..."
 
 #: src/components/placeholders/EmptyState.tsx:136
 msgid "Loading..."
@@ -277,16 +477,33 @@ msgstr "Login failed"
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:57
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:60
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:178
-msgid "Logout"
-msgstr "Logout"
+#~ msgid "Logout"
+#~ msgstr "Logout"
 
-#: src/components/profile/UserProfile.tsx:38
+#: src/components/profile/UserProfile.tsx:39
 msgid "Media"
 msgstr "Media"
 
-#: src/components/profile/UserProfile.tsx:63
+#: src/app/moderation/index.tsx:424
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:64
+msgid "Moderation"
+msgstr "Moderation"
+
+#: src/app/moderation/index.tsx:440
+msgid "Moderation Settings"
+msgstr "Moderation Settings"
+
+#: src/components/profile/UserProfile.tsx:64
 msgid "More Options"
 msgstr "More Options"
+
+#: src/app/moderation/muted-users.tsx:98
+msgid "Muted on {formattedDate}"
+msgstr "Muted on {formattedDate}"
+
+#: src/app/moderation/blocked-users.tsx:121
+msgid "No Blocked Users"
+msgstr "No Blocked Users"
 
 #: src/components/search/SearchResults.tsx:141
 msgid "No custom feeds found for \"{searchQuery}\". Try browsing popular feeds instead."
@@ -307,6 +524,10 @@ msgstr "No liked posts yet"
 #: src/components/placeholders/EmptyState.tsx:89
 msgid "No media yet"
 msgstr "No media yet"
+
+#: src/app/moderation/muted-users.tsx:122
+msgid "No muted users"
+msgstr "No muted users"
 
 #: src/components/search/SearchResults.tsx:130
 msgid "No people found"
@@ -350,14 +571,20 @@ msgid "Nothing here yet"
 msgstr "Nothing here yet"
 
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:151
-msgid "Notifications"
-msgstr "Notifications"
+#~ msgid "Notifications"
+#~ msgstr "Notifications"
 
-#: src/components/Post.tsx:172
+#: src/components/Post.tsx:125
 msgid "now"
 msgstr "now"
 
-#: src/app/login/index.tsx:112
+#: src/app/home-feed-preferences/index.tsx:56
+#: src/app/home-feed-preferences/index.tsx:90
+#: src/app/home-feed-preferences/index.tsx:100
+msgid "OK"
+msgstr "OK"
+
+#: src/app/login/index.tsx:111
 msgid "Password"
 msgstr "Password"
 
@@ -369,7 +596,7 @@ msgstr "Please check your internet connection and try again."
 msgid "Please fill in all fields"
 msgstr "Please fill in all fields"
 
-#: src/components/Feed.tsx:114
+#: src/components/Feed.tsx:125
 msgid "Please sign in to view your personalized feed and interact with posts."
 msgstr "Please sign in to view your personalized feed and interact with posts."
 
@@ -377,8 +604,8 @@ msgstr "Please sign in to view your personalized feed and interact with posts."
 #~ msgid "Popular Feeds"
 #~ msgstr "Popular Feeds"
 
-#: src/components/profile/UserProfile.tsx:33
-#: src/components/profile/ProfileHeader.tsx:206
+#: src/components/profile/UserProfile.tsx:34
+#: src/components/profile/ProfileHeader.tsx:204
 msgid "Posts"
 msgstr "Posts"
 
@@ -387,17 +614,42 @@ msgid "Powered by AT Protocol"
 msgstr "Powered by AT Protocol"
 
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:140
-msgid "Privacy"
-msgstr "Privacy"
+#~ msgid "Privacy"
+#~ msgstr "Privacy"
+
+#: src/app/app-settings/index.tsx:627
+msgid "Processing..."
+msgstr "Processing..."
 
 #: src/components/profile/UserProfile.tsx:59
-msgid "Profile editing will be available soon!"
-msgstr "Profile editing will be available soon!"
+#~ msgid "Profile editing will be available soon!"
+#~ msgstr "Profile editing will be available soon!"
+
+#: src/app/account-settings/edit-profile.tsx:126
+msgid "Profile Information"
+msgstr "Profile Information"
 
 #. placeholder {0}: replyTo.post.author.handle
-#: src/components/composer/Composer.tsx:326
+#: src/components/composer/Composer.tsx:304
 msgid "Replying to @{0}"
 msgstr "Replying to @{0}"
+
+#: src/app/home-feed-preferences/index.tsx:114
+msgid "Reset"
+msgstr "Reset"
+
+#: src/app/language-settings/index.tsx:458
+msgid "Reset all language preferences to defaults"
+msgstr "Reset all language preferences to defaults"
+
+#: src/app/language-settings/index.tsx:450
+msgid "Reset language data"
+msgstr "Reset language data"
+
+#: src/app/home-feed-preferences/index.tsx:109
+#: src/app/home-feed-preferences/index.tsx:267
+msgid "Reset to Defaults"
+msgstr "Reset to Defaults"
 
 #: src/components/video/VideoError.tsx:35
 msgid "Retry"
@@ -406,6 +658,20 @@ msgstr "Retry"
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:274
 #~ msgid "Sark"
 #~ msgstr "Sark"
+
+#: src/app/account-settings/edit-profile.tsx:71
+msgid "Save"
+msgstr "Save"
+
+#: src/app/home-feed-preferences/index.tsx:260
+#: src/app/account-settings/edit-profile.tsx:245
+msgid "Save Changes"
+msgstr "Save Changes"
+
+#: src/app/home-feed-preferences/index.tsx:260
+#: src/app/account-settings/edit-profile.tsx:245
+msgid "Saving..."
+msgstr "Saving..."
 
 #: src/components/search/TrendingSection.tsx:169
 #~ msgid "Search by handle (@username) or display name"
@@ -428,22 +694,44 @@ msgstr "See all"
 msgid "Service Unavailable"
 msgstr "Service Unavailable"
 
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:351
+#: src/app/language-settings/index.tsx:384
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:121
 msgid "Settings"
 msgstr ""
 
+#: src/app/home-feed-preferences/index.tsx:250
+msgid "Show adult content"
+msgstr "Show adult content"
+
+#: src/app/home-feed-preferences/index.tsx:236
+msgid "Show posts in chronological order instead of algorithmic order"
+msgstr "Show posts in chronological order instead of algorithmic order"
+
+#: src/app/home-feed-preferences/index.tsx:221
+msgid "Show posts that quote other posts"
+msgstr "Show posts that quote other posts"
+
+#: src/app/home-feed-preferences/index.tsx:220
+msgid "Show quote posts"
+msgstr "Show quote posts"
+
 #: src/components/layout/RightSidebar.tsx:199
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:162
 msgid "Sign in"
 msgstr "Sign in"
 
 #: src/components/layout/WebSidebar.tsx:145
-#: src/app/login/index.tsx:121
+#: src/app/login/index.tsx:120
 msgid "Sign In"
 msgstr "Sign In"
 
-#: src/components/Feed.tsx:111
+#: src/components/Feed.tsx:122
 msgid "Sign in required"
 msgstr "Sign in required"
+
+#: src/app/add-account/index.tsx:118
+msgid "Sign in to add another Bluesky account. You can easily switch between accounts in Settings."
+msgstr "Sign in to add another Bluesky account. You can easily switch between accounts in Settings."
 
 #: src/components/layout/RightSidebar.tsx:242
 msgid "Sign in to follow people and see more suggestions"
@@ -453,11 +741,15 @@ msgstr "Sign in to follow people and see more suggestions"
 msgid "Sign in to see personalized suggestions"
 msgstr "Sign in to see personalized suggestions"
 
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:469
-msgid "Signin"
-msgstr "Signin"
+#: src/components/settings/SettingsHeader.tsx:49
+msgid "Sign out"
+msgstr "Sign out"
 
-#: src/app/login/index.tsx:121
+#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:469
+#~ msgid "Signin"
+#~ msgstr "Signin"
+
+#: src/app/login/index.tsx:120
 msgid "Signing in..."
 msgstr "Signing in..."
 
@@ -465,17 +757,21 @@ msgstr "Signing in..."
 msgid "Something went wrong"
 msgstr "Something went wrong"
 
-#: src/components/Feed.tsx:141
+#: src/components/Feed.tsx:152
 msgid "Something went wrong while loading the timeline. Please try again."
 msgstr "Something went wrong while loading the timeline. Please try again."
 
-#: src/components/profile/UserProfile.tsx:74
+#: src/components/profile/UserProfile.tsx:75
 msgid "Something went wrong while loading your profile."
 msgstr "Something went wrong while loading your profile."
 
 #: src/components/search/SearchResults.tsx:94
 msgid "Start searching"
 msgstr "Start searching"
+
+#: src/app/home-feed-preferences/index.tsx:88
+msgid "Success"
+msgstr "Success"
 
 #: src/components/layout/RightSidebar.tsx:161
 #: src/components/layout/RightSidebar.tsx:190
@@ -487,38 +783,61 @@ msgstr "Suggested people"
 #~ msgid "Suggested People"
 #~ msgstr "Suggested People"
 
+#: src/components/settings/AccountSelector.tsx:152
+msgid "Switch to Account"
+msgstr "Switch to Account"
+
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:279
 #~ msgid "system"
 #~ msgstr "system"
 
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:89
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:282
-msgid "System"
-msgstr "System"
+#~ msgid "System"
+#~ msgstr "System"
+
+#: src/app/account-settings/edit-profile.tsx:113
+msgid "Tap to change your profile picture"
+msgstr "Tap to change your profile picture"
+
+#: src/app/app-settings/network.tsx:230
+msgid "Testing connection..."
+msgstr "Testing connection..."
 
 #: src/components/placeholders/EmptyState.tsx:196
 msgid "The service is temporarily unavailable. Please try again in a few moments."
 msgstr "The service is temporarily unavailable. Please try again in a few moments."
 
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:123
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:301
+#: src/components/settings/ThemeSettingsItem.tsx:53
 msgid "Theme"
 msgstr "Theme"
 
-#: src/components/Post.tsx:206
+#: src/app/theme-settings/index.tsx:631
+msgid "Theme changes take effect immediately. System theme follows your device's appearance settings."
+msgstr "Theme changes take effect immediately. System theme follows your device's appearance settings."
+
+#: src/app/theme-settings/index.tsx:597
+msgid "Theme Options"
+msgstr "Theme Options"
+
+#: src/app/theme-settings/index.tsx:542
+msgid "Theme Settings"
+msgstr "Theme Settings"
+
+#: src/components/Post.tsx:148
 msgid "This link appears to be invalid or malformed."
 msgstr "This link appears to be invalid or malformed."
 
-#: src/components/Post.tsx:219
+#: src/components/Post.tsx:161
 msgid "This link cannot be opened on your device. Would you like to copy the URL?"
 msgstr "This link cannot be opened on your device. Would you like to copy the URL?"
 
-#: src/components/Post.tsx:192
-#: src/components/Post.tsx:244
+#: src/components/Post.tsx:134
+#: src/components/Post.tsx:186
 msgid "Translate"
 msgstr "Translate"
 
-#: src/components/Post.tsx:192
+#: src/components/Post.tsx:134
 msgid "Translate action triggered (implement logic)"
 msgstr "Translate action triggered (implement logic)"
 
@@ -534,11 +853,11 @@ msgstr "Try searching for something else or check your spelling."
 msgid "Type something to search for people, posts, and feeds."
 msgstr "Type something to search for people, posts, and feeds."
 
-#: src/components/profile/UserProfile.tsx:71
+#: src/components/profile/UserProfile.tsx:72
 msgid "Unable to load profile"
 msgstr "Unable to load profile"
 
-#: src/components/Feed.tsx:138
+#: src/components/Feed.tsx:149
 msgid "Unable to load timeline"
 msgstr "Unable to load timeline"
 
@@ -546,16 +865,16 @@ msgstr "Unable to load timeline"
 msgid "Unable to load video"
 msgstr "Unable to load video"
 
-#: src/components/Post.tsx:230
+#: src/components/Post.tsx:172
 msgid "Unable to open this link. Would you like to copy the URL instead?"
 msgstr "Unable to open this link. Would you like to copy the URL instead?"
 
-#: src/components/Post.tsx:110
-#: src/components/Post.tsx:114
+#: src/components/Post.tsx:99
+#: src/components/Post.tsx:103
 msgid "URL"
 msgstr "URL"
 
-#: src/components/Post.tsx:107
+#: src/components/Post.tsx:96
 msgid "URL copied to clipboard"
 msgstr "URL copied to clipboard"
 
@@ -567,7 +886,11 @@ msgstr "URL copied to clipboard"
 msgid "Username or Email"
 msgstr "Username or Email"
 
-#: src/components/profile/UserProfile.tsx:43
+#: src/app/moderation/muted-users.tsx:127
+msgid "Users you mute will appear here. Muted users won't appear in your timeline, and their replies won't be shown to you."
+msgstr "Users you mute will appear here. Muted users won't appear in your timeline, and their replies won't be shown to you."
+
+#: src/components/profile/UserProfile.tsx:44
 msgid "Videos"
 msgstr "Videos"
 
@@ -579,12 +902,12 @@ msgstr "We encountered an error while loading this content."
 msgid "Welcome to Sky"
 msgstr "Welcome to Sky"
 
-#: src/components/Feed.tsx:95
+#: src/components/Feed.tsx:106
 #: src/components/placeholders/EmptyState.tsx:49
 msgid "Welcome to Sky Social!"
 msgstr "Welcome to Sky Social!"
 
-#: src/components/composer/Composer.tsx:355
+#: src/components/composer/Composer.tsx:333
 msgid "What's on your mind?"
 msgstr "What's on your mind?"
 
@@ -608,13 +931,29 @@ msgstr "When this user posts something, it will appear here."
 msgid "When this user shares photos and videos, they will appear here."
 msgstr "When this user shares photos and videos, they will appear here."
 
-#: src/components/composer/Composer.tsx:355
+#: src/components/composer/Composer.tsx:333
 msgid "Write your reply..."
 msgstr "Write your reply..."
+
+#: src/app/moderation/blocked-users.tsx:129
+msgid "You have not blocked any users yet. When you block someone, they will appear here."
+msgstr "You have not blocked any users yet. When you block someone, they will appear here."
 
 #: src/components/placeholders/EmptyState.tsx:105
 msgid "You're offline"
 msgstr "You're offline"
+
+#: src/app/add-account/index.tsx:187
+msgid "Your accounts are stored securely on this device. You can manage and switch between them in Settings."
+msgstr "Your accounts are stored securely on this device. You can manage and switch between them in Settings."
+
+#: src/app/home-feed-preferences/index.tsx:89
+msgid "Your feed preferences have been saved."
+msgstr "Your feed preferences have been saved."
+
+#: src/app/account-settings/edit-profile.tsx:235
+msgid "Your handle cannot be changed"
+msgstr "Your handle cannot be changed"
 
 #: src/components/placeholders/EmptyState.tsx:52
 msgid "Your timeline will appear here once you follow some people and they start posting."

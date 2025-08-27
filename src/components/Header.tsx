@@ -32,7 +32,7 @@ interface HeaderProps {
   collapsible?: boolean;
   disableSafeArea?: boolean;
   disabledLeft?: boolean;
-  disbleTopHeader?: boolean;
+  disableTopHeader?: boolean;
   onHeightChange?: (height: number) => void;
   renderHeader?: () => React.ReactNode;
   renderRight?: () => ReactElement;

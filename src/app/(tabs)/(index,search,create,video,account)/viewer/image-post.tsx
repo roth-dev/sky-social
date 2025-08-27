@@ -29,6 +29,7 @@ export default function PostImageView() {
     // Show tab bar when component unmounts
     return () => {
       show();
+      // clear stored lightbox values to avoid stale shared tags
       clearValue();
     };
   }, [hide, show, clearValue]);
@@ -73,8 +74,10 @@ export default function PostImageView() {
         >
           <LightBoxImage
             images={images}
+            onPressIn={onToggleHeader}
             initialIndex={selectedIndex}
             onChangeIndex={(index) => {
+              // Update local selected index and update the shared tag in store
               setSelectedIndex(index);
             }}
           />

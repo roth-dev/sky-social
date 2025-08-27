@@ -1,15 +1,19 @@
 import { EmbedImage } from "@/types/embed";
 import PagerView from "../pager";
 import { Image } from "expo-image";
+import { Pressable } from "react-native";
+import FastImage from "react-native-fast-image";
 
 interface Props {
   initialIndex?: number;
   images: EmbedImage[];
+  onPressIn?: () => void;
   onChangeIndex?: (index: number) => void;
 }
 export default function LightBoxImage({
   images,
   initialIndex,
+  onPressIn,
   onChangeIndex,
 }: Props) {
   return (
@@ -23,14 +27,15 @@ export default function LightBoxImage({
     >
       {images.map((image, index) => {
         return (
-          <Image
-            key={index}
-            source={{ uri: image.fullsize }}
-            alt={image.alt}
-            accessibilityLabel={image.alt}
-            contentFit="cover"
-            style={{ width: "100%", height: "100%" }}
-          />
+          <Pressable key={index} onPressIn={onPressIn}>
+            <FastImage
+              source={{ uri: image.fullsize }}
+              // alt={image.alt}
+              accessibilityLabel={image.alt}
+              resizeMode="cover"
+              style={{ width: "100%", height: "100%" }}
+            />
+          </Pressable>
         );
       })}
     </PagerView>

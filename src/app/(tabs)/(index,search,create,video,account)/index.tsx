@@ -98,7 +98,7 @@ export default function HomeScreen() {
         onHeightChange={setHeaderHeight}
         renderHeader={renderHeaderTabs}
         collapsible
-        disbleTopHeader={isWeb}
+        disableTopHeader={isWeb}
         title="Sky Social"
         leftIcon={
           <UserCircle

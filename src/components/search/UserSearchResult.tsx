@@ -27,10 +27,13 @@ export function UserSearchResult({ user, onPress }: UserSearchResultProps) {
     } else {
       router.push(`/profile/${user.handle}`);
     }
-  }, [onPress, user]);
+  }, [onPress, user.handle]);
 
   const handleFollow = useCallback(async () => {
-    if (!isAuthenticated) return;
+    if (!isAuthenticated) {
+      router.push("/login");
+      return;
+    }
 
     try {
       if (isFollowing && user.viewer?.following) {

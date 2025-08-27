@@ -4,12 +4,11 @@ import { useLocalSearchParams } from "expo-router";
 import { Header } from "@/components/Header";
 import { Post } from "@/components/Post";
 import { List } from "@/components/list";
-import { PostScreenPlaceholder } from "@/components/placeholders";
 import { usePostThread } from "@/hooks/query/usePostThread";
 import { Text, View } from "@/components/ui";
 import { ATPost, ATThreadViewPost } from "@/types/atproto";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import { isIOS } from "@/platform";
+import Loading from "@/components/ui/Loading";
 
 export default function PostScreen() {
   const { uri } = useLocalSearchParams<{ uri: string }>();
@@ -70,7 +69,10 @@ export default function PostScreen() {
     return (
       <View style={styles.container}>
         <Header title="Post" />
-        <PostScreenPlaceholder />
+        <Loading
+          size="large"
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        />
       </View>
     );
   }
@@ -100,11 +102,6 @@ export default function PostScreen() {
         showsVerticalScrollIndicator={false}
         refreshing={postThreadQuery.isFetching}
         onRefresh={postThreadQuery.refetch}
-        removeClippedSubviews
-        windowSize={9}
-        initialNumToRender={5}
-        maxToRenderPerBatch={isIOS ? 5 : 1}
-        updateCellsBatchingPeriod={40}
         onEndReachedThreshold={3} // number of posts left to trigger load more
         contentContainerStyle={{
           paddingBottom: tabBarHeight,

@@ -9,7 +9,6 @@ import {
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { useAuth } from "@/contexts/AuthContext";
-import { Image } from "expo-image";
 import { Text, View, VStack } from "@/components/ui";
 import { Colors } from "@/constants/colors";
 import { useSettings } from "@/contexts/SettingsContext";
@@ -18,6 +17,7 @@ import { ChevronDown } from "lucide-react-native";
 import { Trans } from "@lingui/react/macro";
 import { t } from "@lingui/core/macro";
 import { useI18n } from "@/contexts/I18nProvider";
+import FastImage from "react-native-fast-image";
 
 export default function LoginScreen() {
   const { login } = useAuth();
@@ -79,10 +79,10 @@ export default function LoginScreen() {
         >
           <View className="justify-center border-gray-500 rounded-md  md:w-96 md:border md:p-4 mx-10 web:self-center">
             <VStack className="items-center mb-10">
-              <Image
+              <FastImage
                 source={require("../../../assets/images/icon.png")}
                 style={styles.logo}
-                contentFit="contain"
+                resizeMode="contain"
               />
               <Text size="xl" font="bold">
                 <Trans>Welcome to Sky</Trans>

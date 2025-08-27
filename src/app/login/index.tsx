@@ -17,7 +17,7 @@ import { ChevronDown } from "lucide-react-native";
 import { Trans } from "@lingui/react/macro";
 import { t } from "@lingui/core/macro";
 import { useI18n } from "@/contexts/I18nProvider";
-import FastImage from "react-native-fast-image";
+import { Image } from "@/components/ui";
 
 export default function LoginScreen() {
   const { login } = useAuth();
@@ -79,10 +79,10 @@ export default function LoginScreen() {
         >
           <View className="justify-center border-gray-500 rounded-md  md:w-96 md:border md:p-4 mx-10 web:self-center">
             <VStack className="items-center mb-10">
-              <FastImage
+              <Image
                 source={require("../../../assets/images/icon.png")}
                 style={styles.logo}
-                resizeMode="contain"
+                contentFit="contain"
               />
               <Text size="xl" font="bold">
                 <Trans>Welcome to Sky</Trans>

@@ -1,12 +1,11 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Pressable } from "react-native";
 import { EmbedImage } from "@/types/embed";
-// import { Image } from "expo-image";
 import { useResponsiveWidth } from "@/hooks/useResponsiveWidth";
 import { router, useFocusEffect } from "expo-router";
-import Transition from "react-native-screen-transitions";
+// import Transition from "react-native-screen-transitions";
 import { useLightBoxOpen } from "@/store/lightBox";
-import FastImage from "react-native-fast-image";
+import { Image } from "@/components/ui";
 interface ImageEmbedProps {
   images: EmbedImage[];
   isDetailView?: boolean;
@@ -32,7 +31,7 @@ function ImageShareTransition({
   );
 
   return (
-    <Transition.Pressable
+    <Pressable
       onPress={() => {
         setTimeout(() => {
           setIsViewing(true);
@@ -45,18 +44,18 @@ function ImageShareTransition({
           // aspectRatio: dimensions.width / dimensions.height,
         }
       }
-      sharedBoundTag={sharedBoundTag}
+      // sharedBoundTag={sharedBoundTag}
     >
       {isViewing ? (
         <View style={[styles.singleImage, dimensions]} />
       ) : (
-        <FastImage
-          source={{ uri: image.fullsize, priority: FastImage.priority.normal }}
+        <Image
+          source={{ uri: image.fullsize }}
           style={[styles.singleImage, dimensions]}
-          resizeMode="cover"
+          contentFit="cover"
         />
       )}
-    </Transition.Pressable>
+    </Pressable>
   );
 }
 

@@ -1,9 +1,8 @@
 import React, { FunctionComponent } from "react";
 import { View } from "react-native";
 import { HStack, Text, Button } from "@/components/ui";
-import { Image } from "expo-image";
 import { Pen, X as CloseIcon } from "lucide-react-native";
-import FastImage from "react-native-fast-image";
+import { Image } from "@/components/ui/Image";
 
 interface ComposerImagePreviewProps {
   images: { uri: string; alt?: string }[];
@@ -32,11 +31,11 @@ export const ComposerImagePreview: FunctionComponent<
           }`}
           style={{ maxWidth: maxSize, maxHeight: maxSize, aspectRatio: 1 }}
         >
-          <FastImage
+          <Image
             source={{ uri: img.uri }}
             className="w-full h-full"
             style={{ aspectRatio: 1, borderRadius: 10 }}
-            resizeMode="cover"
+            contentFit="cover"
           />
           {/* Edit and Remove overlays */}
           <Button

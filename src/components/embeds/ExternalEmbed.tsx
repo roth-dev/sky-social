@@ -2,11 +2,10 @@ import React from "react";
 import { TouchableOpacity, StyleSheet, Alert, Linking } from "react-native";
 import { EmbedExternal } from "@/types/embed";
 import { ExternalLink } from "lucide-react-native";
-import { Image } from "expo-image";
 import { Text, View, RichText } from "../ui";
 import { Colors } from "@/constants/colors";
 import { useSettings } from "@/contexts/SettingsContext";
-import FastImage from "react-native-fast-image";
+import { Image } from "@/components/ui";
 
 interface ExternalEmbedProps {
   external?: EmbedExternal;
@@ -136,13 +135,10 @@ export function ExternalEmbed({
     >
       {!!external.thumb && isValidImageUrl(external.thumb) && (
         <View style={styles.imageContainer}>
-          <FastImage
+          <Image
             source={{ uri: external.thumb }}
             style={[styles.image, isDetailView && styles.detailImage]}
-            resizeMode="cover"
-            // onError={(error) => {
-            //   console.warn("Failed to load thumbnail:", error.error);
-            // }}
+            contentFit="cover"
           />
         </View>
       )}

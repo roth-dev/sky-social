@@ -1,7 +1,6 @@
 import React, { useState, useRef, FunctionComponent } from "react";
 import { View, TouchableOpacity, Text } from "react-native";
 import { VStack } from "@/components/ui";
-import { Image } from "expo-image";
 import {
   Play,
   Pause,
@@ -11,7 +10,7 @@ import {
 import { useVideoPlayer, VideoView } from "expo-video";
 import Svg, { Circle, G } from "react-native-svg";
 import { BlurView } from "expo-blur";
-import FastImage from "react-native-fast-image";
+import { Image } from "@/components/ui";
 
 interface ComposerVideoPreviewProps {
   videoUri: string;
@@ -135,10 +134,10 @@ export const ComposerVideoPreview: FunctionComponent<
         {/* Thumbnail overlay when video is not playing */}
         {!isPlaying && thumbnailUri && (
           <View className="absolute inset-0">
-            <FastImage
+            <Image
               source={{ uri: thumbnailUri }}
               className="w-full h-full"
-              resizeMode="cover"
+              contentFit="cover"
             />
             <View className="absolute inset-0 bg-black/20" />
           </View>

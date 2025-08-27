@@ -10,7 +10,7 @@ import { useSettings } from "@/contexts/SettingsContext";
 import { t } from "@lingui/core/macro";
 import { Trans } from "@lingui/react/macro";
 import { Formater } from "@/lib/format";
-import FastImage from "react-native-fast-image";
+import { Image } from "@/components/ui";
 import { router } from "expo-router";
 
 interface ProfileHeaderProps {
@@ -79,10 +79,10 @@ export function ProfileHeader({
         ]}
       >
         {!!user.banner && (
-          <FastImage
+          <Image
             source={{ uri: user.banner }}
             style={styles.bannerImage}
-            resizeMode="cover"
+            contentFit="cover"
           />
         )}
         <View style={styles.coverOverlay} />

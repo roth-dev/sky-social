@@ -98,7 +98,7 @@ export function Header({
   disabledLeft,
   onHeightChange,
   renderHeader,
-  disbleTopHeader,
+  disableTopHeader,
   disableSafeArea,
   renderLeft,
   renderRight,
@@ -130,7 +130,7 @@ export function Header({
       }}
       className={cn(isNative && isHome && "pb-3")}
     >
-      {!disbleTopHeader && (
+      {!disableTopHeader && (
         <View className="flex-row items-center justify-between px-4 py-3 web:dark:bg-[#111827]">
           {renderLeft ? (
             renderLeft()

@@ -1,17 +1,19 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, FlatList, Text } from 'react-native';
-import { Header } from '@/components/Header';
-import { SearchHeader } from '@/components/search/SearchHeader';
-import { UserSearchResult } from '@/components/search/UserSearchResult';
-import { EmptyState, LoadingState } from '@/components/placeholders/EmptyState';
-import { useSearchActors, useSuggestedFollows } from '@/lib/queries';
-import { SearchActor } from '@/types/search';
-import { ArrowLeft } from 'lucide-react-native';
-import { router } from 'expo-router';
+import React, { useCallback, useState } from "react";
+import { StyleSheet, Text } from "react-native";
+import { Header } from "@/components/Header";
+import { SearchHeader } from "@/components/search/SearchHeader";
+import { UserSearchResult } from "@/components/search/UserSearchResult";
+import { EmptyState, LoadingState } from "@/components/placeholders/EmptyState";
+import { SearchActor } from "@/types/search";
+import { ArrowLeft } from "lucide-react-native";
+import { router } from "expo-router";
+import { useSearchActors, useSuggestedFollows } from "@/hooks/query";
+import { List } from "@/components/list";
+import { View } from "@/components/ui";
 
 export default function PeopleListScreen() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [debouncedQuery, setDebouncedQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
 
   // Search queries
   const searchActorsQuery = useSearchActors(debouncedQuery);
@@ -31,23 +33,27 @@ export default function PeopleListScreen() {
   };
 
   const handleClearSearch = () => {
-    setSearchQuery('');
-    setDebouncedQuery('');
+    setSearchQuery("");
+    setDebouncedQuery("");
   };
 
-  const handleLoadMore = () => {
-    if (searchActorsQuery.hasNextPage && !searchActorsQuery.isFetchingNextPage) {
+  const handleLoadMore = useCallback(() => {
+    if (
+      searchActorsQuery.hasNextPage &&
+      !searchActorsQuery.isFetchingNextPage
+    ) {
       searchActorsQuery.fetchNextPage();
     }
-  };
+  }, [searchActorsQuery]);
 
-  const renderUserItem = ({ item }: { item: SearchActor }) => (
-    <UserSearchResult user={item} />
+  const renderUserItem = useCallback(
+    ({ item }: { item: SearchActor }) => <UserSearchResult user={item} />,
+    []
   );
 
   const renderLoadingFooter = () => {
     if (!searchActorsQuery.isFetchingNextPage) return null;
-    
+
     return (
       <View style={styles.loadingFooter}>
         <View style={styles.loadingSpinner} />
@@ -59,7 +65,7 @@ export default function PeopleListScreen() {
   const renderEmptyState = () => {
     if (searchActorsQuery.isLoading) {
       return (
-        <LoadingState 
+        <LoadingState
           message="Searching for people..."
           style={styles.emptyState}
         />
@@ -90,7 +96,7 @@ export default function PeopleListScreen() {
   // Get data based on search state
   const getData = () => {
     if (debouncedQuery.trim().length > 0) {
-      return searchActorsQuery.data?.pages.flatMap(page => page.actors) || [];
+      return searchActorsQuery.data?.pages.flatMap((page) => page.actors) || [];
     }
     return suggestedFollowsQuery.data?.actors || [];
   };
@@ -106,13 +112,9 @@ export default function PeopleListScreen() {
   const loading = getLoading();
 
   return (
-    <View style={styles.container}>
-      <Header
-        title="People"
-        leftIcon={<ArrowLeft size={24} color="#111827" />}
-        onLeftPress={() => router.back()}
-      />
-      
+    <View className="flex-1">
+      <Header title="People" />
+
       <SearchHeader
         query={searchQuery}
         onQueryChange={handleQueryChange}
@@ -121,34 +123,24 @@ export default function PeopleListScreen() {
         autoFocus={false}
       />
 
-      <FlatList
+      <List
         data={data}
         renderItem={renderUserItem}
         keyExtractor={(item) => item.did}
-        style={styles.list}
-        contentContainerStyle={data.length === 0 ? styles.emptyContainer : undefined}
+        contentContainerStyle={
+          data.length === 0 ? styles.emptyContainer : undefined
+        }
         showsVerticalScrollIndicator={false}
         onEndReached={handleLoadMore}
-        onEndReachedThreshold={0.3}
+        onEndReachedThreshold={1.5}
         ListEmptyComponent={renderEmptyState}
         ListFooterComponent={renderLoadingFooter}
-        removeClippedSubviews={true}
-        maxToRenderPerBatch={10}
-        windowSize={10}
-        initialNumToRender={5}
       />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-  },
-  list: {
-    flex: 1,
-  },
   emptyContainer: {
     flex: 1,
   },
@@ -157,8 +149,7 @@ const styles = StyleSheet.create({
   },
   loadingFooter: {
     paddingVertical: 20,
-    alignItems: 'center',
-    backgroundColor: '#ffffff',
+    alignItems: "center",
     gap: 8,
   },
   loadingSpinner: {
@@ -166,12 +157,12 @@ const styles = StyleSheet.create({
     height: 24,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: '#e5e7eb',
-    borderTopColor: '#3b82f6',
+    borderColor: "#e5e7eb",
+    borderTopColor: "#3b82f6",
   },
   loadingText: {
     fontSize: 14,
-    color: '#6b7280',
-    fontWeight: '500',
+    color: "#6b7280",
+    fontWeight: "500",
   },
 });

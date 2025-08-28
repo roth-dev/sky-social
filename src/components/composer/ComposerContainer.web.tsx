@@ -13,7 +13,6 @@ export default function ComposerContainer({
     >
       <View
         className={cn(
-          "main-content-desktop",
           "w-[550px] h-[400px] bg-white mt-12 border dark:border-gray-700 border-gray-300 rounded-md"
         )}
       >

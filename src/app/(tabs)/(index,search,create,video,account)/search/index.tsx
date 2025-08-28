@@ -15,6 +15,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useSearchActors, useSearchPosts } from "@/hooks/query";
 import { Colors } from "@/constants/colors";
 import { useSettings } from "@/contexts/SettingsContext";
+import { Header } from "@/components/Header";
 
 export default function SearchScreen() {
   const { q } = useLocalSearchParams<{ q: string }>();
@@ -183,6 +184,7 @@ export default function SearchScreen() {
         backgroundColor: Colors.background.primary[colorScheme],
       }}
     >
+      <Header title="Search" disabledLeft />
       <View className="flex-1 bg-white">
         <SearchHeader
           query={searchState.query}

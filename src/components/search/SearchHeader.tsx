@@ -37,7 +37,7 @@ export function SearchHeader({
           autoCorrect={false}
           autoCapitalize="none"
           returnKeyType="search"
-          className="flex-1 text-md h-12 dark:text-white"
+          className="flex-1 text-md h-12 dark:text-white focus:outline-none"
         />
         {query.length > 0 && (
           <TouchableOpacity onPress={onClear} style={styles.clearButton}>

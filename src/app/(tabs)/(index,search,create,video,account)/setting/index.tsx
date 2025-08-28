@@ -118,7 +118,7 @@ export default function SettingsScreen() {
 
   return (
     <View className="flex-1">
-      {Platform.OS !== "web" && <Header title={t`Settings`} />}
+      <Header title={t`Settings`} disabledLeft />
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* User Profile Section */}

@@ -47,15 +47,17 @@ export function ProfileHeader({
   }, []);
 
   const handleFollowingPress = useCallback(() => {
-    router.push(
-      `/(modal)/followers?handle=${user.handle}&initialTab=following`
-    );
+    router.push({
+      pathname: `/people/${user.handle}`,
+      params: { initialTab: "following" },
+    });
   }, [user.handle]);
 
   const handleFollowersPress = useCallback(() => {
-    router.push(
-      `/(modal)/followers?handle=${user.handle}&initialTab=followers`
-    );
+    router.push({
+      pathname: `/people/${user.handle}`,
+      params: { initialTab: "followers" },
+    });
   }, [user.handle]);
 
   return (

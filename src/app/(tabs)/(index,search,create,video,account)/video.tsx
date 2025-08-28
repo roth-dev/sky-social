@@ -35,7 +35,6 @@ function VideoFeedItem({
   onUserPress,
 }: VideoFeedItemProps) {
   const videoEmbed = item.post.embed;
-
   if (!videoEmbed) return null;
 
   return (
@@ -92,6 +91,7 @@ export default function VideoScreen() {
   }, [videoFeedQuery.data]);
 
   const onItemSeen = useCallback((item: ATFeedItem) => {
+    console.log("Video seen:", item.post.uri);
     setSeenItem(item);
   }, []);
 
@@ -227,13 +227,13 @@ export default function VideoScreen() {
         ref={listRef}
         data={videoFeed}
         renderItem={renderVideoItem}
-        keyExtractor={(item, index) => {
+        keyExtractor={(item) => {
           return item.key;
         }}
         pagingEnabled
         showsVerticalScrollIndicator={false}
-        onEndReached={handleLoadMore}
         onItemSeen={onItemSeen}
+        onEndReached={handleLoadMore}
         onEndReachedThreshold={0.1}
         useScrollDetector={isMobileWeb}
       />

@@ -1,11 +1,12 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { View, StyleSheet, Pressable } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { EmbedImage } from "@/types/embed";
 import { useResponsiveWidth } from "@/hooks/useResponsiveWidth";
 import { router, useFocusEffect } from "expo-router";
-// import Transition from "react-native-screen-transitions";
+import Transition from "react-native-screen-transitions";
 import { useLightBoxOpen } from "@/store/lightBox";
 import { Image } from "@/components/ui";
+import { isNative } from "@/platform";
 interface ImageEmbedProps {
   images: EmbedImage[];
   isDetailView?: boolean;
@@ -22,7 +23,6 @@ function ImageShareTransition({
   dimensions: { width: number; height: number };
 }) {
   const [isViewing, setIsViewing] = useState(false);
-  const sharedBoundTag = `post-${image.fullsize}`;
 
   useFocusEffect(
     useCallback(() => {
@@ -30,32 +30,41 @@ function ImageShareTransition({
     }, [])
   );
 
+  if (isNative) {
+    const sharedBoundTag = `post-${image.fullsize}`;
+    return (
+      <Transition.Pressable
+        onPress={() => {
+          setTimeout(() => {
+            setIsViewing(true);
+          }, 300);
+          onPress();
+        }}
+        style={{
+          alignSelf: "stretch",
+          aspectRatio: dimensions.width / dimensions.height,
+        }}
+        sharedBoundTag={sharedBoundTag}
+      >
+        {isViewing ? (
+          <View style={[styles.singleImage, dimensions]} />
+        ) : (
+          <Image
+            source={{ uri: image.fullsize }}
+            style={[styles.singleImage, dimensions]}
+            contentFit="cover"
+          />
+        )}
+      </Transition.Pressable>
+    );
+  }
+
   return (
-    <Pressable
-      onPress={() => {
-        setTimeout(() => {
-          setIsViewing(true);
-        }, 300);
-        onPress();
-      }}
-      style={
-        {
-          // alignSelf: "stretch",
-          // aspectRatio: dimensions.width / dimensions.height,
-        }
-      }
-      // sharedBoundTag={sharedBoundTag}
-    >
-      {isViewing ? (
-        <View style={[styles.singleImage, dimensions]} />
-      ) : (
-        <Image
-          source={{ uri: image.fullsize }}
-          style={[styles.singleImage, dimensions]}
-          contentFit="cover"
-        />
-      )}
-    </Pressable>
+    <Image
+      source={{ uri: image.fullsize }}
+      style={[styles.singleImage, dimensions]}
+      contentFit="cover"
+    />
   );
 }
 
@@ -170,10 +179,6 @@ export function ImageEmbed({ images, isDetailView = false }: ImageEmbedProps) {
       setTimeout(() => {
         router.push({
           pathname: "/viewer/image-post",
-          // params: {
-          //   uri: images[index].fullsize,
-          //   shareId: `post-${images[index].fullsize}`,
-          // },
         });
       }, 50); // slight delay to ensure state is set before navigation
     },

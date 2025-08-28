@@ -6,7 +6,7 @@ import { Settings } from "lucide-react-native";
 import { Colors } from "@/constants/colors";
 import { useSettings } from "@/contexts/SettingsContext";
 import LoginScreen from "@/app/login";
-import { isNative } from "@/platform";
+import { isMobileWeb, isNative } from "@/platform";
 
 export default function Screen() {
   const { user } = useAuth();
@@ -22,7 +22,7 @@ export default function Screen() {
               title={user.displayName ? `${user.handle}` : ""}
               disabledLeft
               rightIcon={
-                isNative ? (
+                isNative || isMobileWeb ? (
                   <Settings size={24} color={Colors.inverted[colorScheme]} />
                 ) : null
               }

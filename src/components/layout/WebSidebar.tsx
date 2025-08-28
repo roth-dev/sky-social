@@ -1,13 +1,11 @@
 import React from "react";
 import { TouchableOpacity } from "react-native";
-import { Link, router, usePathname } from "expo-router";
+import { router, usePathname } from "expo-router";
 import { useAuth } from "@/contexts/AuthContext";
 import { Avatar } from "@/components/ui/Avatar";
-import { Button } from "@/components/ui/Button";
 import {
   Home,
   Search,
-  SquarePlus as PlusSquare,
   User,
   LogOut,
   Settings,
@@ -15,19 +13,18 @@ import {
 } from "lucide-react-native";
 import { Text, View } from "../ui";
 import { cn } from "@/lib/utils";
-import { t } from "@lingui/core/macro";
 import { Trans } from "@lingui/react/macro";
 
 const NAVIGATION_ITEMS = [
   { key: "/", label: "Home", icon: Home },
-  // { key: "/search", label: "Search", icon: Search },
+  { key: "/search", label: "Discover", icon: Search },
   // { key: "/create", label: "New Post", icon: PlusSquare, requiresAuth: true },
   {
     key: "/video",
     label: "Video",
     icon: Video,
   },
-  { key: "/account", label: "Account", icon: User, requiresAuth: true },
+  { key: "/account", label: "Profile", icon: User, requiresAuth: true },
   { key: "/setting", label: "Settings", icon: Settings },
 ];
 
@@ -43,10 +40,6 @@ export default function WebSidebar() {
     router.push(path);
   };
 
-  const handleLogin = () => {
-    router.push("/login");
-  };
-
   const handleLogout = () => {
     logout();
     router.replace("/login");
@@ -58,105 +51,87 @@ export default function WebSidebar() {
     }
     return pathname.includes(path);
   };
-
   return (
-    <View className="sidebar-desktop p-5 justify-between">
-      {/* Logo/Brand */}
-      <Link href="/(tabs)/(index)">
-        <View className="py-4 px-2 mb-5">
-          <Text font="bold" size="2xl" className="text-blue-500">
-            Sky Social
-          </Text>
-        </View>
-      </Link>
-
-      {/* Navigation */}
-      <View className="flex-1 space-y-1">
-        {NAVIGATION_ITEMS.map((item) => {
-          const IconComponent = item.icon;
-          const isActive = isActivePath(item.key);
-          const shouldShow = !item.requiresAuth || isAuthenticated;
-
-          if (!shouldShow && item.requiresAuth) return null;
-
-          return (
-            <TouchableOpacity
-              key={item.key}
-              className={cn(
-                "flex-row items-center py-3 px-4 rounded-full gap-4 dark:hover:bg-gray-800 hover:bg-gray-100",
-                isActive && "bg-blue-50 dark:bg-[#1f2937]"
-              )}
-              onPress={() => handleNavigation(item.key, item.requiresAuth)}
-            >
-              <IconComponent
-                size={24}
-                color={isActive ? "#1d4ed8" : "#6b7280"}
-              />
-              <Text
-                size="lg"
-                font="semiBold"
-                className={cn(
-                  isActive ? "text-blue-700" : "dark:text-white text-gray-600"
-                )}
+    <View className="p-5 w-[29%] border-r dark:border-gray-700 border-gray-300 items-end md:flex hidden">
+      <View className="lg:w-72 flex-1">
+        {/* User Section */}
+        {isAuthenticated && user && (
+          <View className="py-5">
+            <View className="flex-row items-center gap-3" darkColor="none">
+              <TouchableOpacity
+                className="flex-1 flex-row items-center gap-3 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
+                onPress={() => router.push("/account")}
               >
-                {item.label}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
+                <Avatar
+                  uri={user.avatar}
+                  size="medium"
+                  fallbackText={user.displayName || user.handle}
+                />
+                <View className="flex-1" darkColor="none">
+                  <Text
+                    className="text-base font-semibold text-gray-900"
+                    numberOfLines={1}
+                  >
+                    {user.displayName || user.handle}
+                  </Text>
+                  <Text className="text-sm text-gray-500" numberOfLines={1}>
+                    @{user.handle}
+                  </Text>
+                </View>
+              </TouchableOpacity>
 
-      {/* User Section */}
-      <View className="pt-5 border-t border-gray-500">
-        {isAuthenticated && user ? (
-          <View className="flex-row items-center gap-3">
-            <TouchableOpacity
-              className="flex-1 flex-row items-center gap-3 p-2 rounded-xl"
-              onPress={() => router.push("/account")}
-            >
-              <Avatar
-                uri={user.avatar}
-                size="medium"
-                fallbackText={user.displayName || user.handle}
-              />
-              <View className="flex-1">
-                <Text
-                  className="text-base font-semibold text-gray-900"
-                  numberOfLines={1}
-                >
-                  {user.displayName || user.handle}
-                </Text>
-                <Text className="text-sm text-gray-500" numberOfLines={1}>
-                  @{user.handle}
-                </Text>
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity className="p-2 rounded-lg" onPress={handleLogout}>
-              <LogOut size={20} color="#6b7280" />
-            </TouchableOpacity>
-          </View>
-        ) : (
-          <View className="space-y-3">
-            <Text className="text-base text-gray-700 text-center">
-              <Trans>Join the conversation</Trans>
-            </Text>
-            <Button
-              title={t`Sign In`}
-              onPress={handleLogin}
-              variant="primary"
-              size="medium"
-              className="w-full"
-            />
+              <TouchableOpacity
+                className="p-2 rounded-lg"
+                onPress={handleLogout}
+              >
+                <LogOut size={20} color="#6b7280" />
+              </TouchableOpacity>
+            </View>
           </View>
         )}
-      </View>
 
-      {/* Footer */}
-      <View className="pt-4 items-center">
-        <Text className="text-xs text-gray-400">
-          <Trans>Powered by AT Protocol</Trans>
-        </Text>
+        {/* Navigation */}
+        <View className="flex-1 space-y-1">
+          {NAVIGATION_ITEMS.map((item) => {
+            const IconComponent = item.icon;
+            const isActive = isActivePath(item.key);
+            const shouldShow = !item.requiresAuth || isAuthenticated;
+
+            if (!shouldShow && item.requiresAuth) return null;
+
+            return (
+              <TouchableOpacity
+                key={item.key}
+                className={cn(
+                  "flex-row items-center py-3 px-4 rounded-full gap-4 dark:hover:bg-gray-800 hover:bg-gray-100",
+                  isActive && "bg-blue-50 dark:bg-[#1f2937]"
+                )}
+                onPress={() => handleNavigation(item.key, item.requiresAuth)}
+              >
+                <IconComponent
+                  size={24}
+                  color={isActive ? "#1d4ed8" : "#6b7280"}
+                />
+                <Text
+                  size="lg"
+                  font="semiBold"
+                  className={cn(
+                    isActive ? "text-blue-700" : "dark:text-white text-gray-600"
+                  )}
+                >
+                  {item.label}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+
+        {/* Footer */}
+        <View className="pt-4 items-center">
+          <Text className="text-xs text-gray-400">
+            <Trans>Powered by AT Protocol</Trans>
+          </Text>
+        </View>
       </View>
     </View>
   );

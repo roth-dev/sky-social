@@ -3,92 +3,14 @@ import { TextInput, TouchableOpacity, ScrollView } from "react-native";
 import { Search, X } from "lucide-react-native";
 import { router } from "expo-router";
 import { Text, View, HStack, VStack } from "../ui";
-import { Avatar } from "../ui/Avatar";
 import { Button } from "../ui/Button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSettings } from "@/contexts/SettingsContext";
 import { useSuggestedFollows } from "@/hooks/query";
-import { useFollowProfile } from "@/hooks/mutation";
 import { Colors } from "@/constants/colors";
 import { t } from "@lingui/core/macro";
 import { Trans } from "@lingui/react/macro";
-
-interface SuggestedUserProps {
-  user: {
-    did: string;
-    handle: string;
-    displayName?: string;
-    avatar?: string;
-    description?: string;
-  };
-  onFollow: (did: string) => void;
-  isFollowing: boolean;
-  isLoading: boolean;
-}
-
-function SuggestedUser({
-  user,
-  onFollow,
-  isFollowing,
-  isLoading,
-}: SuggestedUserProps) {
-  const handleFollow = () => {
-    onFollow(user.did);
-  };
-
-  const handleUserPress = () => {
-    router.push(`/profile/${user.handle}`);
-  };
-
-  return (
-    <TouchableOpacity
-      className="flex-row items-start p-3 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-      onPress={handleUserPress}
-    >
-      <Avatar
-        uri={user.avatar}
-        size="medium"
-        fallbackText={user.displayName || user.handle}
-      />
-
-      <VStack darkColor="none" className="flex-1 ml-3">
-        <HStack darkColor="none" className="items-center justify-between">
-          <VStack darkColor="none" className="flex-1">
-            <Text
-              font="semiBold"
-              size="sm"
-              className="text-gray-900 dark:text-white"
-            >
-              {user.displayName || user.handle}
-            </Text>
-            <Text size="sm" className="text-gray-500">
-              @{user.handle}
-            </Text>
-          </VStack>
-
-          <Button
-            title={isFollowing ? "Following" : "Follow"}
-            variant={isFollowing ? "outline" : "primary"}
-            size="small"
-            onPress={handleFollow}
-            disabled={isLoading}
-            className="ml-2"
-          />
-        </HStack>
-
-        {user.description && (
-          <Text
-            size="sm"
-            className="text-gray-600 dark:text-gray-300 mt-1"
-            numberOfLines={2}
-          >
-            {user.description}
-          </Text>
-        )}
-      </VStack>
-    </TouchableOpacity>
-  );
-}
+import { UserSearchResult } from "../search/UserSearchResult";
 
 function SearchBox() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -118,7 +40,7 @@ function SearchBox() {
           onChangeText={setSearchQuery}
           onSubmitEditing={handleSearch}
           returnKeyType="search"
-          className="flex-1 ml-2 py-4 h-5 text-sm dark:text-white"
+          className="flex-1 ml-1 py-4 h-8 text-sm dark:text-white focus:outline-none"
           autoCorrect={false}
           autoCapitalize="none"
         />
@@ -135,20 +57,6 @@ function SearchBox() {
 function SuggestedPeopleSection() {
   const { isAuthenticated } = useAuth();
   const { data: suggestedUsers, isLoading } = useSuggestedFollows();
-  const followMutation = useFollowProfile();
-
-  const handleFollow = (did: string) => {
-    if (!isAuthenticated) {
-      router.push("/login");
-      return;
-    }
-    followMutation.mutate({ did });
-  };
-
-  const isFollowing = () => {
-    // This would need to be implemented based on your following state management
-    return false;
-  };
 
   if (isLoading) {
     return (
@@ -207,8 +115,8 @@ function SuggestedPeopleSection() {
   }
 
   return (
-    <VStack className="p-4  border border-gray-200 dark:border-gray-700 mt-4 rounded-md">
-      <HStack className="items-center justify-between mb-4">
+    <VStack className="py-4  border border-gray-200 dark:border-gray-700 mt-4 rounded-md">
+      <HStack className="items-center justify-between m-4">
         <Text
           font="semiBold"
           size="lg"
@@ -223,45 +131,43 @@ function SuggestedPeopleSection() {
         </TouchableOpacity>
       </HStack>
 
-      <VStack className="space-y-1">
-        {users.slice(0, 10).map((user) => (
-          <SuggestedUser
-            key={user.did}
-            user={user}
-            onFollow={handleFollow}
-            isFollowing={isFollowing()}
-            isLoading={followMutation.isPending}
-          />
-        ))}
-        {!isAuthenticated && (
-          <VStack className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-            <Text
-              size="sm"
-              className="text-blue-600 dark:text-blue-400 text-center"
-            >
-              <Trans>Sign in to follow people and see more suggestions</Trans>
-            </Text>
-          </VStack>
-        )}
-      </VStack>
+      {users.slice(0, 5).map((user) => (
+        <UserSearchResult user={user} key={user.did} />
+      ))}
+
+      {!isAuthenticated && (
+        <VStack className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+          <Text
+            size="sm"
+            className="text-blue-600 dark:text-blue-400 text-center"
+          >
+            <Trans>Sign in to follow people and see more suggestions</Trans>
+          </Text>
+        </VStack>
+      )}
     </VStack>
   );
 }
 
 export default function RightSidebar() {
   return (
-    <View className="flex-1 lg:flex hidden px-4">
-      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-        <SearchBox />
-        <SuggestedPeopleSection />
+    <View className="px-4 w-[35%] hidden lg:flex">
+      <View className="w-96">
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerClassName="flex-1"
+        >
+          <SearchBox />
+          <SuggestedPeopleSection />
 
-        {/* Footer */}
-        <VStack className="p-4 mt-4">
-          <Text size="xs" className="text-gray-500 text-center">
-            © 2025 Sky Social
-          </Text>
-        </VStack>
-      </ScrollView>
+          {/* Footer */}
+          <VStack className="p-4 mt-4">
+            <Text size="xs" className="text-gray-500 text-center">
+              © {new Date().getFullYear()} Sky Social
+            </Text>
+          </VStack>
+        </ScrollView>
+      </View>
     </View>
   );
 }

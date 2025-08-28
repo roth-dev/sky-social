@@ -13,28 +13,31 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/components/profile/ProfileHeader.tsx:138
+#: src/components/profile/ProfileHeader.tsx:140
 msgid "..."
 msgstr ""
 
 #. placeholder {0}: theme.name
 #. placeholder {0}: theme.description
 #. placeholder {0}: item.title
-#: src/app/theme-settings/index.tsx:338
-#: src/app/theme-settings/index.tsx:346
-#: src/app/theme-settings/index.tsx:470
-#: src/app/theme-settings/index.tsx:479
-#: src/app/theme-settings/index.tsx:517
-#: src/app/language-settings/index.tsx:234
-#: src/app/language-settings/index.tsx:300
-#: src/app/app-settings/network.tsx:142
-#: src/app/app-settings/network.tsx:151
-#: src/app/app-settings/network.tsx:189
-#: src/app/app-settings/index.tsx:515
-#: src/app/app-settings/index.tsx:525
-#: src/app/app-settings/index.tsx:576
-#: src/app/account-settings/index.tsx:473
-#: src/app/account-settings/index.tsx:538
+#: src/app/(tabs)/(index,search,create,video,account)/setting/theme-settings/index.tsx:338
+#: src/app/(tabs)/(index,search,create,video,account)/setting/theme-settings/index.tsx:346
+#: src/app/(tabs)/(index,search,create,video,account)/setting/theme-settings/index.tsx:470
+#: src/app/(tabs)/(index,search,create,video,account)/setting/theme-settings/index.tsx:479
+#: src/app/(tabs)/(index,search,create,video,account)/setting/theme-settings/index.tsx:517
+#: src/app/(tabs)/(index,search,create,video,account)/setting/moderation/index.tsx:240
+#: src/app/(tabs)/(index,search,create,video,account)/setting/moderation/index.tsx:249
+#: src/app/(tabs)/(index,search,create,video,account)/setting/moderation/index.tsx:298
+#: src/app/(tabs)/(index,search,create,video,account)/setting/moderation/index.tsx:307
+#: src/app/(tabs)/(index,search,create,video,account)/setting/language-settings/index.tsx:234
+#: src/app/(tabs)/(index,search,create,video,account)/setting/language-settings/index.tsx:300
+#: src/app/(tabs)/(index,search,create,video,account)/setting/home-feed-preferences/index.tsx:241
+#: src/app/(tabs)/(index,search,create,video,account)/setting/home-feed-preferences/index.tsx:250
+#: src/app/(tabs)/(index,search,create,video,account)/setting/home-feed-preferences/index.tsx:286
+#: src/app/(tabs)/(index,search,create,video,account)/setting/home-feed-preferences/index.tsx:295
+#: src/app/(tabs)/(index,search,create,video,account)/setting/app-settings/index.tsx:516
+#: src/app/(tabs)/(index,search,create,video,account)/setting/app-settings/index.tsx:526
+#: src/app/(tabs)/(index,search,create,video,account)/setting/app-settings/index.tsx:577
 msgid "{0}"
 msgstr ""
 
@@ -61,22 +64,22 @@ msgid "About"
 msgstr "អំពី"
 
 #: src/app/moderation/blocked-users.tsx:165
-msgid "About Blocking"
-msgstr ""
+#~ msgid "About Blocking"
+#~ msgstr ""
 
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:57
 msgid "Account"
 msgstr "គនណី"
 
 #: src/app/account-settings/edit-profile.tsx:206
-msgid "Account Information"
-msgstr ""
+#~ msgid "Account Information"
+#~ msgstr ""
 
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:135
 #~ msgid "Account settings"
 #~ msgstr "ការកំណត់គណនី"
 
-#: src/app/account-settings/index.tsx:563
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:409
 msgid "Account Settings"
 msgstr "ការកំណត់គណនី"
 
@@ -89,7 +92,7 @@ msgstr ""
 msgid "Add another account"
 msgstr ""
 
-#: src/app/add-account/index.tsx:115
+#: src/app/(tabs)/(index,search,create,video,account)/setting/add-account/index.tsx:115
 msgid "Add Another Account"
 msgstr ""
 
@@ -102,8 +105,8 @@ msgstr ""
 #~ msgstr "ការកំណត់កម្រិតខ្ពស់"
 
 #: src/app/home-feed-preferences/index.tsx:251
-msgid "Allow mature and adult content to appear in your feed"
-msgstr "អនុញ្ញាតឱ្យខ្លឹមសារមនុស្សពេញវ័យ និងអ្នកពេញវ័យបង្ហាញក្នុងព័ត៌មានរបស់អ្នក"
+#~ msgid "Allow mature and adult content to appear in your feed"
+#~ msgstr "អនុញ្ញាតឱ្យខ្លឹមសារមនុស្សពេញវ័យ និងអ្នកពេញវ័យបង្ហាញក្នុងព័ត៌មានរបស់អ្នក"
 
 #: src/app/login/index.tsx:50
 msgid "An unexpected error occurred"
@@ -113,7 +116,7 @@ msgstr "មានកំហុសដែលមិនបានរំពឹងទុ
 msgid "App settings"
 msgstr ""
 
-#: src/app/app-settings/index.tsx:611
+#: src/app/(tabs)/(index,search,create,video,account)/setting/app-settings/index.tsx:612
 msgid "App Settings"
 msgstr ""
 
@@ -121,33 +124,37 @@ msgstr ""
 #~ msgid "Appearance"
 #~ msgstr "រូបរាង"
 
-#: src/app/theme-settings/index.tsx:647
+#: src/app/(tabs)/(index,search,create,video,account)/setting/theme-settings/index.tsx:647
 msgid "Applying theme..."
 msgstr "កំពុងអនុវត្តរូបរាង..."
 
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:123
+msgid "Are you sure you want to delete your account? This action cannot be undone."
+msgstr ""
+
 #: src/app/home-feed-preferences/index.tsx:110
-msgid "Are you sure you want to reset all feed preferences to their default values?"
-msgstr "តើអ្នកប្រាកដជាចង់កំណត់ចំណូលចិត្តព័ត៌មានទាំងអស់ទៅតម្លៃលំនាំដើមវិញទេ?"
+#~ msgid "Are you sure you want to reset all feed preferences to their default values?"
+#~ msgstr "តើអ្នកប្រាកដជាចង់កំណត់ចំណូលចិត្តព័ត៌មានទាំងអស់ទៅតម្លៃលំនាំដើមវិញទេ?"
 
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:57
 #~ msgid "Are you sure you want to sign out?"
 #~ msgstr "តើ​អ្នក​ប្រាកដ​ជា​ចង់​ចេញ?"
 
-#: src/app/language-settings/index.tsx:406
+#: src/app/(tabs)/(index,search,create,video,account)/setting/language-settings/index.tsx:406
 msgid "Auto-download languages"
 msgstr "ទាញយកភាសាដោយស្វ័យប្រវត្តិ"
 
-#: src/app/language-settings/index.tsx:414
+#: src/app/(tabs)/(index,search,create,video,account)/setting/language-settings/index.tsx:414
 msgid "Automatically download language packs when selected"
 msgstr "ទាញយកកញ្ចប់ភាសាដោយស្វ័យប្រវត្តិនៅពេលត្រូវបានជ្រើសរើស"
 
 #: src/app/account-settings/edit-profile.tsx:167
-msgid "Bio"
-msgstr "ប្រវត្តិរូប"
+#~ msgid "Bio"
+#~ msgstr "ប្រវត្តិរូប"
 
 #: src/app/moderation/blocked-users.tsx:173
-msgid "Blocked users cannot see your posts, follow you, or send you messages. They will not be notified that you have blocked them."
-msgstr "អ្នកប្រើប្រាស់ដែលត្រូវបានចាក់សោមិនអាចមើលការបង្ហោះរបស់អ្នក តាមដានអ្នក ឬផ្ញើសារមកអ្នកបានទេ។ ពួកគេនឹងមិនទទួលបានការជូនដំណឹងថាអ្នកបានចាក់សោពួកគេទេ។"
+#~ msgid "Blocked users cannot see your posts, follow you, or send you messages. They will not be notified that you have blocked them."
+#~ msgstr "អ្នកប្រើប្រាស់ដែលត្រូវបានចាក់សោមិនអាចមើលការបង្ហោះរបស់អ្នក តាមដានអ្នក ឬផ្ញើសារមកអ្នកបានទេ។ ពួកគេនឹងមិនទទួលបានការជូនដំណឹងថាអ្នកបានចាក់សោពួកគេទេ។"
 
 #: src/app/(tabs)/(index,search,create,video,account)/setting.tsx:56
 #: src/app/(tabs)/(index,search,create,video,account)/account/settings.tsx:56
@@ -156,8 +163,9 @@ msgstr "អ្នកប្រើប្រាស់ដែលត្រូវបា
 
 #: src/components/Post.tsx:164
 #: src/components/Post.tsx:175
-#: src/app/home-feed-preferences/index.tsx:112
-#: src/app/account-settings/edit-profile.tsx:253
+#: src/app/(tabs)/(index,search,create,video,account)/setting/home-feed-preferences/index.tsx:100
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:125
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:134
 msgid "Cancel"
 msgstr "បោះបង់"
 
@@ -165,15 +173,24 @@ msgstr "បោះបង់"
 msgid "Cannot Open Link"
 msgstr "មិនអាចបើកតំណបានទេ"
 
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:162
+msgid "Change Email"
+msgstr ""
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:158
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:228
+msgid "Change Password"
+msgstr ""
+
 #: src/app/home-feed-preferences/index.tsx:275
-msgid "Changes to your feed preferences will take effect immediately. Some changes may require refreshing your timeline."
-msgstr "ការផ្លាស់ប្តូរចំណូលចិត្តព័ត៌មានរបស់អ្នកនឹងមានប្រសិទ្ធភាពភ្លាមៗ។ ការផ្លាស់ប្តូរមួយចំនួនអាចត្រូវការផ្ទុក timeline របស់អ្នកឡើងវិញ។"
+#~ msgid "Changes to your feed preferences will take effect immediately. Some changes may require refreshing your timeline."
+#~ msgstr "ការផ្លាស់ប្តូរចំណូលចិត្តព័ត៌មានរបស់អ្នកនឹងមានប្រសិទ្ធភាពភ្លាមៗ។ ការផ្លាស់ប្តូរមួយចំនួនអាចត្រូវការផ្ទុក timeline របស់អ្នកឡើងវិញ។"
 
 #: src/app/account-settings/edit-profile.tsx:268
-msgid "Changes to your profile may take a few minutes to appear throughout the platform."
-msgstr "ការផ្លាស់ប្តូរក្នុងប្រវត្តិរូបរបស់អ្នកអាចចំណាយពេលពីរបីនាទីដើម្បីបង្ហាញពាសពេញបទវេទិកា។"
+#~ msgid "Changes to your profile may take a few minutes to appear throughout the platform."
+#~ msgstr "ការផ្លាស់ប្តូរក្នុងប្រវត្តិរូបរបស់អ្នកអាចចំណាយពេលពីរបីនាទីដើម្បីបង្ហាញពាសពេញបទវេទិកា។"
 
-#: src/app/language-settings/index.tsx:497
+#: src/app/(tabs)/(index,search,create,video,account)/setting/language-settings/index.tsx:497
 msgid "Changing language..."
 msgstr "កំពុងផ្លាស់ប្តូរភាសា..."
 
@@ -182,16 +199,24 @@ msgid "Check your internet connection and try again."
 msgstr "ពិនិត្យការតភ្ជាប់អ៊ីនធឺណិតរបស់អ្នក ហើយព្យាយាមម្តងទៀត"
 
 #: src/app/home-feed-preferences/index.tsx:230
-msgid "Choose how your timeline is organized"
-msgstr "ជ្រើសរើសពីរបៀបរៀបចំ timeline របស់អ្នក"
+#~ msgid "Choose how your timeline is organized"
+#~ msgstr "ជ្រើសរើសពីរបៀបរៀបចំ timeline របស់អ្នក"
 
 #: src/app/home-feed-preferences/index.tsx:235
-msgid "Chronological feed"
-msgstr "ព័ត៌មានតាមលំដាប់ពេលវេលា"
+#~ msgid "Chronological feed"
+#~ msgstr "ព័ត៌មានតាមលំដាប់ពេលវេលា"
 
 #: src/components/profile/UserProfile.tsx:59
 #~ msgid "Coming Soon"
 #~ msgstr ""
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:425
+msgid "Configure your profile, security, and privacy settings"
+msgstr ""
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:136
+msgid "Confirm Delete"
+msgstr ""
 
 #: src/app/login/index.tsx:95
 msgid "Connect with the decentralized social web"
@@ -202,7 +227,11 @@ msgid "Connection Problem"
 msgstr "បញ្ហានៃការតភ្ជាប់"
 
 #: src/app/home-feed-preferences/index.tsx:244
-msgid "Content Filtering"
+#~ msgid "Content Filtering"
+#~ msgstr ""
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/moderation/index.tsx:342
+msgid "Content Moderation"
 msgstr ""
 
 #: src/components/placeholders/EmptyState.tsx:114
@@ -210,16 +239,24 @@ msgid "Content will appear here when available."
 msgstr "ខ្លឹមសារនឹងបង្ហាញនៅទីនេះនៅពេលមាន"
 
 #: src/app/home-feed-preferences/index.tsx:245
-msgid "Control mature and sensitive content"
+#~ msgid "Control mature and sensitive content"
+#~ msgstr ""
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/home-feed-preferences/index.tsx:338
+msgid "Control what appears in your home feed and how it behaves."
 msgstr ""
 
 #: src/app/home-feed-preferences/index.tsx:197
-msgid "Control what content appears in your home timeline"
+#~ msgid "Control what content appears in your home timeline"
+#~ msgstr ""
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/moderation/index.tsx:350
+msgid "Control what content you see and who can interact with you on Sky Social."
 msgstr ""
 
 #: src/app/moderation/index.tsx:448
-msgid "Control your experience by managing content filtering, blocking, and privacy settings"
-msgstr "គ្រប់គ្រងបទពិសោធន៍របស់អ្នកតាមរយៈការគ្រប់គ្រងការត្រងខ្លឹមសារ ការចាក់សោ និងការកំណត់ឯកជនភាព"
+#~ msgid "Control your experience by managing content filtering, blocking, and privacy settings"
+#~ msgstr "គ្រប់គ្រងបទពិសោធន៍របស់អ្នកតាមរយៈការគ្រប់គ្រងការត្រងខ្លឹមសារ ការចាក់សោ និងការកំណត់ឯកជនភាព"
 
 #: src/components/Post.tsx:96
 msgid "Copied"
@@ -238,22 +275,30 @@ msgstr "ចម្លង URL"
 msgid "Current Account"
 msgstr "គណនីបច្ចុប្បន្ន"
 
-#: src/app/language-settings/index.tsx:339
+#: src/app/(tabs)/(index,search,create,video,account)/setting/language-settings/index.tsx:339
 msgid "Current Language"
 msgstr "ភាសាបច្ចុប្បន្ន"
 
-#: src/app/theme-settings/index.tsx:556
+#: src/app/(tabs)/(index,search,create,video,account)/setting/theme-settings/index.tsx:556
 msgid "Current Theme"
 msgstr "រូបរាងបច្ចុប្បន្ន"
 
-#: src/app/add-account/index.tsx:131
+#: src/app/(tabs)/(index,search,create,video,account)/setting/add-account/index.tsx:131
 msgid "Currently signed in as:"
 msgstr "បច្ចុប្បន្នបានចូលជា៖"
 
 #. placeholder {0}: systemTheme === "dark" ? "Dark" : "Light"
-#: src/app/theme-settings/index.tsx:355
+#: src/app/(tabs)/(index,search,create,video,account)/setting/theme-settings/index.tsx:355
 msgid "Currently: {0}"
 msgstr "បច្ចុប្បន្ន៖ {0}"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/home-feed-preferences/index.tsx:330
+msgid "Customize Your Feed"
+msgstr ""
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:333
+msgid "Danger Zone"
+msgstr ""
 
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:274
 #~ msgid "dark"
@@ -264,7 +309,21 @@ msgstr "បច្ចុប្បន្ន៖ {0}"
 #~ msgid "Dark"
 #~ msgstr "ងងឹត"
 
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:305
+msgid "Data Management"
+msgstr ""
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:127
+msgid "Delete"
+msgstr ""
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:122
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:337
+msgid "Delete Account"
+msgstr ""
+
 #: src/components/search/TrendingSection.tsx:116
+#: src/components/layout/WebSidebar.tsx:25
 msgid "Discover"
 msgstr "ស្វែងរក"
 
@@ -277,25 +336,32 @@ msgid "Discover posts from the decentralized social web. Sign in to interact wit
 msgstr "ស្វែងរកការបង្ហោះពីគេហទំព័រសង្គម Decentralized។ ចូល​ដើម្បី​ធ្វើ​អន្តរកម្ម​ជាមួយ​ការ​បង្ហោះ និង​មើល timeline​ ផ្ទាល់ខ្លួន​របស់​អ្នក។"
 
 #: src/app/account-settings/edit-profile.tsx:135
-msgid "Display Name"
-msgstr "ឈ្មោះបង្ហាញ"
+#~ msgid "Display Name"
+#~ msgstr "ឈ្មោះបង្ហាញ"
 
 #: src/app/login/index.tsx:126
 msgid "Don't have a Bluesky account? Create one at"
 msgstr "មិនទាន់មានគណនី Bluesky? បង្កើតនៅលើ"
 
 #: src/app/home-feed-preferences/index.tsx:203
-msgid "Don't show replies to posts in your timeline"
-msgstr "កុំបង្ហាញការឆ្លើយតបទៅនឹងការបង្ហោះក្នុង timeline របស់អ្នក"
+#~ msgid "Don't show replies to posts in your timeline"
+#~ msgstr "កុំបង្ហាញការឆ្លើយតបទៅនឹងការបង្ហោះក្នុង timeline របស់អ្នក"
 
 #: src/app/home-feed-preferences/index.tsx:212
-msgid "Don't show reposts in your timeline"
-msgstr "កុំបង្ហាញការបង្ហោះឡើងវិញក្នុង timeline របស់អ្នក"
+#~ msgid "Don't show reposts in your timeline"
+#~ msgstr "កុំបង្ហាញការបង្ហោះឡើងវិញក្នុង timeline របស់អ្នក"
 
-#: src/components/profile/ProfileHeader.tsx:123
-#: src/app/account-settings/edit-profile.tsx:68
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:310
+msgid "Download a copy of your data"
+msgstr ""
+
+#: src/components/profile/ProfileHeader.tsx:125
 msgid "Edit Profile"
 msgstr "កែសម្រួលប្រវត្តិរូប"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:200
+msgid "Email"
+msgstr ""
 
 #: src/app/login/index.tsx:141
 #: src/app/login/index.tsx:154
@@ -314,8 +380,10 @@ msgstr "បញ្ចូលពាក្យស្វែងរកដើម្បី
 msgid "Enter your password"
 msgstr "បញ្ចូលពាក្យសម្ងាត់របស់អ្នក"
 
-#: src/app/home-feed-preferences/index.tsx:54
-#: src/app/home-feed-preferences/index.tsx:98
+#: src/app/(tabs)/(index,search,create,video,account)/setting/home-feed-preferences/index.tsx:88
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:89
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:116
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:145
 msgid "Error"
 msgstr "កំហុស"
 
@@ -323,29 +391,49 @@ msgstr "កំហុស"
 #~ msgid "Explore feeds"
 #~ msgstr "រុករកព័ត៌មាន"
 
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:309
+msgid "Export Data"
+msgstr ""
+
 #: src/components/composer/Composer.tsx:206
 #~ msgid "Failed to create post"
 #~ msgstr "បរាជ័យក្នុងការបង្កើតសារបង្ហោះ"
 
-#: src/app/home-feed-preferences/index.tsx:55
-msgid "Failed to load your feed preferences. Please try again."
-msgstr "បរាជ័យក្នុងការផ្ទុកចំណូលចិត្តព័ត៌មានរបស់អ្នក។ សូមព្យាយាមម្តងទៀត។"
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:145
+msgid "Failed to delete account"
+msgstr ""
 
-#: src/app/home-feed-preferences/index.tsx:99
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:116
+msgid "Failed to export your data"
+msgstr ""
+
+#: src/app/home-feed-preferences/index.tsx:55
+#~ msgid "Failed to load your feed preferences. Please try again."
+#~ msgstr "បរាជ័យក្នុងការផ្ទុកចំណូលចិត្តព័ត៌មានរបស់អ្នក។ សូមព្យាយាមម្តងទៀត។"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:89
+msgid "Failed to save notification settings"
+msgstr ""
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/home-feed-preferences/index.tsx:89
 msgid "Failed to save your feed preferences. Please try again."
 msgstr "បរាជ័យក្នុងការរក្សាទុកចំណូលចិត្តព័ត៌មានរបស់អ្នក។ សូមព្យាយាមម្តងទៀត។"
 
 #: src/app/home-feed-preferences/index.tsx:196
-msgid "Feed Content"
-msgstr "ខ្លឹមសារព័ត៌មាន"
+#~ msgid "Feed Content"
+#~ msgstr "ខ្លឹមសារព័ត៌មាន"
 
 #: src/app/home-feed-preferences/index.tsx:229
-msgid "Feed Ordering"
-msgstr "ការរៀបចំព័ត៌មាន"
+#~ msgid "Feed Ordering"
+#~ msgstr "ការរៀបចំព័ត៌មាន"
 
 #: src/app/(tabs)/(index,search,create,video,account)/index.tsx:73
 msgid "Feeds"
 msgstr "ហ្វីត"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:131
+msgid "Final Confirmation"
+msgstr ""
 
 #: src/components/search/TrendingSection.tsx:187
 #~ msgid "Find custom feeds created by the community"
@@ -359,7 +447,7 @@ msgstr "ស្វែងរកមនុស្សគួរឱ្យចាប់អ
 #~ msgid "Find people"
 #~ msgstr "ស្វែងរកអ្នកប្រើប្រាស់ផ្សេងទៀត"
 
-#: src/components/profile/ProfileHeader.tsx:141
+#: src/components/profile/ProfileHeader.tsx:143
 msgid "Follow"
 msgstr "តាម"
 
@@ -367,12 +455,12 @@ msgstr "តាម"
 msgid "Follow people to see their posts in your timeline. Discover new accounts in the search tab!"
 msgstr "តាមដានអ្នកប្រើប្រាស់ផ្សេងទៀតដើម្បីមើលការបង្ហោះរបស់ពួកគេនៅក្នុង timeline របស់អ្នក។ ស្វែងរកគណនីថ្មីនៅក្នុងផ្ទាំងស្វែងរក"
 
-#: src/components/profile/ProfileHeader.tsx:196
+#: src/components/profile/ProfileHeader.tsx:198
 msgid "Followers"
 msgstr "អ្នកតាម"
 
-#: src/components/profile/ProfileHeader.tsx:140
-#: src/components/profile/ProfileHeader.tsx:184
+#: src/components/profile/ProfileHeader.tsx:142
+#: src/components/profile/ProfileHeader.tsx:186
 #: src/app/(tabs)/(index,search,create,video,account)/index.tsx:67
 msgid "Following"
 msgstr "កំពុងតាម"
@@ -381,7 +469,7 @@ msgstr "កំពុងតាម"
 msgid "For You"
 msgstr "សម្រាប់អ្នក"
 
-#: src/app/account-settings/edit-profile.tsx:215
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:192
 msgid "Handle"
 msgstr "ឈ្មោះគណនី"
 
@@ -389,33 +477,41 @@ msgstr "ឈ្មោះគណនី"
 #~ msgstr "សួស្តី"
 
 #: src/app/home-feed-preferences/index.tsx:202
-msgid "Hide replies"
-msgstr "លាក់ការឆ្លើយតប"
+#~ msgid "Hide replies"
+#~ msgstr "លាក់ការឆ្លើយតប"
 
 #: src/app/home-feed-preferences/index.tsx:211
-msgid "Hide reposts"
-msgstr "លាក់ការបង្ហោះឡើងវិញ"
+#~ msgid "Hide reposts"
+#~ msgstr "លាក់ការបង្ហោះឡើងវិញ"
+
+#: src/components/layout/WebSidebar.tsx:24
+msgid "Home"
+msgstr "ទំព័រដើម"
 
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:71
 msgid "Home feed preferences"
 msgstr "ចំណូលចិត្តព័ត៌មានផ្ទះ"
 
-#: src/app/home-feed-preferences/index.tsx:173
-#: src/app/home-feed-preferences/index.tsx:187
+#: src/app/(tabs)/(index,search,create,video,account)/setting/home-feed-preferences/index.tsx:321
 msgid "Home Feed Preferences"
 msgstr "ការកំណត់ចំណូលចិត្តព័ត៌មានផ្ទះ"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:319
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:325
+msgid "Import Data"
+msgstr ""
 
 #: src/components/Post.tsx:147
 msgid "Invalid URL"
 msgstr "URL មិនត្រឹមត្រូវ"
 
 #: src/components/layout/WebSidebar.tsx:142
-msgid "Join the conversation"
-msgstr "ចូលរួមការសន្ទនា"
+#~ msgid "Join the conversation"
+#~ msgstr "ចូលរួមការសន្ទនា"
 
 #: src/app/account-settings/index.tsx:631
-msgid "Keep your account secure by enabling two-factor authentication and using a strong password."
-msgstr "រក្សាគណនីរបស់អ្នកឱ្យមានសុវត្ថិភាពដោយបើកអនុញ្ញាតការផ្ទៀងផ្ទាត់ពីរដំណាក់កាល និងប្រើពាក្យសម្ងាត់ខ្លាំង។"
+#~ msgid "Keep your account secure by enabling two-factor authentication and using a strong password."
+#~ msgstr "រក្សាគណនីរបស់អ្នកឱ្យមានសុវត្ថិភាពដោយបើកអនុញ្ញាតការផ្ទៀងផ្ទាត់ពីរដំណាក់កាល និងប្រើពាក្យសម្ងាត់ខ្លាំង។"
 
 #: src/app/login/index.tsx:145
 msgid "Khmer"
@@ -426,11 +522,11 @@ msgstr "ខ្មែរ"
 #~ msgid "Language"
 #~ msgstr "ភាសា"
 
-#: src/app/language-settings/index.tsx:480
+#: src/app/(tabs)/(index,search,create,video,account)/setting/language-settings/index.tsx:480
 msgid "Language changes take effect immediately. Some content may require app restart to display in the new language."
 msgstr "ការផ្លាស់ប្តូរភាសាមានប្រសិទ្ធភាពភ្លាមៗ។ ខ្លឹមសារមួយចំនួនអាចត្រូវការចាប់ផ្តើមកម្មវិធីឡើងវិញដើម្បីបង្ហាញជាភាសាថ្មី។"
 
-#: src/app/language-settings/index.tsx:325
+#: src/app/(tabs)/(index,search,create,video,account)/setting/language-settings/index.tsx:325
 msgid "Language Settings"
 msgstr "ការកំណត់ភាសា"
 
@@ -451,21 +547,25 @@ msgstr "ភាសា"
 msgid "Liked"
 msgstr "ចូលចិត្ត"
 
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:249
+msgid "Likes"
+msgstr ""
+
 #: src/components/Post.tsx:171
 msgid "Link Error"
 msgstr "កំហុសតំណ"
 
 #: src/app/moderation/blocked-users.tsx:196
-msgid "Loading blocked users..."
-msgstr "កំពុងផ្ទុកអ្នកប្រើប្រាស់ដែលត្រូវបានចាក់សោ..."
+#~ msgid "Loading blocked users..."
+#~ msgstr "កំពុងផ្ទុកអ្នកប្រើប្រាស់ដែលត្រូវបានចាក់សោ..."
 
 #: src/app/moderation/muted-users.tsx:154
-msgid "Loading muted users..."
-msgstr "កំពុងផ្ទុកអ្នកប្រើប្រាស់ដែលត្រូវបាន mute..."
+#~ msgid "Loading muted users..."
+#~ msgstr "កំពុងផ្ទុកអ្នកប្រើប្រាស់ដែលត្រូវបាន mute..."
 
 #: src/app/home-feed-preferences/index.tsx:177
-msgid "Loading preferences..."
-msgstr "កំពុងផ្ទុកចំណូលចិត្ត..."
+#~ msgid "Loading preferences..."
+#~ msgstr "កំពុងផ្ទុកចំណូលចិត្ត..."
 
 #: src/components/placeholders/EmptyState.tsx:136
 msgid "Loading..."
@@ -488,30 +588,42 @@ msgstr "ការចូលបានបរាជ័យ"
 #~ msgid "Logout"
 #~ msgstr "ចេញ"
 
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:417
+msgid "Manage Your Account"
+msgstr ""
+
 #: src/components/profile/UserProfile.tsx:39
 msgid "Media"
 msgstr "ប្រព័ន្ធផ្សព្វផ្សាយ"
 
-#: src/app/moderation/index.tsx:424
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:270
+msgid "Mentions"
+msgstr ""
+
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:64
+#: src/app/(tabs)/(index,search,create,video,account)/setting/moderation/index.tsx:333
 msgid "Moderation"
 msgstr "ការមធ្យាស្ថ"
 
 #: src/app/moderation/index.tsx:440
-msgid "Moderation Settings"
-msgstr "ការកំណត់ការមធ្យាស្ថ"
+#~ msgid "Moderation Settings"
+#~ msgstr "ការកំណត់ការមធ្យាស្ថ"
 
 #: src/components/profile/UserProfile.tsx:64
 msgid "More Options"
 msgstr "ជម្រើសច្រើនទៀត"
 
 #: src/app/moderation/muted-users.tsx:98
-msgid "Muted on {formattedDate}"
-msgstr "បាន mute នៅ {formattedDate}"
+#~ msgid "Muted on {formattedDate}"
+#~ msgstr "បាន mute នៅ {formattedDate}"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:282
+msgid "New Followers"
+msgstr ""
 
 #: src/app/moderation/blocked-users.tsx:121
-msgid "No Blocked Users"
-msgstr "មិនមានអ្នកប្រើប្រាស់ដែលត្រូវបានចាក់សោទេ"
+#~ msgid "No Blocked Users"
+#~ msgstr "មិនមានអ្នកប្រើប្រាស់ដែលត្រូវបានចាក់សោទេ"
 
 #: src/components/search/SearchResults.tsx:141
 msgid "No custom feeds found for \"{searchQuery}\". Try browsing popular feeds instead."
@@ -534,8 +646,8 @@ msgid "No media yet"
 msgstr "មិនទាន់មានប្រព័ន្ធផ្សព្វផ្សាយនៅឡើយទេ"
 
 #: src/app/moderation/muted-users.tsx:122
-msgid "No muted users"
-msgstr "មិនមានអ្នកប្រើប្រាស់ដែលត្រូវបាន mute ទេ"
+#~ msgid "No muted users"
+#~ msgstr "មិនមានអ្នកប្រើប្រាស់ដែលត្រូវបាន mute ទេ"
 
 #: src/components/search/SearchResults.tsx:130
 msgid "No people found"
@@ -562,13 +674,17 @@ msgstr "រកមិនឃើញលទ្ធផល"
 msgid "No results found for \"{searchQuery}\". Try a different search term."
 msgstr "រកមិនឃើញលទ្ធផលសម្រាប់ \"{searchQuery}\" ទេ។ សាកល្បងពាក្យស្វែងរកផ្សេង"
 
-#: src/components/layout/RightSidebar.tsx:195
+#: src/components/layout/RightSidebar.tsx:103
 msgid "No suggestions available at the moment"
 msgstr "មិនមានការណែនាំទេនៅពេលនេះ"
 
 #: src/components/search/SearchResults.tsx:131
 msgid "No users found for \"{searchQuery}\". Try searching with a different term or handle."
 msgstr "រកមិនឃើញអ្នកប្រើប្រាស់សម្រាប់ \"{searchQuery}\" ទេ។ សាកល្បងស្វែងរកដោយប្រើពាក្យ ឬ handle ផ្សេង"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:236
+msgid "Not enabled"
+msgstr ""
 
 #: src/components/placeholders/EmptyState.tsx:73
 msgid "Not following anyone yet"
@@ -578,6 +694,10 @@ msgstr "មិន​ទាន់​តាម​អ្នក​ណា​ទេ"
 msgid "Nothing here yet"
 msgstr "មិនមានអ្វីនៅទីនេះនៅឡើយទេ"
 
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:245
+msgid "Notification Preferences"
+msgstr ""
+
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:151
 #~ msgid "Notifications"
 #~ msgstr "ការជូនដំណឹង"
@@ -586,15 +706,18 @@ msgstr "មិនមានអ្វីនៅទីនេះនៅឡើយទេ
 msgid "now"
 msgstr "ឥឡូវ"
 
-#: src/app/home-feed-preferences/index.tsx:56
-#: src/app/home-feed-preferences/index.tsx:90
-#: src/app/home-feed-preferences/index.tsx:100
+#: src/app/(tabs)/(index,search,create,video,account)/setting/home-feed-preferences/index.tsx:83
+#: src/app/(tabs)/(index,search,create,video,account)/setting/home-feed-preferences/index.tsx:90
 msgid "OK"
 msgstr ""
 
 #: src/app/login/index.tsx:111
 msgid "Password"
 msgstr "ពាក្យសម្ងាត់"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:338
+msgid "Permanently delete your account"
+msgstr ""
 
 #: src/components/placeholders/EmptyState.tsx:193
 msgid "Please check your internet connection and try again."
@@ -613,11 +736,15 @@ msgstr "សូមចូលដើម្បីមើលព័ត៌មានផ្
 #~ msgstr "មតិព័ត៌មានពេញនិយម"
 
 #: src/components/profile/UserProfile.tsx:34
-#: src/components/profile/ProfileHeader.tsx:204
+#: src/components/profile/ProfileHeader.tsx:206
 msgid "Posts"
 msgstr "ការបង្ហោះ"
 
-#: src/components/layout/WebSidebar.tsx:158
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:294
+msgid "Posts from Following"
+msgstr ""
+
+#: src/components/layout/WebSidebar.tsx:132
 msgid "Powered by AT Protocol"
 msgstr "ដំណើរការដោយ AT Protocol"
 
@@ -625,15 +752,19 @@ msgstr "ដំណើរការដោយ AT Protocol"
 #~ msgid "Privacy"
 #~ msgstr "ឯកជនភាព"
 
-#: src/app/app-settings/index.tsx:627
+#: src/app/(tabs)/(index,search,create,video,account)/setting/app-settings/index.tsx:628
 msgid "Processing..."
 msgstr "កំពុងដំណើរការ..."
+
+#: src/components/layout/WebSidebar.tsx:32
+msgid "Profile"
+msgstr "ប្រវត្តិរូប"
 
 #: src/components/profile/UserProfile.tsx:59
 #~ msgid "Profile editing will be available soon!"
 #~ msgstr "ការកែសម្រួលប្រវត្តិរូបនឹងមានភ្លាមៗនេះ!"
 
-#: src/app/account-settings/edit-profile.tsx:126
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:188
 msgid "Profile Information"
 msgstr "ព័ត៌មានប្រវត្តិរូប"
 
@@ -642,21 +773,28 @@ msgstr "ព័ត៌មានប្រវត្តិរូប"
 msgid "Replying to @{0}"
 msgstr "ឆ្លើយតបទៅ @{0}"
 
-#: src/app/home-feed-preferences/index.tsx:114
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:258
+msgid "Reposts"
+msgstr ""
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/home-feed-preferences/index.tsx:102
 msgid "Reset"
 msgstr ""
 
-#: src/app/language-settings/index.tsx:458
+#: src/app/(tabs)/(index,search,create,video,account)/setting/language-settings/index.tsx:458
 msgid "Reset all language preferences to defaults"
 msgstr "កំណត់ចំណូលចិត្តភាសាទាំងអស់ទៅតម្លៃលំនាំដើមវិញ"
 
-#: src/app/language-settings/index.tsx:450
+#: src/app/(tabs)/(index,search,create,video,account)/setting/language-settings/index.tsx:450
 msgid "Reset language data"
 msgstr "កំណត់ទិន្នន័យភាសាឡើងវិញ"
 
-#: src/app/home-feed-preferences/index.tsx:109
-#: src/app/home-feed-preferences/index.tsx:267
+#: src/app/(tabs)/(index,search,create,video,account)/setting/home-feed-preferences/index.tsx:97
 msgid "Reset to Defaults"
+msgstr ""
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:320
+msgid "Restore from backup"
 msgstr ""
 
 #: src/components/video/VideoError.tsx:35
@@ -664,18 +802,17 @@ msgid "Retry"
 msgstr "ព្យាយាមម្តងទៀត"
 
 #: src/app/account-settings/edit-profile.tsx:71
-msgid "Save"
-msgstr "រក្សាទុក"
+#~ msgid "Save"
+#~ msgstr "រក្សាទុក"
 
-#: src/app/home-feed-preferences/index.tsx:260
-#: src/app/account-settings/edit-profile.tsx:245
+#: src/app/(tabs)/(index,search,create,video,account)/setting/home-feed-preferences/index.tsx:350
 msgid "Save Changes"
 msgstr "រក្សាទុកការផ្លាស់ប្តូរ"
 
 #: src/app/home-feed-preferences/index.tsx:260
 #: src/app/account-settings/edit-profile.tsx:245
-msgid "Saving..."
-msgstr "កំពុងរក្សាទុក..."
+#~ msgid "Saving..."
+#~ msgstr "កំពុងរក្សាទុក..."
 
 #: src/components/search/TrendingSection.tsx:169
 #~ msgid "Search by handle (@username) or display name"
@@ -689,8 +826,12 @@ msgstr "គន្លឹះស្វែងរក"
 msgid "Searching for {type}..."
 msgstr "កំពុងស្វែងរក {type}..."
 
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:224
+msgid "Security"
+msgstr ""
+
 #: src/components/search/TrendingSection.tsx:37
-#: src/components/layout/RightSidebar.tsx:221
+#: src/components/layout/RightSidebar.tsx:129
 msgid "See all"
 msgstr "មើលទាំងអស់"
 
@@ -698,33 +839,37 @@ msgstr "មើលទាំងអស់"
 msgid "Service Unavailable"
 msgstr "សេវាកម្មមិនអាចប្រើបានទេ"
 
-#: src/app/language-settings/index.tsx:384
+#: src/components/layout/WebSidebar.tsx:33
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:121
+#: src/app/(tabs)/(index,search,create,video,account)/setting/language-settings/index.tsx:384
 msgid "Settings"
 msgstr "ការកំណត់"
 
 #: src/app/home-feed-preferences/index.tsx:250
-msgid "Show adult content"
-msgstr "បង្ហាញខ្លឹមសារមនុស្សពេញវ័យ"
+#~ msgid "Show adult content"
+#~ msgstr "បង្ហាញខ្លឹមសារមនុស្សពេញវ័យ"
 
 #: src/app/home-feed-preferences/index.tsx:236
-msgid "Show posts in chronological order instead of algorithmic order"
-msgstr "បង្ហាញការបង្ហោះតាមលំដាប់ពេលវេលាជំនួសឱ្យលំដាប់ algorithm"
+#~ msgid "Show posts in chronological order instead of algorithmic order"
+#~ msgstr "បង្ហាញការបង្ហោះតាមលំដាប់ពេលវេលាជំនួសឱ្យលំដាប់ algorithm"
 
 #: src/app/home-feed-preferences/index.tsx:221
-msgid "Show posts that quote other posts"
-msgstr "បង្ហាញការបង្ហោះដែលដកស្រង់ការបង្ហោះផ្សេងទៀត"
+#~ msgid "Show posts that quote other posts"
+#~ msgstr "បង្ហាញការបង្ហោះដែលដកស្រង់ការបង្ហោះផ្សេងទៀត"
 
 #: src/app/home-feed-preferences/index.tsx:220
-msgid "Show quote posts"
-msgstr "បង្ហាញការបង្ហោះដកស្រង់"
+#~ msgid "Show quote posts"
+#~ msgstr "បង្ហាញការបង្ហោះដកស្រង់"
 
-#: src/components/layout/RightSidebar.tsx:199
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:210
+msgid "Show Sensitive Information"
+msgstr ""
+
+#: src/components/layout/RightSidebar.tsx:107
 #: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:162
 msgid "Sign in"
 msgstr "ចូលគណនី"
 
-#: src/components/layout/WebSidebar.tsx:145
 #: src/app/login/index.tsx:120
 msgid "Sign In"
 msgstr "ចូលគណនី"
@@ -733,15 +878,15 @@ msgstr "ចូលគណនី"
 msgid "Sign in required"
 msgstr "តម្រូវឱ្យចូល"
 
-#: src/app/add-account/index.tsx:118
+#: src/app/(tabs)/(index,search,create,video,account)/setting/add-account/index.tsx:118
 msgid "Sign in to add another Bluesky account. You can easily switch between accounts in Settings."
 msgstr "ចូលដើម្បីបន្ថែមគណនី Bluesky មួយទៀត។ អ្នកអាចប្តូរគណនីបានយ៉ាងងាយស្រួលក្នុងការកំណត់។"
 
-#: src/components/layout/RightSidebar.tsx:242
+#: src/components/layout/RightSidebar.tsx:144
 msgid "Sign in to follow people and see more suggestions"
 msgstr "ចូលដើម្បីតាមដានអ្នកប្រប្រាស់ និងមើលការណែនាំបន្ថែម"
 
-#: src/components/layout/RightSidebar.tsx:194
+#: src/components/layout/RightSidebar.tsx:102
 msgid "Sign in to see personalized suggestions"
 msgstr "ចូលដើម្បីមើលការណែនាំផ្ទាល់ខ្លួន"
 
@@ -756,6 +901,10 @@ msgstr "ចេញ"
 #: src/app/login/index.tsx:120
 msgid "Signing in..."
 msgstr "កំពុងចូល"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:112
+msgid "Sky Social Data Export"
+msgstr ""
 
 #: src/components/placeholders/EmptyState.tsx:155
 msgid "Something went wrong"
@@ -773,13 +922,13 @@ msgstr "មាន​អ្វី​មួយ​ខុស​ពេល​ផ្ទ
 msgid "Start searching"
 msgstr "ចាប់ផ្តើមស្វែងរក"
 
-#: src/app/home-feed-preferences/index.tsx:88
+#: src/app/(tabs)/(index,search,create,video,account)/setting/home-feed-preferences/index.tsx:82
 msgid "Success"
 msgstr "ជោគជ័យ"
 
-#: src/components/layout/RightSidebar.tsx:161
-#: src/components/layout/RightSidebar.tsx:190
-#: src/components/layout/RightSidebar.tsx:217
+#: src/components/layout/RightSidebar.tsx:69
+#: src/components/layout/RightSidebar.tsx:98
+#: src/components/layout/RightSidebar.tsx:125
 msgid "Suggested people"
 msgstr "មនុស្សដែលបានណែនាំ"
 
@@ -801,12 +950,12 @@ msgstr "ប្តូរទៅគណនី"
 #~ msgstr "ប្រព័ន្ធ"
 
 #: src/app/account-settings/edit-profile.tsx:113
-msgid "Tap to change your profile picture"
-msgstr "ចុចដើម្បីផ្លាស់ប្តូររូបរបស់អ្នក"
+#~ msgid "Tap to change your profile picture"
+#~ msgstr "ចុចដើម្បីផ្លាស់ប្តូររូបរបស់អ្នក"
 
 #: src/app/app-settings/network.tsx:230
-msgid "Testing connection..."
-msgstr "កំពុងសាកល្បងការតភ្ជាប់..."
+#~ msgid "Testing connection..."
+#~ msgstr "កំពុងសាកល្បងការតភ្ជាប់..."
 
 #: src/components/placeholders/EmptyState.tsx:196
 msgid "The service is temporarily unavailable. Please try again in a few moments."
@@ -816,17 +965,24 @@ msgstr "សេវាកម្មមិនអាចប្រើបានជាប
 msgid "Theme"
 msgstr "ពណ៌"
 
-#: src/app/theme-settings/index.tsx:631
+#: src/app/(tabs)/(index,search,create,video,account)/setting/theme-settings/index.tsx:631
 msgid "Theme changes take effect immediately. System theme follows your device's appearance settings."
 msgstr "ការផ្លាស់ប្តូររូបរាងមានប្រសិទ្ធភាពភ្លាមៗ។ រូបរាងប្រព័ន្ធតាមការកំណត់រូបរាងឧបករណ៍របស់អ្នក។"
 
-#: src/app/theme-settings/index.tsx:597
+#: src/app/(tabs)/(index,search,create,video,account)/setting/theme-settings/index.tsx:597
 msgid "Theme Options"
 msgstr "ជម្រើសរូបរាង"
 
-#: src/app/theme-settings/index.tsx:542
+#: src/app/(tabs)/(index,search,create,video,account)/setting/theme-settings/index.tsx:542
 msgid "Theme Settings"
 msgstr "ការកំណត់រូបរាង"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:158
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:162
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:168
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:326
+msgid "This feature will be available soon."
+msgstr ""
 
 #: src/components/Post.tsx:148
 msgid "This link appears to be invalid or malformed."
@@ -835,6 +991,14 @@ msgstr "តំណនេះហាក់ដូចជាមិនត្រឹមត
 #: src/components/Post.tsx:161
 msgid "This link cannot be opened on your device. Would you like to copy the URL?"
 msgstr "តំណនេះមិនអាចបើកនៅលើឧបករណ៍របស់អ្នកបានទេ។ តើអ្នកចង់ចម្លង URL ទេ"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:132
+msgid "This will permanently delete your account and all associated data. Type \"DELETE\" to confirm."
+msgstr ""
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/home-feed-preferences/index.tsx:98
+msgid "This will reset all feed preferences to their default values. Are you sure?"
+msgstr ""
 
 #: src/components/Post.tsx:134
 #: src/components/Post.tsx:186
@@ -852,6 +1016,11 @@ msgstr "ព្យាយាមម្តងទៀត"
 #: src/components/placeholders/EmptyState.tsx:100
 msgid "Try searching for something else or check your spelling."
 msgstr "សាកល្បងស្វែងរកអ្វីផ្សេងទៀត ឬពិនិត្យមើលអក្ខរាវិរុទ្ធរបស់អ្នក"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:167
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:235
+msgid "Two-Factor Authentication"
+msgstr ""
 
 #: src/components/search/SearchResults.tsx:106
 msgid "Type something to search for people, posts, and feeds."
@@ -891,8 +1060,12 @@ msgid "Username or Email"
 msgstr "ឈ្មោះអ្នកប្រើប្រាស់ ឬ អីម៉ែល"
 
 #: src/app/moderation/muted-users.tsx:127
-msgid "Users you mute will appear here. Muted users won't appear in your timeline, and their replies won't be shown to you."
-msgstr "អ្នកប្រើប្រាស់ដែលអ្នក mute នឹងបង្ហាញនៅទីនេះ។ អ្នកប្រើប្រាស់ដែលត្រូវបាន mute នឹងមិនបង្ហាញក្នុង timeline របស់អ្នកទេ ហើយការឆ្លើយតបរបស់ពួកគេនឹងមិនត្រូវបានបង្ហាញដល់អ្នកទេ។"
+#~ msgid "Users you mute will appear here. Muted users won't appear in your timeline, and their replies won't be shown to you."
+#~ msgstr "អ្នកប្រើប្រាស់ដែលអ្នក mute នឹងបង្ហាញនៅទីនេះ។ អ្នកប្រើប្រាស់ដែលត្រូវបាន mute នឹងមិនបង្ហាញក្នុង timeline របស់អ្នកទេ ហើយការឆ្លើយតបរបស់ពួកគេនឹងមិនត្រូវបានបង្ហាញដល់អ្នកទេ។"
+
+#: src/components/layout/WebSidebar.tsx:29
+msgid "Video"
+msgstr "វីដេអូ"
 
 #: src/components/profile/UserProfile.tsx:44
 msgid "Videos"
@@ -940,24 +1113,28 @@ msgid "Write your reply..."
 msgstr "សរសេរការឆ្លើយតបរបស់អ្នក"
 
 #: src/app/moderation/blocked-users.tsx:129
-msgid "You have not blocked any users yet. When you block someone, they will appear here."
-msgstr "អ្នកមិនទាន់បានចាក់សោអ្នកប្រើប្រាស់ណាម្នាក់នៅឡើយទេ។ នៅពេលដែលអ្នកចាក់សោនរណាម្នាក់ ពួកគេនឹងបង្ហាញនៅទីនេះ។"
+#~ msgid "You have not blocked any users yet. When you block someone, they will appear here."
+#~ msgstr "អ្នកមិនទាន់បានចាក់សោអ្នកប្រើប្រាស់ណាម្នាក់នៅឡើយទេ។ នៅពេលដែលអ្នកចាក់សោនរណាម្នាក់ ពួកគេនឹងបង្ហាញនៅទីនេះ។"
 
 #: src/components/placeholders/EmptyState.tsx:105
 msgid "You're offline"
 msgstr "អ្នកគ្មានអ៊ីនធឺណិតទេ"
 
-#: src/app/add-account/index.tsx:187
+#: src/app/(tabs)/(index,search,create,video,account)/setting/add-account/index.tsx:187
 msgid "Your accounts are stored securely on this device. You can manage and switch between them in Settings."
 msgstr "គណនីរបស់អ្នកត្រូវបានរក្សាទុកដោយសុវត្ថិភាពនៅលើឧបករណ៍នេះ។ អ្នកអាចគ្រប់គ្រង និងប្តូររវាងគណនីនៅក្នុងការកំណត់។"
 
-#: src/app/home-feed-preferences/index.tsx:89
+#: src/app/(tabs)/(index,search,create,video,account)/setting/home-feed-preferences/index.tsx:82
 msgid "Your feed preferences have been saved."
 msgstr "ចំណូលចិត្តព័ត៌មានរបស់អ្នកត្រូវបានរក្សាទុក។"
 
 #: src/app/account-settings/edit-profile.tsx:235
-msgid "Your handle cannot be changed"
-msgstr "handle របស់អ្នកមិនអាចផ្លាស់ប្តូរបានទេ"
+#~ msgid "Your handle cannot be changed"
+#~ msgstr "handle របស់អ្នកមិនអាចផ្លាស់ប្តូរបានទេ"
+
+#: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:437
+msgid "Your privacy and security are important to us. All changes are saved automatically."
+msgstr ""
 
 #: src/components/placeholders/EmptyState.tsx:52
 msgid "Your timeline will appear here once you follow some people and they start posting."

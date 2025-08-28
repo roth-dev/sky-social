@@ -14,24 +14,24 @@ import {
 import { Text, View } from "../ui";
 import { cn } from "@/lib/utils";
 import { Trans } from "@lingui/react/macro";
-
-const NAVIGATION_ITEMS = [
-  { key: "/", label: "Home", icon: Home },
-  { key: "/search", label: "Discover", icon: Search },
-  // { key: "/create", label: "New Post", icon: PlusSquare, requiresAuth: true },
-  {
-    key: "/video",
-    label: "Video",
-    icon: Video,
-  },
-  { key: "/account", label: "Profile", icon: User, requiresAuth: true },
-  { key: "/setting", label: "Settings", icon: Settings },
-];
+import { t } from "@lingui/core/macro";
 
 export default function WebSidebar() {
   const { isAuthenticated, user, logout } = useAuth();
   const pathname = usePathname();
 
+  const NAVIGATION_ITEMS = [
+    { key: "/", label: t`Home`, icon: Home },
+    { key: "/search", label: t`Discover`, icon: Search },
+    // { key: "/create", label: t`New Post`, icon: PlusSquare, requiresAuth: true },
+    {
+      key: "/video",
+      label: t`Video`,
+      icon: Video,
+    },
+    { key: "/account", label: t`Profile`, icon: User, requiresAuth: true },
+    { key: "/setting", label: t`Settings`, icon: Settings },
+  ];
   const handleNavigation = (path: string, requiresAuth?: boolean) => {
     if (requiresAuth && !isAuthenticated) {
       router.push("/account");

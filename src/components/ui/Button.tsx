@@ -81,6 +81,7 @@ export interface ButtonProps
   leftIconStrokeWidth?: number;
   rightIconStrokeWidth?: number;
   children?: ReactNode;
+  textSize?: TextProps["size"];
 }
 
 export const Button = forwardRef<
@@ -110,6 +111,7 @@ export const Button = forwardRef<
       leftIconStrokeWidth,
       rightIconStrokeWidth,
       children,
+      textSize = "base",
       ...props
     },
     ref
@@ -170,6 +172,7 @@ export const Button = forwardRef<
         {title ? (
           <Text
             font={font}
+            size={textSize}
             className={cn(textVariants({ variant }), disabled && "opacity-70")}
             style={textStyle}
           >

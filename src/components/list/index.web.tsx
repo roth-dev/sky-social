@@ -4,15 +4,18 @@ import { useSettings } from "@/contexts/SettingsContext";
 import { isAndroid } from "@/platform";
 import { useScrollStore } from "@/store/scrollStore";
 import { RefreshControl, ViewToken } from "react-native";
-import Animated, { useAnimatedScrollHandler } from "react-native-reanimated";
-import { FlashList, FlashListProps } from "@shopify/flash-list";
+import Animated, {
+  useAnimatedScrollHandler,
+  FlatListPropsWithLayout,
+} from "react-native-reanimated";
+import { FlashListProps } from "@shopify/flash-list";
 
 export type ListRef<ItemT = unknown> = React.ForwardedRef<
   FlashListProps<ItemT>
 >;
 
 export type ListProps<ItemT = unknown> = Omit<
-  FlashListProps<ItemT>,
+  FlatListPropsWithLayout<ItemT>,
   | "contentOffset" // Pass headerOffset instead.
   | "progressViewOffset" // Can't be an animated value
 > & {
@@ -28,8 +31,6 @@ export type ListProps<ItemT = unknown> = Omit<
   progressViewOffset?: number;
   useScrollDetector?: boolean;
 };
-
-const AnimatedFlashList = Animated.createAnimatedComponent(FlashList);
 
 let List = React.forwardRef<ListRef, ListProps>(
   (
@@ -79,8 +80,7 @@ let List = React.forwardRef<ListRef, ListProps>(
           }
         },
         {
-          waitForInteraction: true,
-          itemVisiblePercentThreshold: 50,
+          itemVisiblePercentThreshold: 40,
           minimumViewTime: 100,
         },
       ];
@@ -106,10 +106,13 @@ let List = React.forwardRef<ListRef, ListProps>(
     }
 
     return (
-      <AnimatedFlashList
+      <Animated.FlatList
         showsVerticalScrollIndicator={!isAndroid} // overridable
         onViewableItemsChanged={onViewableItemsChanged}
         viewabilityConfig={viewabilityConfig}
+        removeClippedSubviews
+        windowSize={7}
+        maxToRenderPerBatch={10}
         {...props}
         onScroll={scrollHandler}
         onScrollBeginDrag={() => onScrollStateChange?.(true)}

@@ -6,12 +6,11 @@ import RightSidebar from "@/components/layout/RightSidebar";
 
 export default function TabLayout() {
   return (
-    <View className="flex-1 flex-row bg-white">
+    <View darkColor="none" className="flex-1 flex-row bg-white ">
       {/* Desktop Sidebar */}
       <WebSidebar />
-
       {/* Main Content Area */}
-      <View className="flex-[1.5] main-content-desktop">
+      <View className="flex-1 border-r dark:border-gray-700 border-gray-300">
         <Tabs
           screenOptions={{
             headerShown: false,
@@ -26,7 +25,6 @@ export default function TabLayout() {
         </Tabs>
       </View>
       <RightSidebar />
-      <View className="flex-1 hidden 2xl:flex" />
       {/* Mobile Tab Bar */}
       <ResponsiveTabBar />
     </View>

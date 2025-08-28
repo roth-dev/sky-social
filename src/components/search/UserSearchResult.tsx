@@ -80,6 +80,7 @@ export function UserSearchResult({ user, onPress }: UserSearchResultProps) {
               }
               variant={isFollowing ? "outline" : "primary"}
               size="small"
+              textSize="sm"
               onPress={handleFollow}
               disabled={followLoading}
             />

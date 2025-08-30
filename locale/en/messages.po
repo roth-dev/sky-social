@@ -296,10 +296,9 @@ msgstr "Danger Zone"
 #~ msgid "dark"
 #~ msgstr "dark"
 
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:87
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:277
-#~ msgid "Dark"
-#~ msgstr "Dark"
+#: src/components/settings/ThemeSettingsItem.tsx:37
+msgid "Dark"
+msgstr "Dark"
 
 #: src/app/(tabs)/(index,search,create,video,account)/setting/account-settings/index.tsx:305
 msgid "Data Management"
@@ -530,10 +529,9 @@ msgstr "Languages"
 #~ msgid "light"
 #~ msgstr "light"
 
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:85
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:272
-#~ msgid "Light"
-#~ msgstr "Light"
+#: src/components/settings/ThemeSettingsItem.tsx:35
+msgid "Light"
+msgstr "Light"
 
 #: src/components/profile/UserProfile.tsx:51
 msgid "Liked"
@@ -940,10 +938,9 @@ msgstr "Switch to Account"
 #~ msgid "system"
 #~ msgstr "system"
 
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:89
-#: src/app/(tabs)/(index,search,create,video,account)/setting/index.tsx:282
-#~ msgid "System"
-#~ msgstr "System"
+#: src/components/settings/ThemeSettingsItem.tsx:39
+msgid "System"
+msgstr "System"
 
 #: src/app/account-settings/edit-profile.tsx:113
 #~ msgid "Tap to change your profile picture"
@@ -957,7 +954,7 @@ msgstr "Switch to Account"
 msgid "The service is temporarily unavailable. Please try again in a few moments."
 msgstr "The service is temporarily unavailable. Please try again in a few moments."
 
-#: src/components/settings/ThemeSettingsItem.tsx:53
+#: src/components/settings/ThemeSettingsItem.tsx:54
 msgid "Theme"
 msgstr "Theme"
 

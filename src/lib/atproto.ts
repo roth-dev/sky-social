@@ -1028,6 +1028,312 @@ export class ATProtoClient {
     return this.currentSession;
   }
 
+  // Chat API methods
+  async listConversations(limit = 50, cursor?: string) {
+    logger.log("listConversations", { limit, cursor });
+    if (!this.isAuthenticated) {
+      throw new Error("Not authenticated");
+    }
+
+    try {
+      const response = await this.retryWithBackoff(async () => {
+        // First try the official chat API
+        try {
+          const url = `${
+            this.agent.service
+          }/xrpc/chat.bsky.convo.listConvos?limit=${limit}${
+            cursor ? `&cursor=${cursor}` : ""
+          }`;
+
+          const headers: Record<string, string> = {
+            Authorization: `Bearer ${this.agent.session?.accessJwt}`,
+            "atproto-proxy": "did:web:api.bsky.chat#bsky_chat",
+          };
+
+          const response = await fetch(url, {
+            method: "GET",
+            headers,
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+
+          return await response.json();
+        } catch (error) {
+          // If chat API is not available, return empty data structure
+          console.warn("Chat API not available yet:", error);
+          return {
+            convos: [],
+            cursor: undefined,
+          };
+        }
+      }, "List Conversations");
+
+      return { success: true, data: response };
+    } catch (error: unknown) {
+      console.error("Failed to list conversations:", error);
+      // Return empty structure instead of failing completely
+      return {
+        success: true,
+        data: {
+          convos: [],
+          cursor: undefined,
+        },
+      };
+    }
+  }
+
+  async getConversation(convoId: string) {
+    logger.log("getConversation", { convoId });
+    if (!this.isAuthenticated) {
+      throw new Error("Not authenticated");
+    }
+
+    try {
+      if (!convoId || typeof convoId !== "string") {
+        throw new Error("Invalid conversation ID");
+      }
+
+      const response = await this.retryWithBackoff(async () => {
+        return await this.agent.call(
+          "chat.bsky.convo.getConvo",
+          { convoId },
+          undefined,
+          {
+            headers: {
+              "atproto-proxy": "did:web:api.bsky.chat#bsky_chat",
+            },
+          }
+        );
+      }, "Get Conversation");
+
+      return { success: true, data: response.data };
+    } catch (error: unknown) {
+      console.error("Failed to get conversation:", error);
+      return {
+        success: false,
+        error: getErrorMessage(error),
+      };
+    }
+  }
+
+  async getMessages(convoId: string, limit = 50, cursor?: string) {
+    logger.log("getMessages", { convoId, limit, cursor });
+    if (!this.isAuthenticated) {
+      throw new Error("Not authenticated");
+    }
+
+    try {
+      if (!convoId || typeof convoId !== "string") {
+        throw new Error("Invalid conversation ID");
+      }
+
+      const response = await this.retryWithBackoff(async () => {
+        return await this.agent.call(
+          "chat.bsky.convo.getMessages",
+          { convoId, limit, cursor },
+          undefined,
+          {
+            headers: {
+              "atproto-proxy": "did:web:api.bsky.chat#bsky_chat",
+            },
+          }
+        );
+      }, "Get Messages");
+
+      return { success: true, data: response.data };
+    } catch (error: unknown) {
+      console.error("Failed to get messages:", error);
+      return {
+        success: false,
+        error: getErrorMessage(error),
+      };
+    }
+  }
+
+  async sendMessage(convoId: string, text: string) {
+    logger.log("sendMessage", { convoId, text: text.slice(0, 50) });
+    if (!this.isAuthenticated) {
+      throw new Error("Not authenticated");
+    }
+
+    try {
+      if (!convoId || typeof convoId !== "string") {
+        throw new Error("Invalid conversation ID");
+      }
+
+      if (!text || typeof text !== "string" || text.trim().length === 0) {
+        throw new Error("Message text cannot be empty");
+      }
+
+      const message = {
+        text: text.trim(),
+      };
+
+      const response = await this.retryWithBackoff(async () => {
+        return await this.agent.call(
+          "chat.bsky.convo.sendMessage",
+          { convoId, message },
+          undefined,
+          {
+            headers: {
+              "atproto-proxy": "did:web:api.bsky.chat#bsky_chat",
+            },
+          }
+        );
+      }, "Send Message");
+
+      return { success: true, data: response.data };
+    } catch (error: unknown) {
+      console.error("Failed to send message:", error);
+      return {
+        success: false,
+        error: getErrorMessage(error),
+      };
+    }
+  }
+
+  async getOrCreateConversation(members: string[]) {
+    logger.log("getOrCreateConversation", { members });
+    if (!this.isAuthenticated) {
+      throw new Error("Not authenticated");
+    }
+
+    try {
+      if (!members || !Array.isArray(members) || members.length === 0) {
+        throw new Error("Invalid members array");
+      }
+
+      const response = await this.retryWithBackoff(async () => {
+        return await this.agent.call(
+          "chat.bsky.convo.getConvoForMembers",
+          { members },
+          undefined,
+          {
+            headers: {
+              "atproto-proxy": "did:web:api.bsky.chat#bsky_chat",
+            },
+          }
+        );
+      }, "Get or Create Conversation");
+
+      return { success: true, data: response.data };
+    } catch (error: unknown) {
+      console.error("Failed to get or create conversation:", error);
+      return {
+        success: false,
+        error: getErrorMessage(error),
+      };
+    }
+  }
+
+  async muteConversation(convoId: string) {
+    logger.log("muteConversation", { convoId });
+    if (!this.isAuthenticated) {
+      throw new Error("Not authenticated");
+    }
+
+    try {
+      if (!convoId || typeof convoId !== "string") {
+        throw new Error("Invalid conversation ID");
+      }
+
+      const response = await this.retryWithBackoff(async () => {
+        return await this.agent.call(
+          "chat.bsky.convo.muteConvo",
+          { convoId },
+          undefined,
+          {
+            headers: {
+              "atproto-proxy": "did:web:api.bsky.chat#bsky_chat",
+            },
+          }
+        );
+      }, "Mute Conversation");
+
+      return { success: true, data: response.data };
+    } catch (error: unknown) {
+      console.error("Failed to mute conversation:", error);
+      return {
+        success: false,
+        error: getErrorMessage(error),
+      };
+    }
+  }
+
+  async unmuteConversation(convoId: string) {
+    logger.log("unmuteConversation", { convoId });
+    if (!this.isAuthenticated) {
+      throw new Error("Not authenticated");
+    }
+
+    try {
+      if (!convoId || typeof convoId !== "string") {
+        throw new Error("Invalid conversation ID");
+      }
+
+      const response = await this.retryWithBackoff(async () => {
+        return await this.agent.call(
+          "chat.bsky.convo.unmuteConvo",
+          { convoId },
+          undefined,
+          {
+            headers: {
+              "atproto-proxy": "did:web:api.bsky.chat#bsky_chat",
+            },
+          }
+        );
+      }, "Unmute Conversation");
+
+      return { success: true, data: response.data };
+    } catch (error: unknown) {
+      console.error("Failed to unmute conversation:", error);
+      return {
+        success: false,
+        error: getErrorMessage(error),
+      };
+    }
+  }
+
+  async deleteMessage(convoId: string, messageId: string) {
+    logger.log("deleteMessage", { convoId, messageId });
+    if (!this.isAuthenticated) {
+      throw new Error("Not authenticated");
+    }
+
+    try {
+      if (!convoId || typeof convoId !== "string") {
+        throw new Error("Invalid conversation ID");
+      }
+
+      if (!messageId || typeof messageId !== "string") {
+        throw new Error("Invalid message ID");
+      }
+
+      const response = await this.retryWithBackoff(async () => {
+        return await this.agent.call(
+          "chat.bsky.convo.deleteMessageForSelf",
+          { convoId, messageId },
+          undefined,
+          {
+            headers: {
+              "atproto-proxy": "did:web:api.bsky.chat#bsky_chat",
+            },
+          }
+        );
+      }, "Delete Message");
+
+      return { success: true, data: response.data };
+    } catch (error: unknown) {
+      console.error("Failed to delete message:", error);
+      return {
+        success: false,
+        error: getErrorMessage(error),
+      };
+    }
+  }
+
   async logout() {
     logger.log("logout");
     this.isAuthenticated = false;

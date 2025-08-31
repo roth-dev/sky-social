@@ -11,3 +11,14 @@ export { usePostThread } from "./usePostThread";
 export { useAuthorMediaFeed } from "./useAuthorMediaFeed";
 export { useFollowers } from "./useFollowers";
 export { useFollowing } from "./useFollowing";
+export {
+  useConversations,
+  useConversation,
+  useMessages,
+  useSendMessage,
+  useCreateConversation,
+  useMuteConversation,
+  useUnmuteConversation,
+  useDeleteMessage,
+  chatQueryKeys,
+} from "./useChat";

@@ -23,6 +23,7 @@ import {
 import { useSettingsActions } from "@/hooks/useSettingsActions";
 import { View } from "@/components/ui";
 import { t } from "@lingui/core/macro";
+import { isNative } from "@/platform";
 
 export default function SettingsScreen() {
   const { isAuthenticated, user } = useAuth();
@@ -118,7 +119,7 @@ export default function SettingsScreen() {
 
   return (
     <View className="flex-1">
-      <Header title={t`Settings`} disabledLeft />
+      <Header title={t`Settings`} disabledLeft={!isNative} />
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* User Profile Section */}

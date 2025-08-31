@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { ChevronRight, Sun, Moon, Monitor } from "lucide-react-native";
 import { useSettings, ThemeMode } from "@/contexts/SettingsContext";
 import { Trans } from "@lingui/react/macro";
+import { t } from "@lingui/core/macro";
 
 interface ThemeSettingsItemProps {
   onPress: () => void;
@@ -31,11 +32,11 @@ export function ThemeSettingsItem({
   const getThemeDisplayName = () => {
     switch (currentTheme) {
       case "light":
-        return "Light";
+        return t`Light`;
       case "dark":
-        return "Dark";
+        return t`Dark`;
       case "system":
-        return "System";
+        return t`System`;
       default:
         return currentTheme;
     }

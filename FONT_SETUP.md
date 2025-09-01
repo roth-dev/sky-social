@@ -10,7 +10,7 @@ This Text component automatically detects Khmer Unicode text and applies the app
 ✅ **Automatic Detection**: Detects Khmer Unicode characters (U+1780 to U+17FF)  
 ✅ **Smart Font Selection**: KantumruyPro for Khmer, Inter for other text  
 ✅ **Configurable**: Can disable auto-detection when needed  
-✅ **Performance**: Only loads needed fonts, better performance for mixed content  
+✅ **Performance**: Only loads needed fonts, better performance for mixed content
 
 ## Installation
 
@@ -69,16 +69,18 @@ import { Text } from '@/components/ui/Text';
 ## Font Mapping
 
 ### KantumruyPro (Khmer text)
+
 - `thin` → KantumruyPro_100Thin
-- `normal` → KantumruyPro_400Regular  
+- `normal` → KantumruyPro_400Regular
 - `semiBold` → KantumruyPro_500Medium
 - `bold` → KantumruyPro_700Bold
 - `extrabold` → KantumruyPro_700Bold
 
 ### Inter (Non-Khmer text)
+
 - `thin` → Inter_100Thin
 - `normal` → Inter_400Regular
-- `semiBold` → Inter_600SemiBold  
+- `semiBold` → Inter_600SemiBold
 - `bold` → Inter_700Bold
 - `extrabold` → Inter_800ExtraBold
 
@@ -87,18 +89,22 @@ import { Text } from '@/components/ui/Text';
 You can also use the detection functions independently:
 
 ```tsx
-import { isKhmerText, detectTextScript, getFontForText } from '@/utils/textUtils';
+import {
+  isKhmerText,
+  detectTextScript,
+  getFontForText,
+} from "@/utils/textUtils";
 
 // Check if text contains Khmer
-const hasKhmer = isKhmerText('Hello សួស្តី'); // true
+const hasKhmer = isKhmerText("Hello សួស្តី"); // true
 
 // Detect script type
-const script = detectTextScript('Hello World'); // 'latin'
-const script2 = detectTextScript('សួស្តី'); // 'khmer'
+const script = detectTextScript("Hello World"); // 'latin'
+const script2 = detectTextScript("សួស្តី"); // 'khmer'
 
 // Get appropriate font
-const font = getFontForText('Hello World'); // 'Inter_400Regular'
-const font2 = getFontForText('សួស្តី'); // 'KantumruyPro_400Regular'
+const font = getFontForText("Hello World"); // 'Inter_400Regular'
+const font2 = getFontForText("សួស្តី"); // 'KantumruyPro_400Regular'
 ```
 
 ## Performance Benefits

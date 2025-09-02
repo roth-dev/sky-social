@@ -10,6 +10,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Fragment } from "react";
 import { isWeb } from "@/platform";
 import ComposerProvider from "@/contexts/ComposserProvider";
+import { DialogProvider } from "@/components/ui";
 import type {
   ParamListBase,
   StackNavigationState,
@@ -78,7 +79,9 @@ export default function App() {
           <I18nProviderWrapper>
             <GestureHandlerRootView className="flex-1">
               <ComposerProvider>
-                <RootLayout />
+                <DialogProvider>
+                  <RootLayout />
+                </DialogProvider>
               </ComposerProvider>
             </GestureHandlerRootView>
           </I18nProviderWrapper>

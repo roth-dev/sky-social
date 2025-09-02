@@ -5,3 +5,5 @@ export { RichText } from "./RichText";
 export { Button } from "./Button";
 export { HapticTab } from "./HapticTab";
 export { Image } from "./Image";
+export { Dialog, DialogProvider } from "./Dialog";
+export { SettingsItem, SettingsSection } from "./SettingsItem";

@@ -1,9 +1,9 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { StyleSheet, ScrollView, ActivityIndicator } from "react-native";
+import { ScrollView, ActivityIndicator } from "react-native";
 import { Header } from "@/components/Header";
 import { useSettings, Language } from "@/contexts/SettingsContext";
 import { useI18n } from "@/contexts/I18nProvider";
-import { Text, View, Dialog } from "@/components/ui";
+import { Text, View, Dialog, SettingsSection } from "@/components/ui";
 import { Button } from "@/components/ui/Button";
 import { Trans } from "@lingui/react/macro";
 import { t } from "@lingui/core/macro";
@@ -144,17 +144,6 @@ export default function LanguageSettingsScreen() {
     [downloadingLanguages, languages]
   );
 
-  const handleToggleAutoDownload = useCallback(async () => {
-    const newValue = !autoDownloadEnabled;
-    setAutoDownloadEnabled(newValue);
-
-    try {
-      await AsyncStorage.setItem("autoDownloadLanguages", newValue.toString());
-    } catch (error) {
-      console.error("Failed to save auto download setting:", error);
-    }
-  }, [autoDownloadEnabled]);
-
   const handleResetLanguageData = useCallback(async () => {
     Dialog.show(
       "Reset Language Data",
@@ -210,49 +199,52 @@ export default function LanguageSettingsScreen() {
     return (
       <View
         key={lang.code}
-        style={[
-          styles.languageItem,
-          isDarkMode && styles.darkLanguageItem,
-          isSelected && styles.selectedItem,
-          isSelected && isDarkMode && styles.darkSelectedItem,
-        ]}
+        className={`${
+          isSelected
+            ? isDarkMode
+              ? "bg-blue-900/20"
+              : "bg-blue-50"
+            : isDarkMode
+            ? "bg-gray-800"
+            : "bg-white"
+        }`}
       >
         <Button
           variant="ghost"
-          style={styles.languageButton}
+          className="p-0 bg-transparent w-full"
           onPress={() => handleLanguageSelect(lang.code)}
           disabled={loading || isDownloading}
         >
-          <View style={styles.languageContent}>
-            <View style={styles.languageIcon}>
+          <View className="flex-row items-center p-4 w-full">
+            <View className="mr-3">
               <Globe size={20} color={isDarkMode ? "#ffffff" : "#666666"} />
             </View>
-            <View style={styles.languageInfo}>
+            <View className="flex-1">
               <Text
-                style={[styles.languageName, isDarkMode && styles.darkText]}
+                className={`text-base font-medium ${
+                  isDarkMode ? "text-white" : "text-black"
+                }`}
               >
                 <Trans>{lang.name}</Trans>
               </Text>
               <Text
-                style={[
-                  styles.nativeName,
-                  isDarkMode && styles.darkSecondaryText,
-                ]}
+                className={`text-sm mt-1 ${
+                  isDarkMode ? "text-gray-400" : "text-gray-600"
+                }`}
               >
                 {lang.nativeName}
               </Text>
               <Text
-                style={[
-                  styles.regionName,
-                  isDarkMode && styles.darkSecondaryText,
-                ]}
+                className={`text-xs mt-0.5 ${
+                  isDarkMode ? "text-gray-400" : "text-gray-600"
+                }`}
               >
                 {lang.region}
               </Text>
             </View>
-            <View style={styles.languageActions}>
+            <View className="flex-row items-center gap-2">
               {isSelected && (
-                <View style={styles.checkIcon}>
+                <View className="ml-2">
                   <Check size={20} color="#007AFF" />
                 </View>
               )}
@@ -262,7 +254,7 @@ export default function LanguageSettingsScreen() {
                   variant="secondary"
                   size="small"
                   onPress={() => handleDownloadLanguage(lang.code)}
-                  style={styles.downloadButton}
+                  className="min-w-10 h-8"
                 >
                   <Download
                     size={16}
@@ -272,7 +264,7 @@ export default function LanguageSettingsScreen() {
               )}
 
               {isDownloading && (
-                <View style={styles.downloadingIndicator}>
+                <View className="p-1">
                   <ActivityIndicator size="small" color="#007AFF" />
                 </View>
               )}
@@ -293,24 +285,27 @@ export default function LanguageSettingsScreen() {
 
   const renderSection = (section: LanguageSection) => {
     return (
-      <View key={section.id} style={styles.section}>
+      <View key={section.id} className="mb-8">
         <Text
-          style={[styles.sectionTitle, isDarkMode && styles.darkSecondaryText]}
+          className={`text-xs font-semibold uppercase tracking-wider mb-2 ml-4 ${
+            isDarkMode ? "text-gray-400" : "text-gray-600"
+          }`}
         >
           <Trans>{section.title}</Trans>
         </Text>
         <View
-          style={[
-            styles.sectionContent,
-            isDarkMode && styles.darkSectionContent,
-          ]}
+          className={`rounded-lg overflow-hidden ${
+            isDarkMode ? "bg-gray-800" : "bg-white"
+          }`}
         >
           {section.items.map((item, index) => (
             <View key={item.code}>
               {renderLanguageItem(item)}
               {index < section.items.length - 1 && (
                 <View
-                  style={[styles.separator, isDarkMode && styles.darkSeparator]}
+                  className={`h-px ml-12 ${
+                    isDarkMode ? "bg-gray-600" : "bg-gray-300"
+                  }`}
                 />
               )}
             </View>
@@ -321,47 +316,28 @@ export default function LanguageSettingsScreen() {
   };
 
   return (
-    <View style={[styles.container, isDarkMode && styles.darkContainer]}>
+    <View className="flex-1">
       <Header title={t`Language Settings`} />
       <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
+        className="flex-1"
+        // contentContainerStyle={{ padding: 16 }}
+        contentContainerClassName="p-4"
         showsVerticalScrollIndicator={false}
       >
         {/* Current Language Info */}
-        <View style={styles.section}>
-          <Text
-            style={[
-              styles.sectionTitle,
-              isDarkMode && styles.darkSecondaryText,
-            ]}
-          >
+        <View className="mb-8">
+          <Text className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2 ml-4">
             <Trans>Current Language</Trans>
           </Text>
-          <View
-            style={[
-              styles.currentLanguageCard,
-              isDarkMode && styles.darkCurrentLanguageCard,
-            ]}
-          >
-            <View style={styles.currentLanguageInfo}>
+          <View className="bg-white dark:bg-gray-800 rounded-xl p-4">
+            <View className="flex-row items-center">
               <Globe size={24} color="#007AFF" />
-              <View style={styles.currentLanguageText}>
-                <Text
-                  style={[
-                    styles.currentLanguageName,
-                    isDarkMode && styles.darkText,
-                  ]}
-                >
+              <View className="ml-3 flex-1">
+                <Text className="text-lg font-semibold text-black dark:text-white mb-1">
                   {languages.find((l) => l.code === language)?.name ||
                     "Unknown"}
                 </Text>
-                <Text
-                  style={[
-                    styles.currentLanguageNative,
-                    isDarkMode && styles.darkSecondaryText,
-                  ]}
-                >
+                <Text className="text-sm text-gray-500 dark:text-gray-400">
                   {languages.find((l) => l.code === language)?.nativeName ||
                     language}
                 </Text>
@@ -374,109 +350,39 @@ export default function LanguageSettingsScreen() {
         {sections.map(renderSection)}
 
         {/* Settings */}
-        <View style={styles.section}>
-          <Text
-            style={[
-              styles.sectionTitle,
-              isDarkMode && styles.darkSecondaryText,
-            ]}
-          >
-            <Trans>Settings</Trans>
-          </Text>
-          <View
-            style={[
-              styles.sectionContent,
-              isDarkMode && styles.darkSectionContent,
-            ]}
-          >
-            <View
-              style={[styles.settingItem, isDarkMode && styles.darkSettingItem]}
-            >
-              <View style={styles.settingContent}>
-                <View style={styles.settingIcon}>
-                  <Download
-                    size={20}
-                    color={isDarkMode ? "#ffffff" : "#666666"}
-                  />
-                </View>
-                <View style={styles.settingText}>
-                  <Text
-                    style={[styles.settingTitle, isDarkMode && styles.darkText]}
-                  >
-                    <Trans>Auto-download languages</Trans>
-                  </Text>
-                  <Text
-                    style={[
-                      styles.settingDescription,
-                      isDarkMode && styles.darkSecondaryText,
-                    ]}
-                  >
-                    <Trans>
-                      Automatically download language packs when selected
-                    </Trans>
-                  </Text>
-                </View>
-              </View>
-              <Button
-                variant={autoDownloadEnabled ? "primary" : "secondary"}
-                size="small"
-                title={autoDownloadEnabled ? "Enabled" : "Disabled"}
-                onPress={handleToggleAutoDownload}
-              />
-            </View>
-
-            <View
-              style={[styles.separator, isDarkMode && styles.darkSeparator]}
-            />
-
-            <View
-              style={[styles.settingItem, isDarkMode && styles.darkSettingItem]}
-            >
-              <View style={styles.settingContent}>
-                <View style={styles.settingIcon}>
-                  <RefreshCw
-                    size={20}
-                    color={isDarkMode ? "#ff3b30" : "#ff3b30"}
-                  />
-                </View>
-                <View style={styles.settingText}>
-                  <Text
-                    style={[
-                      styles.settingTitle,
-                      isDarkMode && styles.darkText,
-                      styles.destructiveText,
-                    ]}
-                  >
-                    <Trans>Reset language data</Trans>
-                  </Text>
-                  <Text
-                    style={[
-                      // styles.settingDescription,
-                      isDarkMode && styles.darkSecondaryText,
-                    ]}
-                  >
-                    <Trans>Reset all language preferences to defaults</Trans>
-                  </Text>
-                </View>
-              </View>
-              <Button
-                variant="destructive"
-                size="small"
-                title="Reset"
-                onPress={handleResetLanguageData}
-                disabled={loading}
-              />
-            </View>
-          </View>
-        </View>
+        <SettingsSection
+          title="Settings"
+          items={[
+            {
+              title: "Auto-download languages",
+              description:
+                "Automatically download language packs when selected",
+              type: "toggle",
+              icon: (
+                <Download
+                  size={20}
+                  className="text-gray-600 dark:text-gray-300"
+                />
+              ),
+              value: autoDownloadEnabled,
+              onToggle: setAutoDownloadEnabled,
+            },
+            {
+              title: "Reset language data",
+              description: "Reset all language preferences to defaults",
+              type: "button",
+              icon: <RefreshCw size={20} className="text-red-500" />,
+              destructive: true,
+              onPress: handleResetLanguageData,
+            },
+          ]}
+        />
 
         {/* Info Section */}
-        <View style={styles.section}>
-          <View style={[styles.infoCard, isDarkMode && styles.darkInfoCard]}>
-            <Info size={20} color={isDarkMode ? "#007AFF" : "#007AFF"} />
-            <Text
-              style={[styles.infoText, isDarkMode && styles.darkSecondaryText]}
-            >
+        <View className="mb-8">
+          <View className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 flex-row items-start">
+            <Info size={20} color="#007AFF" className="mt-0.5 mr-3" />
+            <Text className="text-sm text-gray-600 dark:text-gray-300 flex-1 leading-5">
               <Trans>
                 Language changes take effect immediately. Some content may
                 require app restart to display in the new language.
@@ -486,14 +392,9 @@ export default function LanguageSettingsScreen() {
         </View>
 
         {loading && (
-          <View style={styles.loadingContainer}>
+          <View className="p-8 items-center">
             <ActivityIndicator size="large" color="#007AFF" />
-            <Text
-              style={[
-                styles.loadingText,
-                isDarkMode && styles.darkSecondaryText,
-              ]}
-            >
+            <Text className="text-sm text-gray-500 dark:text-gray-400 mt-2">
               <Trans>Changing language...</Trans>
             </Text>
           </View>
@@ -502,199 +403,3 @@ export default function LanguageSettingsScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f2f2f7",
-  },
-  darkContainer: {
-    backgroundColor: "#000000",
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    padding: 16,
-  },
-  section: {
-    marginBottom: 32,
-  },
-  sectionTitle: {
-    fontSize: 13,
-    fontWeight: "600",
-    color: "#8e8e93",
-    textTransform: "uppercase",
-    letterSpacing: 0.5,
-    marginBottom: 8,
-    marginLeft: 16,
-  },
-  sectionContent: {
-    backgroundColor: "#ffffff",
-    borderRadius: 10,
-    overflow: "hidden",
-  },
-  darkSectionContent: {
-    backgroundColor: "#1c1c1e",
-  },
-  currentLanguageCard: {
-    backgroundColor: "#ffffff",
-    borderRadius: 10,
-    padding: 16,
-  },
-  darkCurrentLanguageCard: {
-    backgroundColor: "#1c1c1e",
-  },
-  currentLanguageInfo: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  currentLanguageText: {
-    marginLeft: 12,
-    flex: 1,
-  },
-  currentLanguageName: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#000000",
-  },
-  currentLanguageNative: {
-    fontSize: 14,
-    color: "#8e8e93",
-    marginTop: 2,
-  },
-  languageItem: {
-    backgroundColor: "#ffffff",
-  },
-  darkLanguageItem: {
-    backgroundColor: "#1c1c1e",
-  },
-  selectedItem: {
-    backgroundColor: "#f0f8ff",
-  },
-  darkSelectedItem: {
-    backgroundColor: "#1a2332",
-  },
-  languageButton: {
-    padding: 0,
-    backgroundColor: "transparent",
-    width: "100%",
-  },
-  languageContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 16,
-    width: "100%",
-  },
-  languageIcon: {
-    marginRight: 12,
-  },
-  languageInfo: {
-    flex: 1,
-  },
-  languageName: {
-    fontSize: 16,
-    fontWeight: "500",
-    color: "#000000",
-  },
-  nativeName: {
-    fontSize: 14,
-    color: "#8e8e93",
-    marginTop: 2,
-  },
-  regionName: {
-    fontSize: 12,
-    color: "#8e8e93",
-    marginTop: 1,
-  },
-  languageActions: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  checkIcon: {
-    marginLeft: 8,
-  },
-  downloadButton: {
-    minWidth: 40,
-    height: 32,
-  },
-  downloadingIndicator: {
-    padding: 4,
-  },
-  settingItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: 16,
-    backgroundColor: "#ffffff",
-  },
-  darkSettingItem: {
-    backgroundColor: "#1c1c1e",
-  },
-  settingContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    flex: 1,
-  },
-  settingIcon: {
-    marginRight: 12,
-  },
-  settingText: {
-    flex: 1,
-  },
-  settingTitle: {
-    fontSize: 16,
-    fontWeight: "400",
-    color: "#000000",
-    marginBottom: 2,
-  },
-  settingDescription: {
-    fontSize: 13,
-    color: "#8e8e93",
-    lineHeight: 18,
-  },
-  destructiveText: {
-    color: "#ff3b30",
-  },
-  separator: {
-    height: 1,
-    backgroundColor: "#c6c6c8",
-    marginLeft: 48,
-  },
-  darkSeparator: {
-    backgroundColor: "#38383a",
-  },
-  infoCard: {
-    backgroundColor: "#ffffff",
-    borderRadius: 10,
-    padding: 16,
-    flexDirection: "row",
-    alignItems: "flex-start",
-  },
-  darkInfoCard: {
-    backgroundColor: "#1c1c1e",
-  },
-  infoText: {
-    fontSize: 14,
-    color: "#8e8e93",
-    lineHeight: 20,
-    marginLeft: 12,
-    flex: 1,
-  },
-  loadingContainer: {
-    padding: 20,
-    alignItems: "center",
-  },
-  loadingText: {
-    fontSize: 14,
-    color: "#8e8e93",
-    marginTop: 8,
-  },
-  darkText: {
-    color: "#ffffff",
-  },
-  darkSecondaryText: {
-    color: "#8e8e93",
-  },
-});

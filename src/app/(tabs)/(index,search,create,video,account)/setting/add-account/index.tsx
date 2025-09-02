@@ -1,15 +1,9 @@
 import React, { useCallback, useState } from "react";
-import {
-  StyleSheet,
-  ScrollView,
-  Platform,
-  KeyboardAvoidingView,
-} from "react-native";
+import { ScrollView, Platform, KeyboardAvoidingView } from "react-native";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { useAuth } from "@/contexts/AuthContext";
 import { Text, View, VStack, Dialog } from "@/components/ui";
-import { useSettings } from "@/contexts/SettingsContext";
 import { Trans } from "@lingui/react/macro";
 import { router } from "expo-router";
 import { Header } from "@/components/Header";
@@ -18,7 +12,6 @@ import { storage } from "@/lib/storage";
 
 export default function AddAccountScreen() {
   const { user: currentUser, refreshUser } = useAuth();
-  const { isDarkMode } = useSettings();
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -97,15 +90,15 @@ export default function AddAccountScreen() {
   }, [identifier, password, refreshUser]);
 
   return (
-    <View className="flex-1">
+    <View className="flex-1 bg-gray-100 dark:bg-black">
       <Header title="Add Account" />
       <KeyboardAvoidingView
-        style={styles.keyboardView}
+        className="flex-1"
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
+          className="flex-1"
+          contentContainerStyle={{ flexGrow: 1 }}
           showsVerticalScrollIndicator={false}
         >
           <VStack className="p-6">
@@ -121,15 +114,11 @@ export default function AddAccountScreen() {
               </Text>
 
               {currentUser && (
-                <View
-                  darkColor="secondary"
-                  className="bg-white"
-                  style={[styles.currentAccountCard]}
-                >
-                  <Text size="sm" font="semiBold">
+                <View className="bg-white dark:bg-gray-900 rounded-xl p-4 border border-gray-200 dark:border-gray-700 mt-4">
+                  <Text size="sm" font="semiBold" className="mb-2">
                     <Trans>Currently signed in as:</Trans>
                   </Text>
-                  <Text font="semiBold">
+                  <Text font="semiBold" className="mb-1">
                     {currentUser.displayName || currentUser.handle}
                   </Text>
                   <Text size="sm" className="text-gray-500">
@@ -165,9 +154,7 @@ export default function AddAccountScreen() {
               />
 
               {error ? (
-                <Text
-                  style={[styles.errorText, isDarkMode && styles.darkErrorText]}
-                >
+                <Text className="text-sm text-red-500 dark:text-red-400 text-center mb-4">
                   {error}
                 </Text>
               ) : null}
@@ -178,11 +165,11 @@ export default function AddAccountScreen() {
                 onPress={handleAddAccount}
                 disabled={!identifier.trim() || !password.trim() || loading}
                 variant="primary"
-                style={styles.addButton}
+                className="mt-2"
               />
             </VStack>
 
-            <Text size="sm" className="text-gray-500 text-center">
+            <Text size="sm" className="text-gray-500 text-center mt-6">
               <Trans>
                 Your accounts are stored securely on this device. You can manage
                 and switch between them in Settings.
@@ -194,43 +181,3 @@ export default function AddAccountScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  keyboardView: {
-    flex: 1,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-  },
-  cancelButton: {
-    padding: 8,
-  },
-  currentAccountCard: {
-    borderRadius: 12,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: "#e5e7eb",
-  },
-  darkCard: {
-    backgroundColor: "#1c1c1e",
-    borderColor: "#333333",
-  },
-  errorText: {
-    fontSize: 14,
-    color: "#ff3b30",
-    marginBottom: 16,
-    textAlign: "center",
-  },
-  darkErrorText: {
-    color: "#ff453a",
-  },
-  addButton: {
-    marginTop: 8,
-  },
-  infoSection: {
-    paddingTop: 20,
-  },
-});

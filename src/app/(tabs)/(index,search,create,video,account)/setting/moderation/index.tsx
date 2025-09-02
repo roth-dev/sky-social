@@ -213,7 +213,7 @@ export default function ModerationScreen() {
         contentContainerStyle={{ padding: 16 }}
         showsVerticalScrollIndicator={false}
       >
-        <View className="items-center p-5 mb-4">
+        <View className="items-center p-5 mb-4 bg-white rounded-md">
           <Shield size={24} color="#007AFF" />
           <Text className="text-2xl font-bold text-black dark:text-white mt-3 mb-2">
             <Trans>Content Moderation</Trans>

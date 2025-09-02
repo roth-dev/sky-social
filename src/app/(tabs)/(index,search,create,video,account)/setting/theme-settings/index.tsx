@@ -1,13 +1,8 @@
 import React, { useState, useCallback, useEffect } from "react";
-import {
-  StyleSheet,
-  ScrollView,
-  Alert,
-  Switch,
-  Appearance,
-} from "react-native";
+import { StyleSheet, ScrollView, Switch, Appearance } from "react-native";
 import { Header } from "@/components/Header";
 import { useSettings, ThemeMode } from "@/contexts/SettingsContext";
+import { Dialog } from "@/components/ui";
 import { Text, View } from "@/components/ui";
 import { Button } from "@/components/ui/Button";
 import { Trans } from "@lingui/react/macro";
@@ -110,7 +105,7 @@ export default function ThemeSettingsScreen() {
       await AsyncStorage.setItem(key, value.toString());
     } catch (error) {
       console.error(`Failed to save ${key}:`, error);
-      Alert.alert("Error", `Failed to save ${key} setting`);
+      Dialog.show("Error", `Failed to save ${key} setting`);
     }
   }, []);
 
@@ -153,7 +148,7 @@ export default function ThemeSettingsScreen() {
         // Save to AsyncStorage
         await AsyncStorage.setItem("selectedTheme", selectedTheme);
 
-        Alert.alert(
+        Dialog.show(
           "Theme Changed",
           `Theme has been changed to ${
             themeOptions.find((t) => t.mode === selectedTheme)?.name ||
@@ -163,7 +158,7 @@ export default function ThemeSettingsScreen() {
         );
       } catch (error) {
         console.error("Failed to change theme:", error);
-        Alert.alert("Error", "Failed to change theme. Please try again.");
+        Dialog.show("Error", "Failed to change theme. Please try again.");
       } finally {
         setLoading(false);
       }
@@ -177,7 +172,7 @@ export default function ThemeSettingsScreen() {
       await saveSetting("autoThemeEnabled", value);
 
       if (value) {
-        Alert.alert(
+        Dialog.show(
           "Auto Theme",
           "Theme will automatically change based on time of day."
         );
@@ -192,7 +187,7 @@ export default function ThemeSettingsScreen() {
       await saveSetting("scheduleEnabled", value);
 
       if (value) {
-        Alert.alert("Schedule Theme", "Custom theme schedule coming soon!");
+        Dialog.show("Schedule Theme", "Custom theme schedule coming soon!");
       }
     },
     [saveSetting]
@@ -203,7 +198,7 @@ export default function ThemeSettingsScreen() {
       setHighContrastEnabled(value);
       await saveSetting("highContrastEnabled", value);
 
-      Alert.alert(
+      Dialog.show(
         "High Contrast",
         value
           ? "High contrast mode enabled for better accessibility."
@@ -219,7 +214,7 @@ export default function ThemeSettingsScreen() {
       await saveSetting("adaptiveColorsEnabled", value);
 
       if (value) {
-        Alert.alert(
+        Dialog.show(
           "Adaptive Colors",
           "Colors will adapt based on your content and time of day."
         );
@@ -229,7 +224,7 @@ export default function ThemeSettingsScreen() {
   );
 
   const handleResetThemeSettings = useCallback(async () => {
-    Alert.alert(
+    Dialog.show(
       "Reset Theme Settings",
       "This will reset all theme preferences to their default values. Are you sure?",
       [
@@ -259,13 +254,13 @@ export default function ThemeSettingsScreen() {
                 "adaptiveColorsEnabled",
               ]);
 
-              Alert.alert(
+              Dialog.show(
                 "Success",
                 "Theme settings have been reset to defaults."
               );
             } catch (error) {
               console.error("Failed to reset theme settings:", error);
-              Alert.alert("Error", "Failed to reset theme settings.");
+              Dialog.show("Error", "Failed to reset theme settings.");
             } finally {
               setLoading(false);
             }
@@ -276,7 +271,7 @@ export default function ThemeSettingsScreen() {
   }, [setThemeMode]);
 
   const handleCustomizeColors = useCallback(() => {
-    Alert.alert("Customize Colors", "Color customization coming soon!", [
+    Dialog.show("Customize Colors", "Color customization coming soon!", [
       { text: "OK" },
     ]);
   }, []);

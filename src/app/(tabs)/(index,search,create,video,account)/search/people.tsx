@@ -1,15 +1,13 @@
 import React, { useCallback, useState } from "react";
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet } from "react-native";
 import { Header } from "@/components/Header";
 import { SearchHeader } from "@/components/search/SearchHeader";
 import { UserSearchResult } from "@/components/search/UserSearchResult";
 import { EmptyState, LoadingState } from "@/components/placeholders/EmptyState";
 import { SearchActor } from "@/types/search";
-import { ArrowLeft } from "lucide-react-native";
-import { router } from "expo-router";
 import { useSearchActors, useSuggestedFollows } from "@/hooks/query";
 import { List } from "@/components/list";
-import { View } from "@/components/ui";
+import { View, Text } from "@/components/ui";
 
 export default function PeopleListScreen() {
   const [searchQuery, setSearchQuery] = useState("");

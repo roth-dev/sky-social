@@ -1,16 +1,9 @@
 import React, { useState, useCallback, useEffect } from "react";
-import {
-  StyleSheet,
-  ScrollView,
-  Alert,
-  Switch,
-  Share,
-  Pressable,
-} from "react-native";
+import { StyleSheet, ScrollView, Switch, Share, Pressable } from "react-native";
 import { Header } from "@/components/Header";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSettings } from "@/contexts/SettingsContext";
-import { Text, View } from "@/components/ui";
+import { Text, View, Dialog } from "@/components/ui";
 import { Trans } from "@lingui/react/macro";
 import { t } from "@lingui/core/macro";
 import {
@@ -86,7 +79,7 @@ export default function AccountSettingsScreen() {
       setNotificationSettings(newSettings);
     } catch (error) {
       console.error("Failed to save notification settings:", error);
-      Alert.alert(t`Error`, t`Failed to save notification settings`);
+      Dialog.show(t`Error`, t`Failed to save notification settings`);
     }
   };
 
@@ -113,12 +106,12 @@ export default function AccountSettingsScreen() {
       });
     } catch (error) {
       console.error("Failed to export data:", error);
-      Alert.alert(t`Error`, t`Failed to export your data`);
+      Dialog.show(t`Error`, t`Failed to export your data`);
     }
   }, [user, notificationSettings]);
 
   const handleDeleteAccount = useCallback(() => {
-    Alert.alert(
+    Dialog.show(
       t`Delete Account`,
       t`Are you sure you want to delete your account? This action cannot be undone.`,
       [
@@ -127,7 +120,7 @@ export default function AccountSettingsScreen() {
           text: t`Delete`,
           style: "destructive",
           onPress: () => {
-            Alert.alert(
+            Dialog.show(
               t`Final Confirmation`,
               t`This will permanently delete your account and all associated data. Type "DELETE" to confirm.`,
               [
@@ -142,7 +135,7 @@ export default function AccountSettingsScreen() {
                       router.replace("/login");
                     } catch (error) {
                       console.error("Failed to delete account:", error);
-                      Alert.alert(t`Error`, t`Failed to delete account`);
+                      Dialog.show(t`Error`, t`Failed to delete account`);
                     }
                   },
                 },
@@ -155,15 +148,15 @@ export default function AccountSettingsScreen() {
   }, [logout]);
 
   const handleChangePassword = useCallback(() => {
-    Alert.alert(t`Change Password`, t`This feature will be available soon.`);
+    Dialog.show(t`Change Password`, t`This feature will be available soon.`);
   }, []);
 
   const handleChangeEmail = useCallback(() => {
-    Alert.alert(t`Change Email`, t`This feature will be available soon.`);
+    Dialog.show(t`Change Email`, t`This feature will be available soon.`);
   }, []);
 
   const handleTwoFactorAuth = useCallback(() => {
-    Alert.alert(
+    Dialog.show(
       t`Two-Factor Authentication`,
       t`This feature will be available soon.`
     );
@@ -321,7 +314,7 @@ export default function AccountSettingsScreen() {
           type: "button",
           icon: <Upload size={20} color={isDarkMode ? "#ffffff" : "#000000"} />,
           onPress: () =>
-            Alert.alert(
+            Dialog.show(
               t`Import Data`,
               t`This feature will be available soon.`
             ),
@@ -448,7 +441,6 @@ export default function AccountSettingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffffff",
   },
   darkContainer: {
     backgroundColor: "#000000",

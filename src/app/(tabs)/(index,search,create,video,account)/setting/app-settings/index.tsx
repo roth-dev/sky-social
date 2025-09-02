@@ -1,9 +1,8 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { StyleSheet, ScrollView, Alert, Switch, Platform } from "react-native";
+import { ScrollView, Platform } from "react-native";
 import { Header } from "@/components/Header";
 import { useSettings } from "@/contexts/SettingsContext";
-import { Text, View } from "@/components/ui";
-import { Button } from "@/components/ui/Button";
+import { Text, View, Dialog, SettingsSection } from "@/components/ui";
 import { Trans } from "@lingui/react/macro";
 import { t } from "@lingui/core/macro";
 import {
@@ -126,7 +125,7 @@ export default function AppSettingsScreen() {
       await AsyncStorage.setItem(key, value.toString());
     } catch (error) {
       console.error(`Failed to save ${key}:`, error);
-      Alert.alert("Error", `Failed to save ${key} setting`);
+      Dialog.show("Error", `Failed to save ${key} setting`);
     }
   }, []);
 
@@ -187,7 +186,7 @@ export default function AppSettingsScreen() {
   );
 
   const handleClearCache = useCallback(async () => {
-    Alert.alert(
+    Dialog.show(
       "Clear Cache",
       "This will clear all cached images, videos, and temporary files. Are you sure?",
       [
@@ -221,10 +220,10 @@ export default function AppSettingsScreen() {
               await AsyncStorage.multiRemove(cacheKeys);
 
               setCacheSize("0 MB");
-              Alert.alert("Success", "Cache cleared successfully");
+              Dialog.show("Success", "Cache cleared successfully");
             } catch (error) {
               console.error("Failed to clear cache:", error);
-              Alert.alert("Error", "Failed to clear cache");
+              Dialog.show("Error", "Failed to clear cache");
             } finally {
               setLoading(false);
             }
@@ -235,7 +234,7 @@ export default function AppSettingsScreen() {
   }, []);
 
   const handleClearDownloads = useCallback(async () => {
-    Alert.alert(
+    Dialog.show(
       "Clear Downloads",
       "This will remove all downloaded media files. Are you sure?",
       [
@@ -250,13 +249,13 @@ export default function AppSettingsScreen() {
               if (Platform.OS !== "web") {
                 // Clear downloaded media - simplified implementation
                 setDownloadedMedia("0 MB");
-                Alert.alert("Success", "Downloads cleared successfully");
+                Dialog.show("Success", "Downloads cleared successfully");
               } else {
-                Alert.alert("Info", "Download clearing not available on web");
+                Dialog.show("Info", "Download clearing not available on web");
               }
             } catch (error) {
               console.error("Failed to clear downloads:", error);
-              Alert.alert("Error", "Failed to clear downloads");
+              Dialog.show("Error", "Failed to clear downloads");
             } finally {
               setLoading(false);
             }
@@ -267,7 +266,7 @@ export default function AppSettingsScreen() {
   }, []);
 
   const handleResetSettings = useCallback(async () => {
-    Alert.alert(
+    Dialog.show(
       "Reset App Settings",
       "This will reset all app settings to their default values. Are you sure?",
       [
@@ -299,10 +298,10 @@ export default function AppSettingsScreen() {
               setEnableHaptics(true);
               setDataSaver(false);
 
-              Alert.alert("Success", "App settings reset to defaults");
+              Dialog.show("Success", "App settings reset to defaults");
             } catch (error) {
               console.error("Failed to reset settings:", error);
-              Alert.alert("Error", "Failed to reset settings");
+              Dialog.show("Error", "Failed to reset settings");
             } finally {
               setLoading(false);
             }
@@ -313,19 +312,19 @@ export default function AppSettingsScreen() {
   }, []);
 
   const handleNetworkSettings = useCallback(() => {
-    Alert.alert("Network Settings", "Network configuration coming soon!", [
+    Dialog.show("Network Settings", "Network configuration coming soon!", [
       { text: "OK" },
     ]);
   }, []);
 
   const handleStorageSettings = useCallback(() => {
-    Alert.alert("Storage Settings", "Storage management coming soon!", [
+    Dialog.show("Storage Settings", "Storage management coming soon!", [
       { text: "OK" },
     ]);
   }, []);
 
   const handlePrivacySettings = useCallback(() => {
-    Alert.alert("Privacy Settings", "Privacy configuration coming soon!", [
+    Dialog.show("Privacy Settings", "Privacy configuration coming soon!", [
       { text: "OK" },
     ]);
   }, []);
@@ -496,135 +495,32 @@ export default function AppSettingsScreen() {
     },
   ];
 
-  const renderSettingItem = (item: AppSetting) => {
-    return (
-      <View
-        key={item.id}
-        style={[styles.settingItem, isDarkMode && styles.darkSettingItem]}
-      >
-        <View style={styles.settingContent}>
-          <View style={styles.settingIcon}>{item.icon}</View>
-          <View style={styles.settingText}>
-            <Text
-              style={[
-                styles.settingTitle,
-                isDarkMode && styles.darkText,
-                item.disabled && styles.disabledText,
-                item.destructive && styles.destructiveText,
-              ]}
-            >
-              <Trans>{item.title}</Trans>
-            </Text>
-            {!!item.description && (
-              <Text
-                style={[
-                  styles.settingDescription,
-                  isDarkMode && styles.darkSecondaryText,
-                  item.disabled && styles.disabledText,
-                ]}
-              >
-                <Trans>{item.description}</Trans>
-              </Text>
-            )}
-          </View>
-        </View>
-
-        {item.type === "toggle" && (
-          <Switch
-            value={item.value as boolean}
-            onValueChange={item.onToggle}
-            disabled={item.disabled || loading}
-            thumbColor={isDarkMode ? "#ffffff" : "#f4f3f4"}
-            trackColor={{
-              false: isDarkMode ? "#39393d" : "#767577",
-              true: "#007AFF",
-            }}
-          />
-        )}
-
-        {item.type === "button" && (
-          <Button
-            variant={item.destructive ? "destructive" : "secondary"}
-            size="small"
-            title={item.destructive ? "Clear" : "Manage"}
-            onPress={item.onPress}
-            disabled={loading}
-          />
-        )}
-
-        {item.type === "navigation" && (
-          <View style={styles.chevron}>
-            <Text
-              style={[
-                styles.chevronText,
-                isDarkMode && styles.darkSecondaryText,
-              ]}
-            >
-              ›
-            </Text>
-          </View>
-        )}
-      </View>
-    );
-  };
-
   const renderSection = (section: AppSettingsSection) => {
     return (
-      <View key={section.id} style={styles.section}>
-        <Text
-          style={[styles.sectionTitle, isDarkMode && styles.darkSecondaryText]}
-        >
-          <Trans>{section.title}</Trans>
-        </Text>
-        <View
-          style={[
-            styles.sectionContent,
-            isDarkMode && styles.darkSectionContent,
-          ]}
-        >
-          {section.items.map((item, index) => (
-            <View key={item.id}>
-              {item.type === "navigation" ? (
-                <Button
-                  variant="ghost"
-                  style={styles.navigationButton}
-                  onPress={item.onPress}
-                >
-                  {renderSettingItem(item)}
-                </Button>
-              ) : (
-                renderSettingItem(item)
-              )}
-              {index < section.items.length - 1 && (
-                <View
-                  style={[styles.separator, isDarkMode && styles.darkSeparator]}
-                />
-              )}
-            </View>
-          ))}
-        </View>
-      </View>
+      <SettingsSection
+        key={section.id}
+        title={section.title}
+        items={section.items.map((item) => ({
+          ...item,
+          loading,
+        }))}
+      />
     );
   };
 
   return (
-    <View style={[styles.container, isDarkMode && styles.darkContainer]}>
+    <View className="flex-1 bg-gray-50 dark:bg-black">
       <Header title={t`App Settings`} />
       <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
+        className="flex-1"
+        contentContainerStyle={{ padding: 16 }}
         showsVerticalScrollIndicator={false}
       >
         {sections.map(renderSection)}
 
         {loading && (
-          <View style={styles.loadingContainer}>
-            <Text
-              style={[
-                styles.loadingText,
-                isDarkMode && styles.darkSecondaryText,
-              ]}
-            >
+          <View className="p-5 items-center">
+            <Text className="text-sm text-gray-500 dark:text-gray-400">
               <Trans>Processing...</Trans>
             </Text>
           </View>
@@ -633,111 +529,3 @@ export default function AppSettingsScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f2f2f7",
-  },
-  darkContainer: {
-    backgroundColor: "#000000",
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    padding: 16,
-  },
-  section: {
-    marginBottom: 32,
-  },
-  sectionTitle: {
-    fontSize: 13,
-    fontWeight: "600",
-    color: "#8e8e93",
-    textTransform: "uppercase",
-    letterSpacing: 0.5,
-    marginBottom: 8,
-    marginLeft: 16,
-  },
-  sectionContent: {
-    backgroundColor: "#ffffff",
-    borderRadius: 10,
-    overflow: "hidden",
-  },
-  darkSectionContent: {
-    backgroundColor: "#1c1c1e",
-  },
-  settingItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: 16,
-    backgroundColor: "#ffffff",
-  },
-  darkSettingItem: {
-    backgroundColor: "#1c1c1e",
-  },
-  settingContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    flex: 1,
-  },
-  settingIcon: {
-    marginRight: 12,
-  },
-  settingText: {
-    flex: 1,
-  },
-  settingTitle: {
-    fontSize: 16,
-    fontWeight: "400",
-    color: "#000000",
-    marginBottom: 2,
-  },
-  darkText: {
-    color: "#ffffff",
-  },
-  settingDescription: {
-    fontSize: 13,
-    color: "#8e8e93",
-    lineHeight: 18,
-  },
-  darkSecondaryText: {
-    color: "#8e8e93",
-  },
-  disabledText: {
-    opacity: 0.5,
-  },
-  destructiveText: {
-    color: "#ff3b30",
-  },
-  separator: {
-    height: 1,
-    backgroundColor: "#c6c6c8",
-    marginLeft: 48,
-  },
-  darkSeparator: {
-    backgroundColor: "#38383a",
-  },
-  chevron: {
-    marginLeft: 8,
-  },
-  chevronText: {
-    fontSize: 18,
-    color: "#c7c7cc",
-    fontWeight: "300",
-  },
-  navigationButton: {
-    padding: 0,
-    backgroundColor: "transparent",
-  },
-  loadingContainer: {
-    padding: 20,
-    alignItems: "center",
-  },
-  loadingText: {
-    fontSize: 14,
-    color: "#8e8e93",
-  },
-});

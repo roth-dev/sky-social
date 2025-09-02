@@ -1,9 +1,9 @@
 import React, { useState, useCallback } from "react";
-import { StyleSheet, ScrollView, Alert, Switch } from "react-native";
+import { StyleSheet, ScrollView, Switch } from "react-native";
 import { Header } from "@/components/Header";
 import { useSettings } from "@/contexts/SettingsContext";
 import { Button } from "@/components/ui/Button";
-import { View, Text } from "@/components/ui";
+import { View, Text, Dialog } from "@/components/ui";
 import { Trans } from "@lingui/react/macro";
 import { t } from "@lingui/core/macro";
 import {
@@ -79,12 +79,12 @@ export default function HomeFeedPreferencesScreen() {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       setHasChanges(false);
-      Alert.alert(t`Success`, t`Your feed preferences have been saved.`, [
+      Dialog.show(t`Success`, t`Your feed preferences have been saved.`, [
         { text: t`OK` },
       ]);
     } catch (error) {
       console.error("Failed to save feed preferences:", error);
-      Alert.alert(
+      Dialog.show(
         t`Error`,
         t`Failed to save your feed preferences. Please try again.`,
         [{ text: t`OK` }]
@@ -93,7 +93,7 @@ export default function HomeFeedPreferencesScreen() {
   }, []);
 
   const resetToDefaults = useCallback(() => {
-    Alert.alert(
+    Dialog.show(
       t`Reset to Defaults`,
       t`This will reset all feed preferences to their default values. Are you sure?`,
       [

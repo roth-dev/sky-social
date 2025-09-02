@@ -1,9 +1,9 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { StyleSheet, ScrollView, Alert, ActivityIndicator } from "react-native";
+import { StyleSheet, ScrollView, ActivityIndicator } from "react-native";
 import { Header } from "@/components/Header";
 import { useSettings, Language } from "@/contexts/SettingsContext";
 import { useI18n } from "@/contexts/I18nProvider";
-import { Text, View } from "@/components/ui";
+import { Text, View, Dialog } from "@/components/ui";
 import { Button } from "@/components/ui/Button";
 import { Trans } from "@lingui/react/macro";
 import { t } from "@lingui/core/macro";
@@ -85,7 +85,7 @@ export default function LanguageSettingsScreen() {
         // Save to AsyncStorage
         await AsyncStorage.setItem("selectedLanguage", selectedLanguage);
 
-        Alert.alert(
+        Dialog.show(
           "Language Changed",
           `Language has been changed to ${
             languages.find((l) => l.code === selectedLanguage)?.name ||
@@ -95,7 +95,7 @@ export default function LanguageSettingsScreen() {
         );
       } catch (error) {
         console.error("Failed to change language:", error);
-        Alert.alert("Error", "Failed to change language. Please try again.");
+        Dialog.show("Error", "Failed to change language. Please try again.");
       } finally {
         setLoading(false);
       }
@@ -121,7 +121,7 @@ export default function LanguageSettingsScreen() {
           )
         );
 
-        Alert.alert(
+        Dialog.show(
           "Download Complete",
           `${
             languages.find((l) => l.code === langCode)?.name
@@ -129,7 +129,7 @@ export default function LanguageSettingsScreen() {
         );
       } catch (error) {
         console.error(`Failed to download ${langCode}:`, error);
-        Alert.alert(
+        Dialog.show(
           "Download Failed",
           "Failed to download language pack. Please try again."
         );
@@ -156,7 +156,7 @@ export default function LanguageSettingsScreen() {
   }, [autoDownloadEnabled]);
 
   const handleResetLanguageData = useCallback(async () => {
-    Alert.alert(
+    Dialog.show(
       "Reset Language Data",
       "This will reset all language preferences and clear downloaded language packs. Are you sure?",
       [
@@ -187,13 +187,13 @@ export default function LanguageSettingsScreen() {
               ]);
               setAutoDownloadEnabled(true);
 
-              Alert.alert(
+              Dialog.show(
                 "Success",
                 "Language data has been reset to defaults."
               );
             } catch (error) {
               console.error("Failed to reset language data:", error);
-              Alert.alert("Error", "Failed to reset language data.");
+              Dialog.show("Error", "Failed to reset language data.");
             } finally {
               setLoading(false);
             }
@@ -451,7 +451,7 @@ export default function LanguageSettingsScreen() {
                   </Text>
                   <Text
                     style={[
-                      styles.settingDescription,
+                      // styles.settingDescription,
                       isDarkMode && styles.darkSecondaryText,
                     ]}
                   >

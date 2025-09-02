@@ -4,12 +4,11 @@ import {
   ScrollView,
   Platform,
   KeyboardAvoidingView,
-  Alert,
 } from "react-native";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { useAuth } from "@/contexts/AuthContext";
-import { Text, View, VStack } from "@/components/ui";
+import { Text, View, VStack, Dialog } from "@/components/ui";
 import { useSettings } from "@/contexts/SettingsContext";
 import { Trans } from "@lingui/react/macro";
 import { router } from "expo-router";
@@ -63,7 +62,7 @@ export default function AddAccountScreen() {
           // Save the new account
           await storage.saveAccount(session, newProfile);
 
-          Alert.alert(
+          Dialog.show(
             "Account Added",
             `Successfully added ${
               newProfile.displayName || newProfile.handle

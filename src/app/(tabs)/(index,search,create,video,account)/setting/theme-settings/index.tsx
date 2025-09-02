@@ -1,12 +1,13 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { StyleSheet, ScrollView, Switch, Appearance } from "react-native";
+import { ScrollView, Appearance } from "react-native";
 import { Header } from "@/components/Header";
 import { useSettings, ThemeMode } from "@/contexts/SettingsContext";
-import { Dialog } from "@/components/ui";
+import { Dialog, SettingsSection } from "@/components/ui";
 import { Text, View } from "@/components/ui";
 import { Button } from "@/components/ui/Button";
 import { Trans } from "@lingui/react/macro";
 import { t } from "@lingui/core/macro";
+import type { SettingsItemProps } from "@/components/ui/SettingsItem";
 import {
   Check,
   Sun,
@@ -27,23 +28,6 @@ interface ThemeOption {
   description: string;
   icon: React.ReactNode;
   color: string;
-}
-
-interface ThemeSetting {
-  id: string;
-  title: string;
-  description?: string;
-  type: "toggle" | "button" | "info";
-  icon: React.ReactNode;
-  value?: boolean | string;
-  onPress?: () => void;
-  onToggle?: (value: boolean) => Promise<void> | void;
-}
-
-interface ThemeSection {
-  id: string;
-  title: string;
-  items: ThemeSetting[];
 }
 
 export default function ThemeSettingsScreen() {
@@ -306,46 +290,47 @@ export default function ThemeSettingsScreen() {
     return (
       <View
         key={theme.mode}
-        style={[
-          styles.themeOption,
-          isDarkMode && styles.darkThemeOption,
-          isSelected && styles.selectedTheme,
-          isSelected && isDarkMode && styles.darkSelectedTheme,
-        ]}
+        className={`p-4 ${isSelected ? "bg-blue-50 dark:bg-blue-900/20" : ""}`}
       >
         <Button
           variant="ghost"
-          style={styles.themeButton}
+          className="justify-between p-0 bg-transparent"
           onPress={() => handleThemeSelect(theme.mode)}
           disabled={loading}
         >
-          <View style={styles.themeContent}>
+          <View className="flex-row items-center flex-1">
             <View
-              style={[
-                styles.themeIconContainer,
-                { backgroundColor: `${theme.color}20` },
-              ]}
+              className="w-10 h-10 rounded-full items-center justify-center mr-3"
+              style={{ backgroundColor: `${theme.color}20` }}
             >
               {theme.icon}
             </View>
-            <View style={styles.themeInfo}>
-              <Text style={[styles.themeName, isDarkMode && styles.darkText]}>
+            <View className="flex-1">
+              <Text
+                className={`text-base font-medium ${
+                  isSelected
+                    ? "text-blue-600 dark:text-blue-400"
+                    : "text-gray-900 dark:text-white"
+                }`}
+              >
                 <Trans>{theme.name}</Trans>
               </Text>
               <Text
-                style={[
-                  styles.themeDescription,
-                  isDarkMode && styles.darkSecondaryText,
-                ]}
+                className={`text-sm ${
+                  isSelected
+                    ? "text-blue-500 dark:text-blue-300"
+                    : "text-gray-500 dark:text-gray-400"
+                }`}
               >
                 <Trans>{theme.description}</Trans>
               </Text>
               {theme.mode === "system" && (
                 <Text
-                  style={[
-                    styles.systemThemeInfo,
-                    isDarkMode && styles.darkSecondaryText,
-                  ]}
+                  className={`text-xs ${
+                    isSelected
+                      ? "text-blue-400 dark:text-blue-200"
+                      : "text-gray-400 dark:text-gray-500"
+                  }`}
                 >
                   <Trans>
                     Currently: {systemTheme === "dark" ? "Dark" : "Light"}
@@ -354,7 +339,7 @@ export default function ThemeSettingsScreen() {
               )}
             </View>
             {isSelected && (
-              <View style={styles.checkIcon}>
+              <View className="ml-2">
                 <Check size={20} color="#007AFF" />
               </View>
             )}
@@ -364,215 +349,83 @@ export default function ThemeSettingsScreen() {
     );
   };
 
-  const sections: ThemeSection[] = [
+  const automationSection: SettingsItemProps[] = [
     {
-      id: "automation",
-      title: "Automation",
-      items: [
-        {
-          id: "auto-theme",
-          title: "Auto theme switching",
-          description:
-            "Automatically switch between light and dark based on time",
-          type: "toggle",
-          icon: <Clock size={20} color={isDarkMode ? "#ffffff" : "#666666"} />,
-          value: autoThemeEnabled,
-          onToggle: handleAutoThemeToggle,
-        },
-        {
-          id: "schedule",
-          title: "Custom schedule",
-          description: "Set specific times for theme changes",
-          type: "toggle",
-          icon: (
-            <Settings size={20} color={isDarkMode ? "#ffffff" : "#666666"} />
-          ),
-          value: scheduleEnabled,
-          onToggle: handleScheduleToggle,
-        },
-      ],
+      title: "Auto theme switching",
+      description: "Automatically switch between light and dark based on time",
+      type: "toggle",
+      icon: <Clock size={20} color={isDarkMode ? "#ffffff" : "#666666"} />,
+      value: autoThemeEnabled,
+      onToggle: handleAutoThemeToggle,
     },
     {
-      id: "accessibility",
-      title: "Accessibility",
-      items: [
-        {
-          id: "high-contrast",
-          title: "High contrast",
-          description: "Increase contrast for better readability",
-          type: "toggle",
-          icon: <Eye size={20} color={isDarkMode ? "#ffffff" : "#666666"} />,
-          value: highContrastEnabled,
-          onToggle: handleHighContrastToggle,
-        },
-        {
-          id: "adaptive-colors",
-          title: "Adaptive colors",
-          description: "Adjust colors based on content and environment",
-          type: "toggle",
-          icon: (
-            <Palette size={20} color={isDarkMode ? "#ffffff" : "#666666"} />
-          ),
-          value: adaptiveColorsEnabled,
-          onToggle: handleAdaptiveColorsToggle,
-        },
-      ],
-    },
-    {
-      id: "customization",
-      title: "Customization",
-      items: [
-        {
-          id: "customize-colors",
-          title: "Customize colors",
-          description: "Create your own color theme",
-          type: "button",
-          icon: (
-            <Palette size={20} color={isDarkMode ? "#ffffff" : "#666666"} />
-          ),
-          onPress: handleCustomizeColors,
-        },
-        {
-          id: "reset-settings",
-          title: "Reset theme settings",
-          description: "Reset all theme preferences to defaults",
-          type: "button",
-          icon: (
-            <RefreshCw size={20} color={isDarkMode ? "#ff3b30" : "#ff3b30"} />
-          ),
-          onPress: handleResetThemeSettings,
-        },
-      ],
+      title: "Custom schedule",
+      description: "Set specific times for theme changes",
+      type: "toggle",
+      icon: <Settings size={20} color={isDarkMode ? "#ffffff" : "#666666"} />,
+      value: scheduleEnabled,
+      onToggle: handleScheduleToggle,
     },
   ];
 
-  const renderSettingItem = (item: ThemeSetting) => {
-    return (
-      <View
-        key={item.id}
-        style={[styles.settingItem, isDarkMode && styles.darkSettingItem]}
-      >
-        <View style={styles.settingContent}>
-          <View style={styles.settingIcon}>{item.icon}</View>
-          <View style={styles.settingText}>
-            <Text
-              style={[
-                styles.settingTitle,
-                isDarkMode && styles.darkText,
-                item.id === "reset-settings" && styles.destructiveText,
-              ]}
-            >
-              <Trans>{item.title}</Trans>
-            </Text>
-            {item.description && (
-              <Text
-                style={[
-                  styles.settingDescription,
-                  isDarkMode && styles.darkSecondaryText,
-                ]}
-              >
-                <Trans>{item.description}</Trans>
-              </Text>
-            )}
-          </View>
-        </View>
+  const accessibilitySection: SettingsItemProps[] = [
+    {
+      title: "High contrast",
+      description: "Increase contrast for better readability",
+      type: "toggle",
+      icon: <Eye size={20} color={isDarkMode ? "#ffffff" : "#666666"} />,
+      value: highContrastEnabled,
+      onToggle: handleHighContrastToggle,
+    },
+    {
+      title: "Adaptive colors",
+      description: "Adjust colors based on content and environment",
+      type: "toggle",
+      icon: <Palette size={20} color={isDarkMode ? "#ffffff" : "#666666"} />,
+      value: adaptiveColorsEnabled,
+      onToggle: handleAdaptiveColorsToggle,
+    },
+  ];
 
-        {item.type === "toggle" && (
-          <Switch
-            value={item.value as boolean}
-            onValueChange={item.onToggle}
-            disabled={loading}
-            thumbColor={isDarkMode ? "#ffffff" : "#f4f3f4"}
-            trackColor={{
-              false: isDarkMode ? "#39393d" : "#767577",
-              true: "#007AFF",
-            }}
-          />
-        )}
-
-        {item.type === "button" && (
-          <Button
-            variant={item.id === "reset-settings" ? "destructive" : "secondary"}
-            size="small"
-            title={item.id === "reset-settings" ? "Reset" : "Customize"}
-            onPress={item.onPress}
-            disabled={loading}
-          />
-        )}
-      </View>
-    );
-  };
-
-  const renderSection = (section: ThemeSection) => {
-    return (
-      <View key={section.id} style={styles.section}>
-        <Text
-          style={[styles.sectionTitle, isDarkMode && styles.darkSecondaryText]}
-        >
-          <Trans>{section.title}</Trans>
-        </Text>
-        <View
-          style={[
-            styles.sectionContent,
-            isDarkMode && styles.darkSectionContent,
-          ]}
-        >
-          {section.items.map((item, index) => (
-            <View key={item.id}>
-              {renderSettingItem(item)}
-              {index < section.items.length - 1 && (
-                <View
-                  style={[styles.separator, isDarkMode && styles.darkSeparator]}
-                />
-              )}
-            </View>
-          ))}
-        </View>
-      </View>
-    );
-  };
+  const customizationSection: SettingsItemProps[] = [
+    {
+      title: "Customize colors",
+      description: "Create your own color theme",
+      type: "button",
+      icon: <Palette size={20} color={isDarkMode ? "#ffffff" : "#666666"} />,
+      onPress: handleCustomizeColors,
+    },
+    {
+      title: "Reset theme settings",
+      description: "Reset all theme preferences to defaults",
+      type: "button",
+      icon: <RefreshCw size={20} color={isDarkMode ? "#ff3b30" : "#ff3b30"} />,
+      onPress: handleResetThemeSettings,
+      destructive: true,
+    },
+  ];
 
   return (
-    <View style={[styles.container, isDarkMode && styles.darkContainer]}>
+    <View className="flex-1 bg-gray-100 dark:bg-black">
       <Header title={t`Theme Settings`} />
       <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
+        className="flex-1"
+        contentContainerStyle={{ padding: 16 }}
         showsVerticalScrollIndicator={false}
       >
         {/* Current Theme Display */}
-        <View style={styles.section}>
-          <Text
-            style={[
-              styles.sectionTitle,
-              isDarkMode && styles.darkSecondaryText,
-            ]}
-          >
+        <View className="mb-8">
+          <Text className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2 ml-4">
             <Trans>Current Theme</Trans>
           </Text>
-          <View
-            style={[
-              styles.currentThemeCard,
-              isDarkMode && styles.darkCurrentThemeCard,
-            ]}
-          >
-            <View style={styles.currentThemeInfo}>
+          <View className="bg-white dark:bg-gray-900 rounded-xl p-4">
+            <View className="flex-row items-center">
               {themes.find((t) => t.mode === themeMode)?.icon}
-              <View style={styles.currentThemeText}>
-                <Text
-                  style={[
-                    styles.currentThemeName,
-                    isDarkMode && styles.darkText,
-                  ]}
-                >
+              <View className="ml-3 flex-1">
+                <Text className="text-base font-medium text-gray-900 dark:text-white">
                   {themes.find((t) => t.mode === themeMode)?.name || "Unknown"}
                 </Text>
-                <Text
-                  style={[
-                    styles.currentThemeDescription,
-                    isDarkMode && styles.darkSecondaryText,
-                  ]}
-                >
+                <Text className="text-sm text-gray-500 dark:text-gray-400">
                   {themes.find((t) => t.mode === themeMode)?.description ||
                     themeMode}
                 </Text>
@@ -582,31 +435,16 @@ export default function ThemeSettingsScreen() {
         </View>
 
         {/* Theme Options */}
-        <View style={styles.section}>
-          <Text
-            style={[
-              styles.sectionTitle,
-              isDarkMode && styles.darkSecondaryText,
-            ]}
-          >
+        <View className="mb-8">
+          <Text className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2 ml-4">
             <Trans>Theme Options</Trans>
           </Text>
-          <View
-            style={[
-              styles.sectionContent,
-              isDarkMode && styles.darkSectionContent,
-            ]}
-          >
+          <View className="bg-white dark:bg-gray-900 rounded-xl overflow-hidden">
             {themes.map((theme, index) => (
               <View key={theme.mode}>
                 {renderThemeOption(theme)}
                 {index < themes.length - 1 && (
-                  <View
-                    style={[
-                      styles.separator,
-                      isDarkMode && styles.darkSeparator,
-                    ]}
-                  />
+                  <View className="h-px bg-gray-200 dark:bg-gray-700 ml-12" />
                 )}
               </View>
             ))}
@@ -614,15 +452,15 @@ export default function ThemeSettingsScreen() {
         </View>
 
         {/* Settings Sections */}
-        {sections.map(renderSection)}
+        <SettingsSection title="Automation" items={automationSection} />
+        <SettingsSection title="Accessibility" items={accessibilitySection} />
+        <SettingsSection title="Customization" items={customizationSection} />
 
         {/* Info Section */}
-        <View style={styles.section}>
-          <View style={[styles.infoCard, isDarkMode && styles.darkInfoCard]}>
-            <Info size={20} color={isDarkMode ? "#007AFF" : "#007AFF"} />
-            <Text
-              style={[styles.infoText, isDarkMode && styles.darkSecondaryText]}
-            >
+        <View className="mb-8">
+          <View className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4">
+            <Info size={20} color="#007AFF" />
+            <Text className="text-sm text-gray-600 dark:text-gray-300 mt-2 ml-6">
               <Trans>
                 Theme changes take effect immediately. System theme follows your
                 device&apos;s appearance settings.
@@ -632,13 +470,8 @@ export default function ThemeSettingsScreen() {
         </View>
 
         {loading && (
-          <View style={styles.loadingContainer}>
-            <Text
-              style={[
-                styles.loadingText,
-                isDarkMode && styles.darkSecondaryText,
-              ]}
-            >
+          <View className="items-center py-4">
+            <Text className="text-sm text-gray-500 dark:text-gray-400">
               <Trans>Applying theme...</Trans>
             </Text>
           </View>
@@ -647,192 +480,3 @@ export default function ThemeSettingsScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f2f2f7",
-  },
-  darkContainer: {
-    backgroundColor: "#000000",
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    padding: 16,
-  },
-  section: {
-    marginBottom: 32,
-  },
-  sectionTitle: {
-    fontSize: 13,
-    fontWeight: "600",
-    color: "#8e8e93",
-    textTransform: "uppercase",
-    letterSpacing: 0.5,
-    marginBottom: 8,
-    marginLeft: 16,
-  },
-  sectionContent: {
-    backgroundColor: "#ffffff",
-    borderRadius: 10,
-    overflow: "hidden",
-  },
-  darkSectionContent: {
-    backgroundColor: "#1c1c1e",
-  },
-  currentThemeCard: {
-    backgroundColor: "#ffffff",
-    borderRadius: 10,
-    padding: 16,
-  },
-  darkCurrentThemeCard: {
-    backgroundColor: "#1c1c1e",
-  },
-  currentThemeInfo: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  currentThemeText: {
-    marginLeft: 12,
-    flex: 1,
-  },
-  currentThemeName: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#000000",
-  },
-  currentThemeDescription: {
-    fontSize: 14,
-    color: "#8e8e93",
-    marginTop: 2,
-  },
-  themeOption: {
-    backgroundColor: "#ffffff",
-  },
-  darkThemeOption: {
-    backgroundColor: "#1c1c1e",
-  },
-  selectedTheme: {
-    backgroundColor: "#f0f8ff",
-  },
-  darkSelectedTheme: {
-    backgroundColor: "#1a2332",
-  },
-  themeButton: {
-    padding: 0,
-    backgroundColor: "transparent",
-    width: "100%",
-  },
-  themeContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 16,
-    width: "100%",
-  },
-  themeIconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 12,
-  },
-  themeInfo: {
-    flex: 1,
-  },
-  themeName: {
-    fontSize: 16,
-    fontWeight: "500",
-    color: "#000000",
-  },
-  themeDescription: {
-    fontSize: 14,
-    color: "#8e8e93",
-    marginTop: 2,
-  },
-  systemThemeInfo: {
-    fontSize: 12,
-    color: "#8e8e93",
-    marginTop: 1,
-    fontStyle: "italic",
-  },
-  checkIcon: {
-    marginLeft: 8,
-  },
-  settingItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: 16,
-    backgroundColor: "#ffffff",
-  },
-  darkSettingItem: {
-    backgroundColor: "#1c1c1e",
-  },
-  settingContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    flex: 1,
-  },
-  settingIcon: {
-    marginRight: 12,
-  },
-  settingText: {
-    flex: 1,
-  },
-  settingTitle: {
-    fontSize: 16,
-    fontWeight: "400",
-    color: "#000000",
-    marginBottom: 2,
-  },
-  settingDescription: {
-    fontSize: 13,
-    color: "#8e8e93",
-    lineHeight: 18,
-  },
-  destructiveText: {
-    color: "#ff3b30",
-  },
-  separator: {
-    height: 1,
-    backgroundColor: "#c6c6c8",
-    marginLeft: 48,
-  },
-  darkSeparator: {
-    backgroundColor: "#38383a",
-  },
-  infoCard: {
-    backgroundColor: "#ffffff",
-    borderRadius: 10,
-    padding: 16,
-    flexDirection: "row",
-    alignItems: "flex-start",
-  },
-  darkInfoCard: {
-    backgroundColor: "#1c1c1e",
-  },
-  infoText: {
-    fontSize: 14,
-    color: "#8e8e93",
-    lineHeight: 20,
-    marginLeft: 12,
-    flex: 1,
-  },
-  loadingContainer: {
-    padding: 20,
-    alignItems: "center",
-  },
-  loadingText: {
-    fontSize: 14,
-    color: "#8e8e93",
-  },
-  darkText: {
-    color: "#ffffff",
-  },
-  darkSecondaryText: {
-    color: "#8e8e93",
-  },
-});

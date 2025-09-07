@@ -1,14 +1,8 @@
-import React from "react";
+import React, { memo } from "react";
 import { cn } from "@/lib/utils";
 import { Text as BaseText } from "react-native";
 import { cva, VariantProps } from "class-variance-authority";
-
-// custom font family
-// KantumruyPro_700Bold,
-// KantumruyPro_100Thin,
-// KantumruyPro_500Medium,
-// KantumruyPro_600SemiBold,
-// KantumruyPro_400Regular,
+import { isKhmerText } from "@/utils/textUtils";
 
 const FONTS = {
   thin: "KantumruyPro_100Thin",
@@ -16,6 +10,15 @@ const FONTS = {
   bold: "KantumruyPro_700Bold",
   semiBold: "KantumruyPro_500Medium",
   extrabold: "KantumruyPro_700Bold",
+};
+
+// Default Inter fonts for non-Khmer text
+const DEFAULT_FONTS = {
+  thin: "Inter_100Thin",
+  normal: "Inter_400Regular",
+  bold: "Inter_700Bold",
+  semiBold: "Inter_600SemiBold",
+  extrabold: "Inter_800ExtraBold",
 };
 
 const textVariants = cva("dark:text-white text-black bg-transparent", {
@@ -41,10 +44,40 @@ export interface TextProps
   extends React.ComponentPropsWithoutRef<typeof BaseText>,
     VariantProps<typeof textVariants> {
   font?: keyof typeof FONTS;
+  autoDetectKhmer?: boolean; // New prop to enable/disable auto-detection
 }
 
-const Text = React.forwardRef<React.ComponentRef<typeof BaseText>, TextProps>(
-  ({ className, size, font = "normal", ...props }, ref) => {
+let Text = React.forwardRef<React.ComponentRef<typeof BaseText>, TextProps>(
+  (
+    {
+      className,
+      size,
+      font = "normal",
+      autoDetectKhmer = true,
+      children,
+      ...props
+    },
+    ref
+  ) => {
+    // // Determine which font to use based on content and settings
+    const getEffectiveFont = (): string => {
+      // If autoDetectKhmer is enabled and children contains Khmer text
+      if (autoDetectKhmer && children) {
+        const textContent =
+          typeof children === "string"
+            ? children
+            : React.Children.toArray(children).join("");
+
+        if (isKhmerText(textContent)) {
+          return FONTS[font];
+        } else {
+          return DEFAULT_FONTS[font];
+        }
+      }
+
+      return DEFAULT_FONTS[font];
+    };
+
     return (
       <BaseText
         ref={ref}
@@ -55,16 +88,20 @@ const Text = React.forwardRef<React.ComponentRef<typeof BaseText>, TextProps>(
         )}
         {...props}
         style={[
-          {
-            fontFamily: FONTS[font],
-          },
           props.style,
+          {
+            fontFamily: getEffectiveFont(),
+          },
         ]}
-      />
+      >
+        {children}
+      </BaseText>
     );
   }
 );
 
 Text.displayName = "Text";
+
+Text = memo(Text);
 
 export { Text };

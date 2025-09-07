@@ -18,6 +18,14 @@ import {
   useFonts,
   KantumruyPro_400Regular,
 } from "@expo-google-fonts/kantumruy-pro";
+import {
+  Inter_100Thin,
+  Inter_400Regular,
+  Inter_600SemiBold,
+  Inter_300Light,
+  Inter_700Bold,
+  Inter_800ExtraBold,
+} from "@expo-google-fonts/inter";
 import { SplashScreen } from "expo-router";
 
 type I18nContextType = {
@@ -44,6 +52,12 @@ export const I18nProviderWrapper = ({
     KantumruyPro_500Medium,
     KantumruyPro_600SemiBold,
     KantumruyPro_400Regular,
+    Inter_100Thin,
+    Inter_400Regular,
+    Inter_600SemiBold,
+    Inter_700Bold,
+    Inter_800ExtraBold,
+    Inter_300Light,
   });
 
   useEffect(() => {

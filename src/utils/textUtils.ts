@@ -2,6 +2,14 @@
  * Utility functions for text processing and font detection
  */
 
+import React from "react";
+
+/**
+ * Cache for isKhmerText results to avoid repeated regex checks
+ */
+const khmerTextCache = new Map<string, boolean>();
+const CACHE_MAX_SIZE = 1000; // Prevent memory leaks
+
 /**
  * Detects if the given text contains Khmer Unicode characters
  * @param text - The text to analyze
@@ -9,6 +17,17 @@
  */
 export const isKhmerText = (text: string): boolean => {
   if (!text) return false;
+
+  // Check cache first
+  if (khmerTextCache.has(text)) {
+    return khmerTextCache.get(text)!;
+  }
+
+  // Clear cache if it gets too large
+  if (khmerTextCache.size >= CACHE_MAX_SIZE) {
+    khmerTextCache.clear();
+  }
+
   // Khmer Unicode range: U+1780 to U+17FF
   // This includes:
   // - Khmer consonants (U+1780-U+17A2)
@@ -17,7 +36,12 @@ export const isKhmerText = (text: string): boolean => {
   // - Khmer lunar date symbols (U+17F0-U+17F9)
   // - Additional Khmer characters (U+17FA-U+17FF)
   const khmerRegex = /[\u1780-\u17FF]/;
-  return khmerRegex.test(text);
+  const result = khmerRegex.test(text);
+
+  // Cache the result
+  khmerTextCache.set(text, result);
+
+  return result;
 };
 
 /**
@@ -59,4 +83,54 @@ export const getFontForText = (
   defaultFont: string = "Inter_400Regular"
 ): string => {
   return isKhmerText(text) ? khmerFont : defaultFont;
+};
+
+/**
+ * Cache for text extraction results to avoid repeated processing
+ */
+const textExtractionCache = new Map<React.ReactNode, string>();
+const TEXT_CACHE_MAX_SIZE = 500; // Prevent memory leaks
+
+/**
+ * Extracts text content from React elements, including Trans components
+ * @param children - React children (can be strings, numbers, React elements, etc.)
+ * @returns The extracted text content as a string
+ */
+export const extractTextFromReactChildren = (
+  children: React.ReactNode
+): string => {
+  // Quick return for simple cases
+  if (typeof children === "string" || typeof children === "number") {
+    return String(children);
+  }
+
+  // Check cache for complex objects (but not for primitives)
+  if (typeof children === "object" && children !== null) {
+    if (textExtractionCache.has(children)) {
+      return textExtractionCache.get(children)!;
+    }
+  }
+
+  let result = "";
+
+  if (Array.isArray(children)) {
+    result = children.map(extractTextFromReactChildren).join("");
+  } else if (React.isValidElement(children)) {
+    // Handle React elements with type safety
+    const props = children.props as { children?: React.ReactNode };
+    if (props && props.children) {
+      result = extractTextFromReactChildren(props.children);
+    }
+  }
+
+  // Cache the result if it's a complex object
+  if (typeof children === "object" && children !== null) {
+    // Clear cache if it gets too large
+    if (textExtractionCache.size >= TEXT_CACHE_MAX_SIZE) {
+      textExtractionCache.clear();
+    }
+    textExtractionCache.set(children, result);
+  }
+
+  return result;
 };

@@ -1,8 +1,9 @@
-import React, { memo } from "react";
+import React, { memo, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { Text as BaseText } from "react-native";
 import { cva, VariantProps } from "class-variance-authority";
-import { isKhmerText } from "@/utils/textUtils";
+import { isKhmerText, extractTextFromReactChildren } from "@/utils/textUtils";
+import { useI18n } from "@/contexts/I18nProvider";
 
 const FONTS = {
   thin: "KantumruyPro_100Thin",
@@ -59,24 +60,27 @@ let Text = React.forwardRef<React.ComponentRef<typeof BaseText>, TextProps>(
     },
     ref
   ) => {
-    // // Determine which font to use based on content and settings
-    const getEffectiveFont = (): string => {
-      // If autoDetectKhmer is enabled and children contains Khmer text
-      if (autoDetectKhmer && children) {
-        const textContent =
-          typeof children === "string"
-            ? children
-            : React.Children.toArray(children).join("");
+    const { locale } = useI18n();
 
-        if (isKhmerText(textContent)) {
-          return FONTS[font];
-        } else {
-          return DEFAULT_FONTS[font];
-        }
+    // Memoize the font selection to avoid expensive calculations on every render
+    const effectiveFont = useMemo((): string => {
+      // If autoDetectKhmer is disabled, always use default fonts
+      if (!autoDetectKhmer || !children) {
+        return DEFAULT_FONTS[font];
       }
 
-      return DEFAULT_FONTS[font];
-    };
+      // For React elements (including Trans components), check current locale FIRST
+      // This avoids expensive text extraction for Trans components
+      if (React.isValidElement(children)) {
+        // If we're in Khmer locale, use Khmer font
+        return locale === "km" ? FONTS[font] : DEFAULT_FONTS[font];
+      }
+
+      // For regular text content, check if it contains Khmer characters
+      // Only extract and analyze text if children is not a React element
+      const textContent = extractTextFromReactChildren(children);
+      return isKhmerText(textContent) ? FONTS[font] : DEFAULT_FONTS[font];
+    }, [autoDetectKhmer, children, font, locale]); // Dependencies for memoization
 
     return (
       <BaseText
@@ -90,7 +94,7 @@ let Text = React.forwardRef<React.ComponentRef<typeof BaseText>, TextProps>(
         style={[
           props.style,
           {
-            fontFamily: getEffectiveFont(),
+            fontFamily: effectiveFont,
           },
         ]}
       >

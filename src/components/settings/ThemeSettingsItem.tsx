@@ -1,9 +1,10 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { ChevronRight, Sun, Moon, Monitor } from "lucide-react-native";
 import { useSettings, ThemeMode } from "@/contexts/SettingsContext";
 import { Trans } from "@lingui/react/macro";
 import { t } from "@lingui/core/macro";
+import { Text } from "../ui";
 
 interface ThemeSettingsItemProps {
   onPress: () => void;
@@ -50,15 +51,13 @@ export function ThemeSettingsItem({
     >
       <View style={styles.leftContent}>
         <View style={styles.iconContainer}>{getThemeIcon()}</View>
-        <Text style={[styles.title, isDarkMode && styles.darkText]}>
+        <Text>
           <Trans>Theme</Trans>
         </Text>
       </View>
 
       <View style={styles.rightContent}>
-        <Text style={[styles.value, isDarkMode && styles.darkSecondaryText]}>
-          {getThemeDisplayName()}
-        </Text>
+        <Text>{getThemeDisplayName()}</Text>
         <ChevronRight size={16} color={isDarkMode ? "#666666" : "#999999"} />
       </View>
     </TouchableOpacity>

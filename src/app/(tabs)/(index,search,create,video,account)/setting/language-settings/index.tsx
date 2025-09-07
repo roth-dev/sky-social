@@ -75,32 +75,18 @@ export default function LanguageSettingsScreen() {
 
       try {
         setLoading(true);
-
-        // Simulate language switching delay
-        await new Promise((resolve) => setTimeout(resolve, 500));
-
         setLanguage(selectedLanguage);
         changeLocale(selectedLanguage);
 
         // Save to AsyncStorage
         await AsyncStorage.setItem("selectedLanguage", selectedLanguage);
-
-        Dialog.show(
-          "Language Changed",
-          `Language has been changed to ${
-            languages.find((l) => l.code === selectedLanguage)?.name ||
-            selectedLanguage
-          }.`,
-          [{ text: "OK" }]
-        );
-      } catch (error) {
-        console.error("Failed to change language:", error);
-        Dialog.show("Error", "Failed to change language. Please try again.");
+      } catch {
+        Dialog.show(t`Error`, t`Failed to change language. Please try again.`);
       } finally {
         setLoading(false);
       }
     },
-    [language, setLanguage, changeLocale, languages]
+    [language, setLanguage, changeLocale]
   );
 
   const handleDownloadLanguage = useCallback(
@@ -110,9 +96,6 @@ export default function LanguageSettingsScreen() {
       setDownloadingLanguages((prev) => new Set(prev).add(langCode));
 
       try {
-        // Simulate download process
-        await new Promise((resolve) => setTimeout(resolve, 3000));
-
         setLanguages((prev) =>
           prev.map((lang) =>
             lang.code === langCode

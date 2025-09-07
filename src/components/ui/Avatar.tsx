@@ -1,8 +1,9 @@
 import React from "react";
-import { View, Text, StyleProp, ViewStyle } from "react-native";
+import { View, StyleProp, ViewStyle } from "react-native";
 import { cn } from "../../lib/utils";
 import { cva } from "class-variance-authority";
 import { Image } from "./Image";
+import { Text } from "./Text";
 
 const avatarVariants = cva("rounded-full overflow-hidden", {
   variants: {

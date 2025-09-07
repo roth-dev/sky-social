@@ -2,7 +2,7 @@ import React from "react";
 import { Stack, useRouter, useLocalSearchParams } from "expo-router";
 import { Composer } from "@/components/composer";
 import { useAuth } from "@/contexts/AuthContext";
-import { Alert } from "react-native";
+import { Dialog } from "@/components/ui";
 import { Button } from "@/components/ui/Button";
 import { Colors } from "@/constants/colors";
 import { useSettings } from "@/contexts/SettingsContext";
@@ -100,7 +100,7 @@ export default function ComposerModal() {
       // Close modal after successful posting
       router.back();
     } catch {
-      Alert.alert(
+      Dialog.show(
         "Error",
         isReply ? "Failed to post reply" : "Failed to create post"
       );

@@ -6,10 +6,10 @@ import React, {
   forwardRef,
   useImperativeHandle,
 } from "react";
-import { TextInput, Alert, Modal } from "react-native";
+import { TextInput, Modal } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Avatar } from "@/components/ui/Avatar";
-import { Button, HStack, Text, VStack } from "@/components/ui";
+import { Button, HStack, Text, VStack, Dialog } from "@/components/ui";
 import { FileArchive } from "lucide-react-native";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -252,7 +252,7 @@ export const Composer = forwardRef<CompopserRef, ComposerProps>(
         onCloseRef.current();
       } catch (error) {
         console.error("Post creation error:", error);
-        Alert.alert(
+        Dialog.show(
           "Error",
           isReply ? "Failed to post reply" : "Failed to create post"
         );

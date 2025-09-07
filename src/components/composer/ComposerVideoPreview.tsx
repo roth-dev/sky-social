@@ -1,6 +1,6 @@
 import React, { useState, useRef, FunctionComponent } from "react";
-import { View, TouchableOpacity, Text } from "react-native";
-import { VStack } from "@/components/ui";
+import { View, TouchableOpacity } from "react-native";
+import { VStack, Text } from "@/components/ui";
 import {
   Play,
   Pause,

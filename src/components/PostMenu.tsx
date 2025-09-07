@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { Alert, Platform } from "react-native";
+import { Platform } from "react-native";
+import { Dialog } from "./ui";
 import {
   Globe,
   Copy,
@@ -48,7 +49,7 @@ export function usePostMenuActions({
 
   const handleTranslate = useCallback(async () => {
     if (!post.record.text?.trim()) {
-      Alert.alert(t`Error`, t`No text to translate`);
+      Dialog.show(t`Error`, t`No text to translate`);
       return;
     }
 
@@ -72,7 +73,7 @@ export function usePostMenuActions({
           targetLanguage
         )
       ) {
-        Alert.alert(
+        Dialog.show(
           t`Translation not needed`,
           t`This post appears to already be in your language (${targetLanguage})`
         );
@@ -91,14 +92,14 @@ export function usePostMenuActions({
         setTranslationResult(result);
         setShowTranslation(true);
       } else {
-        Alert.alert(
+        Dialog.show(
           t`Translation Error`,
           result.error || t`Failed to translate post. Please try again.`
         );
       }
     } catch (error) {
       console.error("Translation error:", error);
-      Alert.alert(
+      Dialog.show(
         t`Translation Error`,
         t`Failed to translate post. Please check your internet connection and try again.`
       );
@@ -136,7 +137,7 @@ export function usePostMenuActions({
   }, [onCopyToClipboard, post]);
 
   const handleBlockUser = useCallback(async () => {
-    Alert.alert(
+    Dialog.show(
       t`Block @${post.author.handle}?`,
       t`They will no longer be able to follow you or see your posts. You will not see their posts or be notified when they follow you.`,
       [
@@ -148,19 +149,19 @@ export function usePostMenuActions({
             try {
               const success = await blockUser(post.author.did);
               if (success) {
-                Alert.alert(
+                Dialog.show(
                   t`Blocked`,
                   t`@${post.author.handle} has been blocked.`
                 );
               } else {
-                Alert.alert(
+                Dialog.show(
                   t`Error`,
                   t`Failed to block user. Please try again.`
                 );
               }
             } catch (error) {
               console.error("Block user error:", error);
-              Alert.alert(t`Error`, t`Failed to block user. Please try again.`);
+              Dialog.show(t`Error`, t`Failed to block user. Please try again.`);
             }
           },
         },
@@ -169,7 +170,7 @@ export function usePostMenuActions({
   }, [blockUser, post.author]);
 
   const handleMuteUser = useCallback(async () => {
-    Alert.alert(
+    Dialog.show(
       t`Mute @${post.author.handle}?`,
       t`You won't see their posts in your timeline, but they can still follow and interact with you.`,
       [
@@ -180,19 +181,19 @@ export function usePostMenuActions({
             try {
               const success = await muteUser(post.author.did);
               if (success) {
-                Alert.alert(
+                Dialog.show(
                   t`Muted`,
                   t`@${post.author.handle} has been muted.`
                 );
               } else {
-                Alert.alert(
+                Dialog.show(
                   t`Error`,
                   t`Failed to mute user. Please try again.`
                 );
               }
             } catch (error) {
               console.error("Mute user error:", error);
-              Alert.alert(t`Error`, t`Failed to mute user. Please try again.`);
+              Dialog.show(t`Error`, t`Failed to mute user. Please try again.`);
             }
           },
         },
@@ -201,7 +202,7 @@ export function usePostMenuActions({
   }, [muteUser, post.author]);
 
   const handleHidePost = useCallback(async () => {
-    Alert.alert(
+    Dialog.show(
       t`Hide this post?`,
       t`This post will be hidden from your timeline. You can still see it by visiting the profile directly.`,
       [
@@ -212,19 +213,19 @@ export function usePostMenuActions({
             try {
               const success = await hidePost(post.uri);
               if (success) {
-                Alert.alert(
+                Dialog.show(
                   t`Hidden`,
                   t`Post has been hidden from your timeline.`
                 );
               } else {
-                Alert.alert(
+                Dialog.show(
                   t`Error`,
                   t`Failed to hide post. Please try again.`
                 );
               }
             } catch (error) {
               console.error("Hide post error:", error);
-              Alert.alert(t`Error`, t`Failed to hide post. Please try again.`);
+              Dialog.show(t`Error`, t`Failed to hide post. Please try again.`);
             }
           },
         },
@@ -233,7 +234,7 @@ export function usePostMenuActions({
   }, [hidePost, post]);
 
   const handleReportPost = useCallback(() => {
-    Alert.alert(t`Report this post?`, t`What's the issue with this post?`, [
+    Dialog.show(t`Report this post?`, t`What's the issue with this post?`, [
       { text: t`Cancel`, style: "cancel" },
       {
         text: t`Spam`,
@@ -246,19 +247,19 @@ export function usePostMenuActions({
               "com.atproto.moderation.defs#reasonSpam"
             );
             if (success) {
-              Alert.alert(
+              Dialog.show(
                 t`Reported`,
                 t`Thank you for your report. We'll review it soon.`
               );
             } else {
-              Alert.alert(
+              Dialog.show(
                 t`Error`,
                 t`Failed to submit report. Please try again.`
               );
             }
           } catch (error) {
             console.error("Report spam error:", error);
-            Alert.alert(
+            Dialog.show(
               t`Error`,
               t`Failed to submit report. Please try again.`
             );
@@ -276,19 +277,19 @@ export function usePostMenuActions({
               "com.atproto.moderation.defs#reasonMisleading"
             );
             if (success) {
-              Alert.alert(
+              Dialog.show(
                 t`Reported`,
                 t`Thank you for your report. We'll review it soon.`
               );
             } else {
-              Alert.alert(
+              Dialog.show(
                 t`Error`,
                 t`Failed to submit report. Please try again.`
               );
             }
           } catch (error) {
             console.error("Report harassment error:", error);
-            Alert.alert(
+            Dialog.show(
               t`Error`,
               t`Failed to submit report. Please try again.`
             );
@@ -306,19 +307,19 @@ export function usePostMenuActions({
               "com.atproto.moderation.defs#reasonOther"
             );
             if (success) {
-              Alert.alert(
+              Dialog.show(
                 t`Reported`,
                 t`Thank you for your report. We'll review it soon.`
               );
             } else {
-              Alert.alert(
+              Dialog.show(
                 t`Error`,
                 t`Failed to submit report. Please try again.`
               );
             }
           } catch (error) {
             console.error("Report other error:", error);
-            Alert.alert(
+            Dialog.show(
               t`Error`,
               t`Failed to submit report. Please try again.`
             );

@@ -125,7 +125,7 @@ export default function AppSettingsScreen() {
       await AsyncStorage.setItem(key, value.toString());
     } catch (error) {
       console.error(`Failed to save ${key}:`, error);
-      Dialog.show("Error", `Failed to save ${key} setting`);
+      Dialog.show(t`Error`, t`Failed to save setting`);
     }
   }, []);
 
@@ -187,12 +187,12 @@ export default function AppSettingsScreen() {
 
   const handleClearCache = useCallback(async () => {
     Dialog.show(
-      "Clear Cache",
-      "This will clear all cached images, videos, and temporary files. Are you sure?",
+      t`Clear Cache`,
+      t`This will clear all cached images, videos, and temporary files. Are you sure?`,
       [
-        { text: "Cancel", style: "cancel" },
+        { text: t`Cancel`, style: "cancel" },
         {
-          text: "Clear",
+          text: t`Clear`,
           style: "destructive",
           onPress: async () => {
             try {
@@ -220,10 +220,10 @@ export default function AppSettingsScreen() {
               await AsyncStorage.multiRemove(cacheKeys);
 
               setCacheSize("0 MB");
-              Dialog.show("Success", "Cache cleared successfully");
+              Dialog.show(t`Success`, t`Cache cleared successfully`);
             } catch (error) {
               console.error("Failed to clear cache:", error);
-              Dialog.show("Error", "Failed to clear cache");
+              Dialog.show(t`Error`, t`Failed to clear cache`);
             } finally {
               setLoading(false);
             }
@@ -235,12 +235,12 @@ export default function AppSettingsScreen() {
 
   const handleClearDownloads = useCallback(async () => {
     Dialog.show(
-      "Clear Downloads",
-      "This will remove all downloaded media files. Are you sure?",
+      t`Clear Downloads`,
+      t`This will remove all downloaded media files. Are you sure?`,
       [
-        { text: "Cancel", style: "cancel" },
+        { text: t`Cancel`, style: "cancel" },
         {
-          text: "Clear",
+          text: t`Clear`,
           style: "destructive",
           onPress: async () => {
             try {
@@ -249,13 +249,13 @@ export default function AppSettingsScreen() {
               if (Platform.OS !== "web") {
                 // Clear downloaded media - simplified implementation
                 setDownloadedMedia("0 MB");
-                Dialog.show("Success", "Downloads cleared successfully");
+                Dialog.show(t`Success`, t`Downloads cleared successfully`);
               } else {
-                Dialog.show("Info", "Download clearing not available on web");
+                Dialog.show(t`Info`, t`Download clearing not available on web`);
               }
             } catch (error) {
               console.error("Failed to clear downloads:", error);
-              Dialog.show("Error", "Failed to clear downloads");
+              Dialog.show(t`Error`, t`Failed to clear downloads`);
             } finally {
               setLoading(false);
             }
@@ -267,12 +267,12 @@ export default function AppSettingsScreen() {
 
   const handleResetSettings = useCallback(async () => {
     Dialog.show(
-      "Reset App Settings",
-      "This will reset all app settings to their default values. Are you sure?",
+      t`Reset App Settings`,
+      t`This will reset all app settings to their default values. Are you sure?`,
       [
-        { text: "Cancel", style: "cancel" },
+        { text: t`Cancel`, style: "cancel" },
         {
-          text: "Reset",
+          text: t`Reset`,
           style: "destructive",
           onPress: async () => {
             try {
@@ -298,10 +298,10 @@ export default function AppSettingsScreen() {
               setEnableHaptics(true);
               setDataSaver(false);
 
-              Dialog.show("Success", "App settings reset to defaults");
+              Dialog.show(t`Success`, t`App settings reset to defaults`);
             } catch (error) {
               console.error("Failed to reset settings:", error);
-              Dialog.show("Error", "Failed to reset settings");
+              Dialog.show(t`Error`, t`Failed to reset settings`);
             } finally {
               setLoading(false);
             }
@@ -312,32 +312,32 @@ export default function AppSettingsScreen() {
   }, []);
 
   const handleNetworkSettings = useCallback(() => {
-    Dialog.show("Network Settings", "Network configuration coming soon!", [
-      { text: "OK" },
+    Dialog.show(t`Network Settings`, t`Network configuration coming soon!`, [
+      { text: t`OK` },
     ]);
   }, []);
 
   const handleStorageSettings = useCallback(() => {
-    Dialog.show("Storage Settings", "Storage management coming soon!", [
-      { text: "OK" },
+    Dialog.show(t`Storage Settings`, t`Storage management coming soon!`, [
+      { text: t`OK` },
     ]);
   }, []);
 
   const handlePrivacySettings = useCallback(() => {
-    Dialog.show("Privacy Settings", "Privacy configuration coming soon!", [
-      { text: "OK" },
+    Dialog.show(t`Privacy Settings`, t`Privacy configuration coming soon!`, [
+      { text: t`OK` },
     ]);
   }, []);
 
   const sections: AppSettingsSection[] = [
     {
       id: "media",
-      title: "Media & Content",
+      title: t`Media & Content`,
       items: [
         {
           id: "auto-play-videos",
-          title: "Auto-play videos",
-          description: "Automatically play videos in your timeline",
+          title: t`Auto-play videos`,
+          description: t`Automatically play videos in your timeline`,
           type: "toggle",
           icon: <Video size={20} color={isDarkMode ? "#ffffff" : "#666666"} />,
           value: autoPlayVideos,
@@ -346,8 +346,8 @@ export default function AppSettingsScreen() {
         },
         {
           id: "auto-load-images",
-          title: "Auto-load images",
-          description: "Automatically load images in your timeline",
+          title: t`Auto-load images`,
+          description: t`Automatically load images in your timeline`,
           type: "toggle",
           icon: <Image size={20} color={isDarkMode ? "#ffffff" : "#666666"} />,
           value: autoLoadImages,
@@ -356,8 +356,8 @@ export default function AppSettingsScreen() {
         },
         {
           id: "data-saver",
-          title: "Data saver mode",
-          description: "Reduce data usage by disabling auto-play and auto-load",
+          title: t`Data saver mode`,
+          description: t`Reduce data usage by disabling auto-play and auto-load`,
           type: "toggle",
           icon: <Wifi size={20} color={isDarkMode ? "#ffffff" : "#666666"} />,
           value: dataSeaver,
@@ -367,12 +367,12 @@ export default function AppSettingsScreen() {
     },
     {
       id: "notifications",
-      title: "Notifications & Sounds",
+      title: t`Notifications & Sounds`,
       items: [
         {
           id: "notifications",
-          title: "Enable notifications",
-          description: "Receive push notifications for mentions and messages",
+          title: t`Enable notifications`,
+          description: t`Receive push notifications for mentions and messages`,
           type: "toggle",
           icon: <Bell size={20} color={isDarkMode ? "#ffffff" : "#666666"} />,
           value: enableNotifications,
@@ -380,8 +380,8 @@ export default function AppSettingsScreen() {
         },
         {
           id: "sounds",
-          title: "Notification sounds",
-          description: "Play sound for notifications",
+          title: t`Notification sounds`,
+          description: t`Play sound for notifications`,
           type: "toggle",
           icon: (
             <Volume2 size={20} color={isDarkMode ? "#ffffff" : "#666666"} />
@@ -392,8 +392,8 @@ export default function AppSettingsScreen() {
         },
         {
           id: "haptics",
-          title: "Haptic feedback",
-          description: "Vibration feedback for interactions",
+          title: t`Haptic feedback`,
+          description: t`Vibration feedback for interactions`,
           type: "toggle",
           icon: <Zap size={20} color={isDarkMode ? "#ffffff" : "#666666"} />,
           value: enableHaptics,
@@ -403,11 +403,11 @@ export default function AppSettingsScreen() {
     },
     {
       id: "storage",
-      title: "Storage & Data",
+      title: t`Storage & Data`,
       items: [
         {
           id: "cache-size",
-          title: "Cache size",
+          title: t`Cache size`,
           description: cacheSize,
           type: "info",
           icon: (
@@ -416,7 +416,7 @@ export default function AppSettingsScreen() {
         },
         {
           id: "downloaded-media",
-          title: "Downloaded media",
+          title: t`Downloaded media`,
           description: downloadedMedia,
           type: "info",
           icon: (
@@ -425,8 +425,8 @@ export default function AppSettingsScreen() {
         },
         {
           id: "clear-cache",
-          title: "Clear cache",
-          description: "Remove cached images and temporary files",
+          title: t`Clear cache`,
+          description: t`Remove cached images and temporary files`,
           type: "button",
           icon: (
             <RefreshCw size={20} color={isDarkMode ? "#ffffff" : "#666666"} />
@@ -435,8 +435,8 @@ export default function AppSettingsScreen() {
         },
         {
           id: "clear-downloads",
-          title: "Clear downloads",
-          description: "Remove all downloaded media files",
+          title: t`Clear downloads`,
+          description: t`Remove all downloaded media files`,
           type: "button",
           icon: <Trash2 size={20} color={isDarkMode ? "#ffffff" : "#666666"} />,
           onPress: handleClearDownloads,
@@ -446,20 +446,20 @@ export default function AppSettingsScreen() {
     },
     {
       id: "advanced",
-      title: "Advanced Settings",
+      title: t`Advanced Settings`,
       items: [
         {
           id: "network-settings",
-          title: "Network settings",
-          description: "Configure connection and proxy settings",
+          title: t`Network settings`,
+          description: t`Configure connection and proxy settings`,
           type: "navigation",
           icon: <Wifi size={20} color={isDarkMode ? "#ffffff" : "#666666"} />,
           onPress: handleNetworkSettings,
         },
         {
           id: "storage-settings",
-          title: "Storage settings",
-          description: "Manage storage locations and limits",
+          title: t`Storage settings`,
+          description: t`Manage storage locations and limits`,
           type: "navigation",
           icon: (
             <HardDrive size={20} color={isDarkMode ? "#ffffff" : "#666666"} />
@@ -468,8 +468,8 @@ export default function AppSettingsScreen() {
         },
         {
           id: "privacy-settings",
-          title: "Privacy settings",
-          description: "App-level privacy and security settings",
+          title: t`Privacy settings`,
+          description: t`App-level privacy and security settings`,
           type: "navigation",
           icon: <Shield size={20} color={isDarkMode ? "#ffffff" : "#666666"} />,
           onPress: handlePrivacySettings,
@@ -478,12 +478,12 @@ export default function AppSettingsScreen() {
     },
     {
       id: "reset",
-      title: "Reset",
+      title: t`Reset`,
       items: [
         {
           id: "reset-settings",
-          title: "Reset app settings",
-          description: "Reset all app settings to their default values",
+          title: t`Reset app settings`,
+          description: t`Reset all app settings to their default values`,
           type: "button",
           icon: (
             <RotateCcw size={20} color={isDarkMode ? "#ff3b30" : "#ff3b30"} />

@@ -46,23 +46,23 @@ export default function ModerationScreen() {
   const [labelsEnabled, setLabelsEnabled] = useState(true);
 
   const handleMutedWords = useCallback(() => {
-    Dialog.show("Muted Words", "Muted words management coming soon!");
+    Dialog.show(t`Muted Words`, t`Muted words management coming soon!`);
   }, []);
 
   const handleBlockedUsers = useCallback(() => {
-    Dialog.show("Blocked Users", "Blocked users management coming soon!");
+    Dialog.show(t`Blocked Users`, t`Blocked users management coming soon!`);
   }, []);
 
   const handleMutedUsers = useCallback(() => {
-    Dialog.show("Muted Users", "Muted users management coming soon!");
+    Dialog.show(t`Muted Users`, t`Muted users management coming soon!`);
   }, []);
 
   const handleContentLabels = useCallback(() => {
-    Dialog.show("Content Labels", "Content labels settings coming soon!");
+    Dialog.show(t`Content Labels`, t`Content labels settings coming soon!`);
   }, []);
 
   const handleReports = useCallback(() => {
-    Dialog.show("Reports", "Report management coming soon!");
+    Dialog.show(t`Reports`, t`Report management coming soon!`);
   }, []);
 
   const moderationSections: ModerationSection[] = [

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { View } from "@/components/ui";
-import { TextInput, TouchableOpacity, Alert } from "react-native";
+import { View, Dialog } from "@/components/ui";
+import { TextInput, TouchableOpacity } from "react-native";
 import { Send } from "lucide-react-native";
 import { useSendMessage } from "@/hooks/query";
 
@@ -30,7 +30,7 @@ export function MessageInput({
     } catch {
       // Restore message on error
       setMessage(messageToSend);
-      Alert.alert("Error", "Failed to send message. Please try again.");
+      Dialog.show("Error", "Failed to send message. Please try again.");
     }
   };
 

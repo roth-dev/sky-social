@@ -89,7 +89,7 @@ export default function ThemeSettingsScreen() {
       await AsyncStorage.setItem(key, value.toString());
     } catch (error) {
       console.error(`Failed to save ${key}:`, error);
-      Dialog.show("Error", `Failed to save ${key} setting`);
+      Dialog.show(t`Error`, t`Failed to save setting`);
     }
   }, []);
 

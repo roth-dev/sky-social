@@ -1,18 +1,12 @@
 import React, { memo, useCallback } from "react";
-import {
-  View,
-  TouchableOpacity,
-  StyleSheet,
-  Alert,
-  Pressable,
-} from "react-native";
+import { View, TouchableOpacity, StyleSheet, Pressable } from "react-native";
 import { MoreHorizontal } from "lucide-react-native";
 import { Avatar } from "./ui/Avatar";
 import { EmbedContainer } from "./embeds/EmbedContainer";
 import { ATPost } from "@/types/atproto";
 import { router } from "expo-router";
 import { Platform, Linking } from "react-native";
-import { RichText, Text } from "./ui";
+import { RichText, Text, Dialog } from "./ui";
 import { Colors } from "@/constants/colors";
 import { RichText as RichTextAPI } from "@atproto/api";
 import { POST_PRIFIX } from "@/constants";
@@ -64,14 +58,14 @@ const Post = memo(function Comp({
         navigator.clipboard
       ) {
         await navigator.clipboard.writeText(text);
-        Alert.alert(t`Copied`, t`URL copied to clipboard`);
+        Dialog.show(t`Copied`, t`URL copied to clipboard`);
       } else {
         // Fallback for environments without clipboard API
-        Alert.alert(t`URL`, text);
+        Dialog.show(t`URL`, text);
       }
     } catch (error) {
       console.error("Failed to copy to clipboard:", error);
-      Alert.alert(t`URL`, text);
+      Dialog.show(t`URL`, text);
     }
   }, []);
 
@@ -143,7 +137,7 @@ const Post = memo(function Comp({
     try {
       // Validate URL format
       if (!isValidUrl(url)) {
-        Alert.alert(
+        Dialog.show(
           t`Invalid URL`,
           t`This link appears to be invalid or malformed.`
         );
@@ -156,7 +150,7 @@ const Post = memo(function Comp({
       if (canOpen) {
         await Linking.openURL(url);
       } else {
-        Alert.alert(
+        Dialog.show(
           t`Cannot Open Link`,
           t`This link cannot be opened on your device. Would you like to copy the URL?`,
           [
@@ -165,7 +159,7 @@ const Post = memo(function Comp({
               onPress: () => {
                 // Note: We'll need to access copyToClipboard from the hook
                 // For now, let's use a basic fallback
-                Alert.alert(t`URL`, url);
+                Dialog.show(t`URL`, url);
               },
             },
             { text: t`Cancel`, style: "cancel" },
@@ -174,7 +168,7 @@ const Post = memo(function Comp({
       }
     } catch (error) {
       console.error("Failed to open URL:", error);
-      Alert.alert(
+      Dialog.show(
         t`Link Error`,
         t`Unable to open this link. Would you like to copy the URL instead?`,
         [
@@ -183,7 +177,7 @@ const Post = memo(function Comp({
             onPress: () => {
               // Note: We'll need to access copyToClipboard from the hook
               // For now, let's use a basic fallback
-              Alert.alert(t`URL`, url);
+              Dialog.show(t`URL`, url);
             },
           },
           { text: t`Cancel`, style: "cancel" },

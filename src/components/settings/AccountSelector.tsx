@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, TouchableOpacity, StyleSheet, Alert } from "react-native";
+import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { Avatar } from "@/components/ui/Avatar";
 import { useSettings } from "@/contexts/SettingsContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { storage, type AccountData } from "@/lib/storage";
 import { ChevronRight, Plus, Trash2 } from "lucide-react-native";
 import { Trans } from "@lingui/react/macro";
-import { Text } from "../ui";
+import { Text, Dialog } from "../ui";
 
 interface AccountSelectorProps {
   onAddAccount: () => void;
@@ -39,17 +39,16 @@ export function AccountSelector({ onAddAccount }: AccountSelectorProps) {
       if (accountData) {
         await refreshUser();
         setActiveAccountDid(did);
-        Alert.alert(
+        Dialog.show(
           "Account Switched",
           `Switched to ${
             accountData.profile.displayName || accountData.profile.handle
-          }`,
-          [{ text: "OK" }]
+          }`
         );
       }
     } catch (error) {
       console.error("Failed to switch account:", error);
-      Alert.alert("Error", "Failed to switch account. Please try again.");
+      Dialog.show("Error", "Failed to switch account. Please try again.");
     }
   };
 
@@ -57,7 +56,7 @@ export function AccountSelector({ onAddAccount }: AccountSelectorProps) {
     const accountName =
       accountData.profile.displayName || accountData.profile.handle;
 
-    Alert.alert(
+    Dialog.show(
       "Remove Account",
       `Are you sure you want to remove ${accountName}? You'll need to sign in again to add it back.`,
       [
@@ -76,7 +75,7 @@ export function AccountSelector({ onAddAccount }: AccountSelectorProps) {
               }
             } catch (error) {
               console.error("Failed to remove account:", error);
-              Alert.alert(
+              Dialog.show(
                 "Error",
                 "Failed to remove account. Please try again."
               );

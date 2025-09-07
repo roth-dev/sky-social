@@ -1,9 +1,9 @@
 import React, { useMemo, useState } from "react";
-import { StyleSheet, Alert } from "react-native";
+import { StyleSheet } from "react-native";
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { ErrorState } from "@/components/placeholders/EmptyState";
 import { useAuth } from "@/contexts/AuthContext";
-import { View } from "@/components/ui";
+import { View, Dialog } from "@/components/ui";
 import TabView from "@/components/tabs";
 import UserPostSection from "../sections/Post";
 import UserMediaSection from "../sections/Media";
@@ -61,7 +61,7 @@ const UserProfile = ({ handle }: Props) => {
   };
 
   const handleMorePress = () => {
-    Alert.alert(t`More Options`, t`Additional options coming soon!`);
+    Dialog.show(t`More Options`, t`Additional options coming soon!`);
   };
 
   // Show error state

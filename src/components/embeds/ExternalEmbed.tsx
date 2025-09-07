@@ -1,8 +1,8 @@
 import React from "react";
-import { TouchableOpacity, StyleSheet, Alert, Linking } from "react-native";
+import { TouchableOpacity, StyleSheet, Linking } from "react-native";
 import { EmbedExternal } from "@/types/embed";
 import { ExternalLink } from "lucide-react-native";
-import { Text, View, RichText } from "../ui";
+import { Text, View, RichText, Dialog } from "../ui";
 import { Colors } from "@/constants/colors";
 import { useSettings } from "@/contexts/SettingsContext";
 import { Image } from "@/components/ui";
@@ -29,7 +29,7 @@ export function ExternalEmbed({
       // Validate URL format first
       const url = external.uri;
       if (!isValidUrl(url)) {
-        Alert.alert(
+        Dialog.show(
           "Invalid URL",
           "This link appears to be invalid or malformed."
         );
@@ -45,7 +45,7 @@ export function ExternalEmbed({
         if (canOpen) {
           await Linking.openURL(url);
         } else {
-          Alert.alert(
+          Dialog.show(
             "Cannot Open Link",
             "This link cannot be opened on your device. It may be an invalid or unsupported URL format.",
             [
@@ -57,7 +57,7 @@ export function ExternalEmbed({
       }
     } catch (error) {
       console.error("Failed to open URL:", error);
-      Alert.alert(
+      Dialog.show(
         "Link Error",
         "Unable to open this link. Would you like to copy the URL instead?",
         [
@@ -72,14 +72,14 @@ export function ExternalEmbed({
     try {
       if (typeof navigator !== "undefined" && navigator.clipboard) {
         await navigator.clipboard.writeText(url);
-        Alert.alert("Copied", "URL copied to clipboard");
+        Dialog.show("Copied", "URL copied to clipboard");
       } else {
         // Fallback for environments without clipboard API
-        Alert.alert("URL", url);
+        Dialog.show("URL", url);
       }
     } catch (error) {
       console.error("Failed to copy URL:", error);
-      Alert.alert("URL", url);
+      Dialog.show("URL", url);
     }
   };
 

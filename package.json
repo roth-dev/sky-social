@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@atproto/api": "^0.15.23",
+    "@expo-google-fonts/inter": "^0.4.1",
     "@expo-google-fonts/kantumruy-pro": "^0.4.0",
     "@expo/vector-icons": "^14.1.0",
     "@lingui/core": "^5.3.3",

@@ -176,7 +176,7 @@ export default function SettingsScreen() {
               <View className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 items-center justify-center mr-3">
                 <Plus size={20} color={isDarkMode ? "#ffffff" : "#666666"} />
               </View>
-              <Text className="flex-1 text-base text-black dark:text-white font-normal">
+              <Text className="flex-1">
                 <Trans>Add another account</Trans>
               </Text>
               <ChevronRight

@@ -237,11 +237,6 @@ export default function ThemeSettingsScreen() {
                 "highContrastEnabled",
                 "adaptiveColorsEnabled",
               ]);
-
-              Dialog.show(
-                "Success",
-                "Theme settings have been reset to defaults."
-              );
             } catch (error) {
               console.error("Failed to reset theme settings:", error);
               Dialog.show("Error", "Failed to reset theme settings.");

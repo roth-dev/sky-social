@@ -1,7 +1,9 @@
 import React from "react";
 import { View, Text } from "@/components/ui";
 import { ChatMessage, DeletedChatMessage } from "@/types/chat";
-import { formatDistanceToNow } from "date-fns";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+dayjs.extend(relativeTime);
 import { TouchableOpacity } from "react-native";
 import { useAuth } from "@/contexts/AuthContext";
 import { atprotoClient } from "@/lib/atproto";
@@ -18,9 +20,7 @@ export function MessageBubble({ message, onLongPress }: MessageBubbleProps) {
     message.sender.did === (user?.did || currentSession?.did);
   const isDeleted = !("text" in message);
 
-  const messageTime = formatDistanceToNow(new Date(message.sentAt), {
-    addSuffix: true,
-  });
+  const messageTime = dayjs(message.sentAt).fromNow();
 
   if (isDeleted) {
     return (

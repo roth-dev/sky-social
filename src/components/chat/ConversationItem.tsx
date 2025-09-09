@@ -2,7 +2,9 @@ import React from "react";
 import { View, Text } from "@/components/ui";
 import { Avatar } from "@/components/ui/Avatar";
 import { ChatConversation } from "@/types/chat";
-import { formatDistanceToNow } from "date-fns";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+dayjs.extend(relativeTime);
 import { TouchableOpacity } from "react-native";
 
 interface ConversationItemProps {
@@ -27,9 +29,7 @@ export function ConversationItem({
     : "No messages yet";
 
   const lastMessageTime = conversation.lastMessage?.sentAt
-    ? formatDistanceToNow(new Date(conversation.lastMessage.sentAt), {
-        addSuffix: true,
-      })
+    ? dayjs(conversation.lastMessage.sentAt).fromNow()
     : "";
 
   return (

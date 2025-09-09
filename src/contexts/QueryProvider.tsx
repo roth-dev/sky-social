@@ -1,31 +1,38 @@
 import React, { PropsWithChildren } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { retryDelay } from "@/lib/queries";
+import { atprotoClient } from "@/lib/atproto";
 
-function retry(failureCount: number, error: any) {
+// Global flag to prevent multiple logout calls
+let isGlobalLogoutTriggered = false;
+
+function retry(failureCount: number, error: unknown) {
+  const err = error as { status?: number; message?: string };
+
   if (
-    error?.message?.includes("authentication") ||
-    error?.message?.includes("unauthorized") ||
-    error?.status === 401
+    err?.message?.includes("authentication") ||
+    err?.message?.includes("unauthorized") ||
+    err?.status === 401
   ) {
     return false;
   }
 
   if (
-    error?.status >= 400 &&
-    error?.status < 500 &&
-    error?.status !== 408 &&
-    error?.status !== 429
+    err?.status !== undefined &&
+    err.status >= 400 &&
+    err.status < 500 &&
+    err.status !== 408 &&
+    err.status !== 429
   ) {
     return false;
   }
 
   if (failureCount < 3) {
     if (
-      error?.message?.includes("UpstreamFailure") ||
-      error?.message?.includes("network") ||
-      error?.message?.includes("timeout") ||
-      error?.status >= 500
+      err?.message?.includes("UpstreamFailure") ||
+      err?.message?.includes("network") ||
+      err?.message?.includes("timeout") ||
+      (err?.status !== undefined && err.status >= 500)
     ) {
       return true;
     }
@@ -33,6 +40,54 @@ function retry(failureCount: number, error: any) {
 
   return false;
 }
+
+// Enhanced global auth error handler
+const handleGlobalAuthError = async (error: unknown) => {
+  const err = error as { status?: number; message?: string };
+
+  if (
+    (err?.message?.includes("authentication") ||
+      err?.message?.includes("unauthorized") ||
+      err?.status === 401) &&
+    !isGlobalLogoutTriggered
+  ) {
+    isGlobalLogoutTriggered = true;
+
+    console.warn(
+      "Global authentication error detected:",
+      err?.message || error
+    );
+
+    // Try to refresh session first
+    if (atprotoClient.getIsAuthenticated()) {
+      console.log("Attempting to refresh session due to auth error...");
+      const refreshed = await atprotoClient.performSessionRefresh();
+
+      if (refreshed) {
+        console.log("Session refreshed successfully after auth error");
+        isGlobalLogoutTriggered = false;
+        return;
+      }
+    }
+
+    // If refresh failed, trigger logout
+    console.warn("Session refresh failed, triggering logout");
+    setTimeout(async () => {
+      try {
+        await atprotoClient.logout();
+        // Redirect to login - this should be handled by the auth context
+        if (typeof window !== "undefined") {
+          window.location.href = "/login";
+        }
+      } catch (logoutError) {
+        console.error("Failed to logout after auth error:", logoutError);
+      } finally {
+        isGlobalLogoutTriggered = false;
+      }
+    }, 100);
+  }
+};
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -50,15 +105,9 @@ const queryClient = new QueryClient({
   },
 });
 
-// Add global error handler
+// Add global error handler for mutations
 queryClient.setMutationDefaults(["mutation"], {
-  onError: (error: any) => {
-    // Handle authentication errors globally
-    if (error?.message?.includes("authentication") || error?.status === 401) {
-      // Could trigger a global logout here
-      console.warn("Authentication error detected, user may need to re-login");
-    }
-  },
+  onError: handleGlobalAuthError,
 });
 
 export function QueryProvider({ children }: PropsWithChildren) {

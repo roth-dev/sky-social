@@ -42,9 +42,12 @@ export class ATProtoClient {
   private currentSession: AuthSession | null = null;
   private maxRetries = 3;
   private retryDelay = 1000; // Start with 1 second
+  private sessionRefreshTimer: ReturnType<typeof setInterval> | null = null;
+  private isRefreshing = false;
 
   constructor() {
     this.agent = this.createAgent(false);
+    this.setupSessionMonitoring();
   }
 
   /**
@@ -78,6 +81,100 @@ export class ATProtoClient {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
+  /**
+   * Setup automatic session monitoring and refresh
+   */
+  private setupSessionMonitoring() {
+    // Only setup monitoring if we have a global setInterval (not in all environments)
+    if (typeof setInterval !== "undefined") {
+      // Clear any existing timer
+      this.cleanup();
+
+      // Check session every 5 minutes
+      this.sessionRefreshTimer = setInterval(() => {
+        this.checkAndRefreshSession();
+      }, 5 * 60 * 1000);
+
+      logger.log("Session monitoring started");
+    }
+  }
+
+  /**
+   * Clean up timers
+   */
+  private cleanup() {
+    if (this.sessionRefreshTimer) {
+      clearInterval(this.sessionRefreshTimer);
+      this.sessionRefreshTimer = null;
+      logger.log("Session monitoring stopped");
+    }
+  }
+
+  /**
+   * Check if JWT token is expired or about to expire
+   */
+  private isTokenExpired(jwt: string, bufferMinutes: number = 5): boolean {
+    try {
+      const payload = JSON.parse(atob(jwt.split(".")[1]));
+      const expirationTime = payload.exp * 1000; // Convert to milliseconds
+      const currentTime = Date.now();
+      const bufferTime = bufferMinutes * 60 * 1000; // Buffer in milliseconds
+
+      return currentTime >= expirationTime - bufferTime;
+    } catch (error) {
+      console.error("Failed to parse JWT:", error);
+      return true; // Assume expired if we can't parse
+    }
+  }
+
+  /**
+   * Check session validity and refresh if needed
+   */
+  private async checkAndRefreshSession(): Promise<void> {
+    if (!this.isAuthenticated || !this.currentSession || this.isRefreshing) {
+      return;
+    }
+
+    try {
+      // Check if access token is expired or about to expire
+      if (this.isTokenExpired(this.currentSession.accessJwt)) {
+        logger.log("Access token expired, attempting refresh");
+        await this.performSessionRefreshInternal();
+      }
+    } catch (error) {
+      console.error("Session check failed:", error);
+      // Don't logout automatically, let the next API call handle it
+    }
+  }
+
+  /**
+   * Perform actual session refresh (public method for external access)
+   */
+  async performSessionRefresh(): Promise<boolean> {
+    if (this.isRefreshing) {
+      return false;
+    }
+
+    this.isRefreshing = true;
+    try {
+      const refreshed = await this.refreshSession();
+      if (!refreshed) {
+        logger.warn("Session refresh failed, user may need to re-login");
+        // Don't auto-logout, let user continue until next auth error
+      }
+      return refreshed;
+    } finally {
+      this.isRefreshing = false;
+    }
+  }
+
+  /**
+   * Perform actual session refresh (private method for internal use)
+   */
+  private async performSessionRefreshInternal(): Promise<boolean> {
+    return this.performSessionRefresh();
+  }
+
   private async retryWithBackoff<T>(
     operation: () => Promise<T>,
     context: string
@@ -94,11 +191,24 @@ export class ATProtoClient {
         const errMsg = (error as Error)?.message || String(error);
         console.warn(`${context} attempt ${attempt + 1} failed:`, errMsg);
 
-        // Don't retry on authentication errors
+        // Handle authentication errors specially
         if (
           (error as { status?: number; message?: string }).status === 401 ||
-          (error as { message?: string }).message?.includes("authentication")
+          (error as { message?: string }).message?.includes("authentication") ||
+          (error as { message?: string }).message?.includes("unauthorized")
         ) {
+          // Try to refresh session on first auth error
+          if (attempt === 0 && this.isAuthenticated && this.currentSession) {
+            console.log("Auth error detected, attempting session refresh...");
+            const refreshed = await this.performSessionRefreshInternal();
+            if (refreshed) {
+              console.log(
+                "Session refreshed successfully, retrying operation..."
+              );
+              continue; // Retry the operation with refreshed session
+            }
+          }
+          // If refresh failed or this is not the first attempt, throw immediately
           throw error;
         }
 
@@ -133,6 +243,53 @@ export class ATProtoClient {
     try {
       const session = await storage.getAuthSession();
       if (session) {
+        // Check if tokens are expired before attempting to resume
+        if (this.isTokenExpired(session.accessJwt, 0)) {
+          logger.log(
+            "Stored access token is expired, attempting refresh with refresh token"
+          );
+
+          // If access token is expired but refresh token might still be valid
+          if (!this.isTokenExpired(session.refreshJwt, 0)) {
+            try {
+              // Resume session with stored credentials
+              this.setAgent(true);
+              await this.agent.resumeSession({
+                accessJwt: session.accessJwt,
+                refreshJwt: session.refreshJwt,
+                handle: session.handle,
+                did: session.did,
+                email: session.email,
+                emailConfirmed: session.emailConfirmed,
+                emailAuthFactor: session.emailAuthFactor,
+                active: session.active ?? false,
+              });
+
+              this.currentSession = session;
+              this.isAuthenticated = true;
+
+              // Immediately try to refresh the session
+              const refreshed = await this.performSessionRefreshInternal();
+              if (refreshed) {
+                logger.log(
+                  "Session refreshed successfully during initialization"
+                );
+                return true;
+              }
+            } catch (refreshError) {
+              logger.warn(
+                "Failed to refresh session during initialization:",
+                refreshError
+              );
+            }
+          }
+
+          // If refresh failed, clear invalid session
+          await storage.clearAuthSession();
+          this.setAgent(false);
+          return false;
+        }
+
         // Resume session with stored credentials
         this.setAgent(true); // Use SERVICE_URL for authenticated
         await this.agent.resumeSession({
@@ -148,13 +305,17 @@ export class ATProtoClient {
 
         this.currentSession = session;
         this.isAuthenticated = true;
+
+        // Start session monitoring
+        this.setupSessionMonitoring();
         return true;
       } else {
         // Not authenticated
         this.setAgent(false); // Use PUBLIC_SERVICE_URL for unauthenticated web
       }
       return false;
-    } catch {
+    } catch (error) {
+      logger.error("Failed to initialize from storage:", error);
       // Clear invalid session data
       await storage.clearAuthSession();
       this.setAgent(false); // Use PUBLIC_SERVICE_URL for unauthenticated web
@@ -189,6 +350,9 @@ export class ATProtoClient {
         this.currentSession = sessionData;
         await storage.saveAuthSession(sessionData);
 
+        // Start session monitoring after successful login
+        this.setupSessionMonitoring();
+
         return { success: true, data: response.data };
       }
 
@@ -210,6 +374,13 @@ export class ATProtoClient {
     logger.log("refreshSession");
     try {
       if (!this.currentSession) {
+        logger.warn("No current session to refresh");
+        return false;
+      }
+
+      // Check if refresh token is expired
+      if (this.isTokenExpired(this.currentSession.refreshJwt, 0)) {
+        logger.warn("Refresh token is expired, cannot refresh session");
         return false;
       }
 
@@ -230,9 +401,11 @@ export class ATProtoClient {
 
         this.currentSession = sessionData;
         await storage.saveAuthSession(sessionData);
+        logger.log("Session refreshed and saved to storage");
         return true;
       }
 
+      logger.warn("No session data available after refresh attempt");
       return false;
     } catch (error) {
       console.error("Failed to refresh session:", error);
@@ -1020,6 +1193,37 @@ export class ATProtoClient {
     }
   }
 
+  /**
+   * Manually validate and refresh session if needed
+   * Useful for app state changes (foreground/background)
+   */
+  async validateSession(): Promise<boolean> {
+    if (!this.isAuthenticated || !this.currentSession) {
+      return false;
+    }
+
+    try {
+      // Check if tokens are still valid
+      if (this.isTokenExpired(this.currentSession.accessJwt)) {
+        logger.log("Session validation: access token expired, refreshing...");
+        return await this.performSessionRefresh();
+      }
+
+      if (this.isTokenExpired(this.currentSession.refreshJwt)) {
+        logger.warn(
+          "Session validation: refresh token expired, logout required"
+        );
+        return false;
+      }
+
+      logger.log("Session validation: tokens are valid");
+      return true;
+    } catch (error) {
+      console.error("Session validation failed:", error);
+      return false;
+    }
+  }
+
   getIsAuthenticated() {
     return this.isAuthenticated;
   }
@@ -1338,6 +1542,9 @@ export class ATProtoClient {
     logger.log("logout");
     this.isAuthenticated = false;
     this.currentSession = null;
+
+    // Clean up session monitoring
+    this.cleanup();
 
     // Clear stored session data
     await storage.clearAll();

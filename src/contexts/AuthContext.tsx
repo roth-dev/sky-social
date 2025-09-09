@@ -11,6 +11,7 @@ import { storage } from "@/lib/storage";
 import { ATProfile } from "@/types/atproto";
 import { ActivityIndicator } from "react-native";
 import { View } from "@/components/ui";
+import { useSessionStateHandler } from "@/hooks/useSessionStateHandler";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -30,6 +31,9 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<ATProfile | null>(null);
   const [loading, setLoading] = useState(true);
+
+  // Handle app state changes for session validation
+  useSessionStateHandler();
 
   const initializeAuth = useCallback(async () => {
     try {
@@ -53,7 +57,22 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
   useEffect(() => {
     initializeAuth();
-  }, [initializeAuth]);
+
+    // Set up periodic session validation (every 10 minutes as backup)
+    const sessionCheckInterval = setInterval(async () => {
+      if (isAuthenticated) {
+        const isValid = await atprotoClient.validateSession();
+        if (!isValid) {
+          console.warn("Periodic session check failed, session may be invalid");
+          // Don't auto-logout, let API calls handle it
+        }
+      }
+    }, 10 * 60 * 1000); // 10 minutes
+
+    return () => {
+      clearInterval(sessionCheckInterval);
+    };
+  }, [initializeAuth, isAuthenticated]);
 
   const refreshUserProfile = async () => {
     try {
@@ -67,6 +86,21 @@ export function AuthProvider({ children }: PropsWithChildren) {
       }
     } catch (error) {
       console.error("Failed to refresh user profile:", error);
+
+      // Check if it's an auth error and try to refresh session
+      if (
+        (error as { status?: number; message?: string })?.status === 401 ||
+        (error as { message?: string })?.message?.includes("authentication")
+      ) {
+        console.log(
+          "Auth error in profile refresh, attempting session refresh..."
+        );
+        const refreshed = await atprotoClient.performSessionRefresh();
+        if (!refreshed) {
+          console.warn("Session refresh failed, user may need to re-login");
+          // Don't auto-logout here, let the user continue
+        }
+      }
     }
   };
 

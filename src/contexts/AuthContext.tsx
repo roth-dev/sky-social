@@ -57,22 +57,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
   useEffect(() => {
     initializeAuth();
-
-    // Set up periodic session validation (every 10 minutes as backup)
-    const sessionCheckInterval = setInterval(async () => {
-      if (isAuthenticated) {
-        const isValid = await atprotoClient.validateSession();
-        if (!isValid) {
-          console.warn("Periodic session check failed, session may be invalid");
-          // Don't auto-logout, let API calls handle it
-        }
-      }
-    }, 10 * 60 * 1000); // 10 minutes
-
-    return () => {
-      clearInterval(sessionCheckInterval);
-    };
-  }, [initializeAuth, isAuthenticated]);
+  }, [initializeAuth]);
 
   const refreshUserProfile = async () => {
     try {

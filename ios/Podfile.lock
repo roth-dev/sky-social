@@ -1458,7 +1458,7 @@ PODS:
     - React-jsiexecutor
     - React-RCTFBReactNativeSpec
     - ReactCommon/turbomodule/core
-  - react-native-compressor (1.12.0):
+  - react-native-compressor (1.13.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2695,7 +2695,7 @@ SPEC CHECKSUMS:
   React-logger: 85fa3509931497c72ccd2547fcc91e7299d8591e
   React-Mapbuffer: 96a2f2a176268581733be182fa6eebab1c0193be
   React-microtasksnativemodule: bda561d2648e1e52bd9e5a87f8889836bdbde2e2
-  react-native-compressor: ba0d17435ea5afa142e9593fec98d189fb775244
+  react-native-compressor: e5d28c8962d4d32e1739d5ded307822127eb611f
   react-native-keyboard-controller: 46ff1d24f868d895763d2043dac37909bc07c6fa
   react-native-menu: be9bce4eb201a4d13734744763d36d56e6df8b4a
   react-native-pager-view: f238ed7fb53458bd03366944a33686f067c83e9a

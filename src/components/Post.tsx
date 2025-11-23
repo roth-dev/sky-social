@@ -312,7 +312,7 @@ const Post = memo(function Comp({
                         })
                       : post.record.text
                   }
-                  size={isDetailView ? "xl" : "lg"}
+                  size={isDetailView ? "lg" : "base"}
                   disableLinks={false}
                   enableTags={true}
                   onLinkPress={handleLinkPress}
